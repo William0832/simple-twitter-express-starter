@@ -25,7 +25,27 @@ const replyService = {
     } catch (error) {
       console.log(error);
     }
+  },
+
+  postReply: async (req, res, callback) => {
+    try {
+      if (!req.body.comment) {
+        return callback({ status: 'error', message: "reply didn't exist" })
+      }
+
+      const reply = await Reply.create({
+        UserId: helpers.getUser(req).id,
+        TweetId: req.params.tweet_id,
+        comment: req.body.comment,
+      })
+
+      return callback({ status: "success", message: 'reply successfully posted.', reply })
+    }
+    catch (error) {
+      console.error(error);
+    }
   }
 }
+
 
 module.exports = replyService
