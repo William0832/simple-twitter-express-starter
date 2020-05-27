@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-// const multer = require('multer')
-// const upload = multer({ dest: 'temp/' })
+const multer = require('multer')
+const upload = multer({ dest: 'temp/' })
 const passport = require('../config/passport')
 
 const userController = require('../controllers/api/userController.js')
@@ -19,15 +19,33 @@ const authenticatedAdmin = (req, res, next) => {
     return res.json({ status: 'error', message: 'permission denied' })
   }
 }
+const isRightUser = (req, res, next) => {
+  if (req.user.id === req.params.id) return next()
+  return res.json({ status: 'error', message: '沒有修改權限' })
+}
 
 //User routes
 router.post('/signup', userController.signUp)
 router.post('/signin', userController.signIn)
 
-router.get('/', authenticated, (req, res) => res.redirect('/tweets'))
-
-//Tweets routes
-router.get('/tweets', authenticated, tweetController.getTweets)
+router.get('/users/:id/tweets', authenticated, userController.getTweets)
+router.get('/users/:id/followers', authenticated, userController.getFollowers)
+router.get('/users/:id/followings', authenticated, userController.getFollowings)
+router.get('/users/:id/likes', authenticated, userController.getLikes)
+router.post(
+  '/users/:id/edit',
+  authenticated,
+  isRightUser,
+  upload.single('image'),
+  userController.postUser
+)
+router.put(
+  '/users/:id/edit',
+  authenticated,
+  isRightUser,
+  upload.single('image'),
+  userController.postUser
+)
 
 //Admin routes
 router.get(
