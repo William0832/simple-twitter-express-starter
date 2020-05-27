@@ -4,8 +4,9 @@
         .col-md-8
           TweetNew(:user-id='currentUser.id' @after-create-tweet='afterCreateTweet')
           Tweet(
-            v-for='tweet in tweets' 
-            :key='tweet.id')
+            v-for="tweet in tweets"
+            :key='tweet.id'
+            :init-tweet = 'tweet')
         .col-md-4
           UserTop
 </template>
