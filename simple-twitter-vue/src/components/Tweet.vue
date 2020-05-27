@@ -4,7 +4,7 @@
       img(:src="tweet.User.avatar")
     .col-8.text-left
       a(hred='#')
-        h1 @{{tweet.User.name}} ,2018-11-04
+        h3 @{{tweet.User.name}} , {{tweet.createdAt | fromNow}}
       p
         | {{tweet.description}}
       .row.justify-content-start
@@ -15,10 +15,10 @@
 </template>
 
 <script>
-const imageUrl =
-  "https://loremflickr.com/240/240/man,women/?random=90.59691100585958";
+import { fromNowFilter } from "../utils/mixins";
 
 export default {
+  mixins: [fromNowFilter],
   props: {
     initTweet: {
       type: Object,
@@ -27,8 +27,7 @@ export default {
   },
   data() {
     return {
-      tweet: this.initTweet,
-      image: imageUrl
+      tweet: this.initTweet
     };
   }
 };
