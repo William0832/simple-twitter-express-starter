@@ -6,6 +6,7 @@ const passport = require('../config/passport')
 
 const userController = require('../controllers/api/userController.js')
 const tweetController = require('../controllers/api/tweetController.js')
+const followshipController = require('../controllers/api/followshipController.js')
 
 const authenticated = passport.authenticate('jwt', { session: false })
 const authenticatedAdmin = (req, res, next) => {
@@ -27,6 +28,8 @@ router.get('/', authenticated, (req, res) => res.redirect('/tweets'))
 //Tweets routes
 router.get('/tweets', authenticated, tweetController.getTweets)
 
-
+//Followship routes
+router.post('/followship/:followingId', authenticated, followshipController.postFollowship)
+// router.delete('/followship/:followingId', authenticated, followshipController.removeFollowship)
 
 module.exports = router
