@@ -4,6 +4,7 @@ const Tweet = db.Tweet
 const User = db.User
 const Reply = db.Reply
 const Like = db.Like
+const helpers = require('../_helpers');
 
 const tweetService = {
   getTweets: async (req, res, callback) => {
@@ -35,7 +36,26 @@ const tweetService = {
 
 
   },
-    })
+  postTweets: async (req, res, callback) => {
+    try {
+      if (!req.body.tweet) {
+        return callback({ status: 'error', message: "tweet didn't exist" })
+      }
+
+      if (req.body.tweet.length > 140) {
+        return callback({ status: 'error', message: "tweet is too long" })
+      }
+
+      const tweet = await Tweet.create({
+        description: req.body.tweet,
+        UserId: helpers.getUser(req).id
+      })
+
+      return callback({ status: "success", message: 'tweet successfully posted.', tweet })
+    }
+    catch (error) {
+      console.log(error);
+    }
   }
 }
 
