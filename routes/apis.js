@@ -6,6 +6,7 @@ const passport = require('../config/passport')
 
 const userController = require('../controllers/api/userController.js')
 const tweetController = require('../controllers/api/tweetController.js')
+const replyController = require('../controllers/api/replyController.js')
 
 const authenticated = passport.authenticate('jwt', { session: false })
 const authenticatedAdmin = (req, res, next) => {
@@ -21,12 +22,10 @@ const authenticatedAdmin = (req, res, next) => {
 router.post('/signup', userController.signUp)
 router.post('/signin', userController.signIn)
 
-
+//Root
 router.get('/', authenticated, (req, res) => res.redirect('/tweets'))
 
-//Tweets routes
-router.get('/tweets', authenticated, tweetController.getTweets)
-
-
+//Reply routes
+router.get('/tweets/:tweet_id/replies', authenticated, replyController.getReplies)
 
 module.exports = router
