@@ -2,8 +2,10 @@
   .container.py-5
       .row
         .col-md-8
-          TweetNew
-          Tweet
+          TweetNew(:user-id='currentUser.id' @after-create-tweet='afterCreateTweet')
+          Tweet(
+            v-for='tweet in tweets' 
+            :key='tweet.id')
         .col-md-4
           UserTop
 </template>
@@ -676,11 +678,39 @@ const dummyTweets = {
   ]
 };
 
+const dummyUser = {
+  currentUser: {
+    id: 1,
+    name: "管理者",
+    email: "root@example.com",
+    image: "https://i.pravatar.cc/300",
+    isAdmin: true
+  },
+  isAuthenticated: true
+};
+
 export default {
   components: {
     TweetNew,
     Tweet,
     UserTop
+  },
+  data() {
+    return {
+      tweets: [],
+      currentUser: dummyUser.currentUser
+    };
+  },
+  created() {
+    this.fetchTweets();
+  },
+  methods: {
+    fetchTweets() {
+      this.tweets = dummyTweets.tweets;
+    },
+    afterCreateTweet(payload) {
+      console.log(payload);
+    }
   }
 };
 </script>
