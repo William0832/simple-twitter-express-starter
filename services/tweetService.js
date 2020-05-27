@@ -16,7 +16,7 @@ const tweetService = {
         nest: true,
         order: [['createdAt', 'DESC']],
         group: ['Tweet.id'],
-        include: [{ model: User, attributes: ['name'] },
+        include: [{ model: User, attributes: ['id', 'name', 'avatar'] },
         { model: Reply, as: 'Replies', attributes: [] },
         { model: Like, as: 'Likes', attributes: [] }],
         attributes: {
