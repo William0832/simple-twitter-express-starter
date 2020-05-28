@@ -82,8 +82,6 @@ let userController = {
     userService.getLikes(req, res, (data) => res.json(data)),
   getEditPage: (req, res) =>
     userService.getEditPage(req, res, (data) => res.json(data)),
-  // postUser: (req, res) =>
-  //   userService.postUser(req, res, (data) => res.json(data)),
   putUser: (req, res) =>
     userService.putUser(req, res, (data) => res.status(302).json(data))
 }

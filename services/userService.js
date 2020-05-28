@@ -81,26 +81,6 @@ const userService = {
       callback({ status: 'error', message: err.toString() })
     }
   },
-  postUser: async (req, res, callback) => {
-    try {
-      if (!req.body.name) {
-        callback({ status: 'error', message: "name didn't exist" })
-      }
-      const { file } = req
-      let imgLink = await getImgLink(file)
-      await User.create({
-        name: req.body.name,
-        introduction: req.body.introduction,
-        image: imgLink
-      })
-      callback({
-        status: 'success',
-        message: 'user was successfully to created'
-      })
-    } catch (err) {
-      callback({ status: 'error', message: err.toString() })
-    }
-  },
   putUser: async (req, res, callback) => {
     try {
       if (!req.body.name) {
