@@ -3,12 +3,13 @@ const router = express.Router()
 // const multer = require('multer')
 // const upload = multer({ dest: 'temp/' })
 const passport = require('../config/passport')
+const helpers = require('../_helpers');
 
 const userController = require('../controllers/api/userController.js')
 const tweetController = require('../controllers/api/tweetController.js')
 
 const authenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
+  if (helpers.ensureAuthenticated(req)) {
     return next()
   }
   passport.authenticate('jwt', { failureRedirect: '/signIn', session: false })(req, res, next)
