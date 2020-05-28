@@ -9,10 +9,11 @@
         p
           | {{tweet.description}}
         .row.justify-content-start
-          .col-3
-            h6 Reply ({{tweet.Replies_count}})
-          .col-3
-            h6 Like ({{tweet.Likes_count}})
+          .col.mw-50
+            a(href='#')
+              button.btn.btn-light Reply ({{tweet.Replies_count}})
+          .col.mw-50
+            button.btn.btn-light(@click.stop.prevent="addLike") Like ({{tweet.Likes_count}} )
 </template>
 
 <script>
@@ -28,8 +29,11 @@ export default {
   },
   data() {
     return {
-      tweet: this.initTweet
+      tweets: this.initTweets
     };
+  },
+  methods: {
+    addLike() {}
   }
 };
 </script>
