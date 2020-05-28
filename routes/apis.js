@@ -29,7 +29,7 @@ router.get('/', authenticated, (req, res) => res.redirect('/tweets'))
 router.get('/tweets', authenticated, tweetController.getTweets)
 
 //Followship routes
-router.post('/followship/:followingId', authenticated, followshipController.postFollowship)
+router.post('/followship/', authenticated, followshipController.postFollowship)
 router.delete('/followship/:followingId', authenticated, followshipController.deleteFollowship)
 
 module.exports = router

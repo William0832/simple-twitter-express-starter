@@ -8,7 +8,7 @@ const followshipService = {
   postFollowship: async (req, res, callback) => {
     try {
       const followerId = String(helpers.getUser(req).id)
-      const followingId = req.params.followingId
+      const followingId = req.body.followingId
 
       if (followerId === followingId) {
         return callback({ status: 'error', message: "users can't follow themselves" })
