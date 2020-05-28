@@ -4,12 +4,15 @@ const followshipService = require('../../services/followshipService.js')
 const followshipController = {
   postFollowship: (req, res) => {
     followshipService.postFollowship(req, res, (data) => {
-      return res.json(data)
+      if (data.status === 'error') {
+        return res.json(data)
+      }
+      return res.status(302).json(data)
     })
   },
   deleteFollowship: (req, res) => {
     followshipService.deleteFollowship(req, res, (data) => {
-      return res.json(data)
+      return res.status(302).json(data)
     })
   },
 }
