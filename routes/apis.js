@@ -20,7 +20,7 @@ const authenticatedAdmin = (req, res, next) => {
   }
 }
 const isRightUser = (req, res, next) => {
-  if (req.user.id === req.params.id) return next()
+  if (String(req.user.id) === req.params.id) return next()
   return res.json({ status: 'error', message: '沒有修改權限' })
 }
 
@@ -36,14 +36,14 @@ router.post(
   '/users/:id/edit',
   authenticated,
   isRightUser,
-  upload.single('image'),
+  upload.single('avatar'),
   userController.postUser
 )
 router.put(
   '/users/:id/edit',
   authenticated,
   isRightUser,
-  upload.single('image'),
+  upload.single('avatar'),
   userController.postUser
 )
 
