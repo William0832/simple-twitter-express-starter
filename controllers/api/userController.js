@@ -82,8 +82,7 @@ let userController = {
     userService.getLikes(req, res, (data) => res.json(data)),
   postUser: (req, res) =>
     userService.postUser(req, res, (data) => res.json(data)),
-  puttUser: (req, res) =>
-    userService.puttUser(req, res, (data) => res.json(data))
+  putUser: (req, res) => userService.putUser(req, res, (data) => res.json(data))
 }
 
 module.exports = userController

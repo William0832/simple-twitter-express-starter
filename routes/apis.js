@@ -44,7 +44,7 @@ router.put(
   authenticated,
   isRightUser,
   upload.single('avatar'),
-  userController.postUser
+  userController.putUser
 )
 
 //Admin routes

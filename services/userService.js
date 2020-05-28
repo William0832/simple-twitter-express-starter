@@ -93,7 +93,7 @@ const userService = {
       callback({ status: 'error', message: err.toString() })
     }
   },
-  puttUser: async (req, res, callback) => {
+  putUser: async (req, res, callback) => {
     try {
       if (!req.body.name) {
         callback({ status: 'error', message: "name didn't exist" })
