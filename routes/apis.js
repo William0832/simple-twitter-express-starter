@@ -35,7 +35,7 @@ const authenticatedAdmin = (req, res, next) => {
 const isOwner = (req, res, next) => {
   let user = helpers.getUser(req)
   if (String(user.id) === req.params.id) return next()
-  return res.json({ status: 'error', message: '沒有修改權限' })
+  return res.status(302).json({ status: 'error', message: '沒有修改權限' })
 }
 
 //User routes
@@ -46,6 +46,12 @@ router.get('/users/:id/tweets', authenticated, userController.getTweets)
 router.get('/users/:id/followers', authenticated, userController.getFollowers)
 router.get('/users/:id/followings', authenticated, userController.getFollowings)
 router.get('/users/:id/likes', authenticated, userController.getLikes)
+router.get(
+  '/users/:id/edit',
+  authenticated,
+  isOwner,
+  userController.getEditPage
+)
 // 修改 userController 改用 putUser
 router.post(
   '/users/:id/edit',

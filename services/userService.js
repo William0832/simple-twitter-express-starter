@@ -73,6 +73,14 @@ const userService = {
       callback({ status: 'error', message: err.toString() })
     }
   },
+  getEditPage: async (req, res, callback) => {
+    try {
+      let user = await User.findByPk(req.params.id)
+      callback({ user: user.toJSON() })
+    } catch (err) {
+      callback({ status: 'error', message: err.toString() })
+    }
+  },
   postUser: async (req, res, callback) => {
     try {
       if (!req.body.name) {
