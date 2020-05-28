@@ -29,9 +29,9 @@ const replyService = {
 
   postReply: async (req, res, callback) => {
     try {
-      if (!req.body.comment) {
-        return callback({ status: 'error', message: "reply didn't exist" })
-      }
+      // if (!req.body.comment) {
+      //   return callback({ status: 'error', message: "reply didn't exist" })
+      // }
 
       const reply = await Reply.create({
         UserId: helpers.getUser(req).id,
