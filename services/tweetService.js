@@ -10,23 +10,6 @@ const tweetService = {
   getTweets: async (req, res, callback) => {
 
     try {
-      const tweets = await Tweet.findAll({
-        subQuery: false,
-        raw: true,
-        nest: true,
-        order: [['createdAt', 'DESC']],
-        group: ['Tweet.id'],
-        include: [{ model: User, attributes: ['id', 'name', 'avatar'] },
-        { model: Reply, as: 'Replies', attributes: [] },
-        { model: Like, as: 'Likes', attributes: [] }],
-        attributes: {
-          include: [
-            [sequelize.fn('COUNT', sequelize.col('Replies.id')), 'Replies_count'],
-            [sequelize.fn('COUNT', sequelize.col('Likes.id')), 'Likes_count']
-          ]
-        },
-      })
-
       let topUsers = await User.findAll({
         subQuery: false,
         include: [
@@ -51,9 +34,40 @@ const tweetService = {
         introduction: user.introduction.substring(0, 50)
       }))
 
+      let likedTweets = await Like.findAll({
+        where: { 'UserId': helpers.getUser(req).id },
+        attributes: ['TweetId']
+      })
+
+      likedTweets = likedTweets.map(like => like.TweetId)
+
+      let tweets = await Tweet.findAll({
+        subQuery: false,
+        raw: true,
+        nest: true,
+        order: [['createdAt', 'DESC']],
+        group: ['Tweet.id'],
+        include: [{ model: User, attributes: ['id', 'name', 'avatar'] },
+        { model: Reply, as: 'Replies', attributes: [] },
+        { model: Like, as: 'Likes', attributes: ['UserId'] }],
+        attributes: {
+          include: [
+            [sequelize.fn('COUNT', sequelize.col('Replies.id')), 'Replies_count'],
+            [sequelize.fn('COUNT', sequelize.col('Likes.id')), 'Likes_count']
+          ]
+        },
+      })
+
+      tweets = tweets.map(tweet => ({
+        ...tweet,
+        isLiked: likedTweets.includes(tweet.id) ? true : false
+      }))
+
+
       return callback({
         tweets,
-        topUsers
+        topUsers,
+        likedTweets
       })
     } catch (error) {
       console.log(error)
