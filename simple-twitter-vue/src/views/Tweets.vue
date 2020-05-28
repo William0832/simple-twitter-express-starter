@@ -3,17 +3,14 @@
       .row
         .col-md-8
           TweetNew(:user-id='currentUser.id' @after-create-tweet='afterCreateTweet')
-          Tweet(
-            v-for="tweet in tweets"
-            :key='tweet.id'
-            :init-tweet = 'tweet')
+          TweetIndex( :init-tweets='tweets')
         .col-md-4
           UserTop
 </template>
 
 <script>
 import TweetNew from "../components/TweetNew";
-import Tweet from "../components/Tweet";
+import TweetIndex from "../components/TweetIndex";
 import UserTop from "../components/UserTop";
 
 const dummyTweets = {
@@ -838,10 +835,11 @@ const dummyTweets = {
 const dummyUser = {
   currentUser: {
     id: 1,
-    name: "管理者",
+    name: "root",
     email: "root@example.com",
-    image: "https://i.pravatar.cc/300",
-    isAdmin: true
+    avatar:
+      "https://loremflickr.com/240/240/man,women/?random=76.38409798671886",
+    role: "admin"
   },
   isAuthenticated: true
 };
@@ -849,7 +847,7 @@ const dummyUser = {
 export default {
   components: {
     TweetNew,
-    Tweet,
+    TweetIndex,
     UserTop
   },
   data() {
@@ -866,7 +864,21 @@ export default {
       this.tweets = dummyTweets.tweets;
     },
     afterCreateTweet(tweet) {
-      console.log(tweet);
+      // console.log(tweet);
+      this.tweets.unshift({
+        id: tweet.id,
+        description: tweet.description,
+        UserId: this.currentUser.id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        Replies_count: 0,
+        Likes_count: 0,
+        User: {
+          id: this.currentUser.id,
+          name: this.currentUser.name,
+          avatar: this.currentUser.avatar
+        }
+      });
     }
   }
 };

@@ -2,7 +2,7 @@
   form.container(@submit.stop.prevent="handleSubmit")
     div.row.form-group.mb-4
       textarea.col.form-control(
-        v-model="tweet"
+        v-model="description"
         rows="3"
         name="tweet"
         placeholder='What\'s on your mind?')
@@ -24,17 +24,16 @@ export default {
   },
   data() {
     return {
-      tweet: ""
+      description: ""
     };
   },
   methods: {
     handleSubmit() {
       this.$emit("after-create-tweet", {
-        commentId: uuid(), // 尚未串接 API 暫時使用隨機的 id
-        userId: this.userId,
-        tweet: this.tweet
+        id: uuid(), // 尚未串接 API 暫時使用隨機的 id
+        description: this.description
       });
-      this.tweet = ""; // 將表單內的資料清空
+      this.description = ""; // 將表單內的資料清空
     }
   }
 };
