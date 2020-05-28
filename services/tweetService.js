@@ -3,6 +3,7 @@ const sequelize = require('sequelize')
 const Tweet = db.Tweet
 const User = db.User
 const Reply = db.Reply
+const Followship = db.Followship
 const Like = db.Like
 const helpers = require('../_helpers');
 
@@ -10,6 +11,19 @@ const tweetService = {
   getTweets: async (req, res, callback) => {
 
     try {
+      let followedUser = await User.findByPk(helpers.getUser(req).id, {
+        attributes: [],
+        include: [
+          {
+            model: User,
+            as: 'Followings',
+            attributes: ['id']
+          }
+        ]
+      })
+
+      const followedUserId = followedUser.Followings.map(user => user.id)
+
       let topUsers = await User.findAll({
         subQuery: false,
         include: [
@@ -31,7 +45,8 @@ const tweetService = {
 
       topUsers = topUsers.map(user => ({
         ...user.dataValues,
-        introduction: user.introduction.substring(0, 50)
+        introduction: user.introduction.substring(0, 50),
+        isFollowed: followedUserId.includes(user.id) ? true : false
       }))
 
       let likedTweets = await Like.findAll({
