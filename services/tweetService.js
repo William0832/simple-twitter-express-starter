@@ -66,8 +66,7 @@ const tweetService = {
 
       return callback({
         tweets,
-        topUsers,
-        likedTweets
+        topUsers
       })
     } catch (error) {
       console.log(error)
