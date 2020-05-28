@@ -3,7 +3,7 @@ const router = express.Router()
 const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
 const passport = require('../config/passport')
-const helpers = require('../_helpers');
+const helpers = require('../_helpers')
 
 const userController = require('../controllers/api/userController.js')
 const tweetController = require('../controllers/api/tweetController.js')
@@ -13,11 +13,16 @@ const authenticated = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
     return next()
   }
-  passport.authenticate('jwt', { failureRedirect: '/signIn', session: false })(req, res, next)
+  passport.authenticate('jwt', { failureRedirect: '/signIn', session: false })(
+    req,
+    res,
+    next
+  )
 }
 const authenticatedAdmin = (req, res, next) => {
-  if (req.user) {
-    if (req.user.role === 'admin') {
+  let user = helpers.getUser(req)
+  if (user) {
+    if (user.role === 'admin') {
       return next()
     }
     return res.json({ status: 'error', message: 'permission denied' })
@@ -25,8 +30,9 @@ const authenticatedAdmin = (req, res, next) => {
     return res.json({ status: 'error', message: 'permission denied' })
   }
 }
-const isRightUser = (req, res, next) => {
-  if (String(req.user.id) === req.params.id) return next()
+const isOwner = (req, res, next) => {
+  let user = helpers.getUser(req)
+  if (String(user.id) === req.params.id) return next()
   return res.json({ status: 'error', message: '沒有修改權限' })
 }
 
@@ -42,14 +48,14 @@ router.get('/users/:id/likes', authenticated, userController.getLikes)
 router.post(
   '/users/:id/edit',
   authenticated,
-  isRightUser,
+  isOwner,
   upload.single('avatar'),
   userController.putUser
 )
 router.put(
   '/users/:id/edit',
   authenticated,
-  isRightUser,
+  isOwner,
   upload.single('avatar'),
   userController.putUser
 )
