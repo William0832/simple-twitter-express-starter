@@ -9,7 +9,7 @@ const tweetController = {
   },
   postTweets: (req, res) => {
     tweetService.postTweets(req, res, (data) => {
-      return res.json(data)
+      return res.status(302).json(data)
     }
     )
   }
