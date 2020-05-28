@@ -27,8 +27,32 @@ const tweetService = {
         },
       })
 
+      let topUsers = await User.findAll({
+        subQuery: false,
+        include: [
+          {
+            model: User,
+            as: 'Followers',
+            attributes: []
+          },
+        ],
+        group: ['User.id'],
+        attributes: [
+          'id', 'name', 'avatar', 'introduction',
+          [sequelize.fn('COUNT', sequelize.col('Followers.id')), 'followers_count'],
+
+        ],
+        order: sequelize.literal('followers_count DESC'),
+        limit: 10
+      })
+
+      topUsers = topUsers.map(user => {
+        user.introduction.substring(0, 50)
+      })
+
       return callback({
-        tweets
+        tweets,
+        topUsers
       })
     } catch (error) {
       console.log(error)
