@@ -14,6 +14,14 @@ const followshipService = {
         return callback({ status: 'error', message: "users can't follow themselves" })
       }
 
+      const followingUser = await User.findByPk(followingId, {
+        attributes: ['id']
+      })
+
+      if (!followingUser) {
+        return callback({ status: 'error', message: "following target didn't exist" })
+      }
+
       const checkFollowship = await User.findByPk(followerId, {
         attributes: [],
         include: [
@@ -31,8 +39,8 @@ const followshipService = {
       if (!followings.includes(followingId)) {
         console.log('add following')
         const followship = await Followship.create({
-          followerId: helpers.getUser(req).id,
-          followingId: req.params.followingId
+          followerId: followerId,
+          followingId: followingId
         })
 
         return callback({
