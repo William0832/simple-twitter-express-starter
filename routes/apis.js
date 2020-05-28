@@ -32,12 +32,13 @@ router.get('/users/:id/tweets', authenticated, userController.getTweets)
 router.get('/users/:id/followers', authenticated, userController.getFollowers)
 router.get('/users/:id/followings', authenticated, userController.getFollowings)
 router.get('/users/:id/likes', authenticated, userController.getLikes)
+// 修改 userController 改用 putUser
 router.post(
   '/users/:id/edit',
   authenticated,
   isRightUser,
   upload.single('avatar'),
-  userController.postUser
+  userController.putUser
 )
 router.put(
   '/users/:id/edit',
