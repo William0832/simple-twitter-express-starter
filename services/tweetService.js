@@ -46,9 +46,10 @@ const tweetService = {
         limit: 10
       })
 
-      topUsers = topUsers.map(user => {
-        user.introduction.substring(0, 50)
-      })
+      topUsers = topUsers.map(user => ({
+        ...user.dataValues,
+        introduction: user.introduction.substring(0, 50)
+      }))
 
       return callback({
         tweets,
