@@ -38,16 +38,16 @@ const tweetService = {
   },
   postTweets: async (req, res, callback) => {
     try {
-      if (!req.body.tweet) {
-        return callback({ status: 'error', message: "tweet didn't exist" })
+      if (!req.body.description) {
+        return callback({ status: 'error', message: "description didn't exist" })
       }
 
-      if (req.body.tweet.length > 140) {
-        return callback({ status: 'error', message: "tweet is too long" })
+      if (req.body.description.length > 140) {
+        return callback({ status: 'error', message: "description is too long" })
       }
 
       const tweet = await Tweet.create({
-        description: req.body.tweet,
+        description: req.body.description,
         UserId: helpers.getUser(req).id
       })
 
