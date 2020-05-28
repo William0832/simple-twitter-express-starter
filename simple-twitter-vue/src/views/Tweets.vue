@@ -832,6 +832,35 @@ const dummyTweets = {
   ]
 };
 
+const dummyTopUsers = {
+  topUsers: [
+    {
+      id: 2,
+      name: "user1",
+      avatar:
+        "https://loremflickr.com/240/240/man,women/?random=58.745905329569716",
+      introduction: "Aut dicta quos in itaque eos voluptas. Fugit eveni",
+      followers_count: 2
+    },
+    {
+      id: 1,
+      name: "root",
+      avatar:
+        "https://loremflickr.com/240/240/man,women/?random=76.38409798671886",
+      introduction: "Qui sequi officia. Ut quia eos vero quae occaecati",
+      followers_count: 0
+    },
+    {
+      id: 3,
+      name: "user2",
+      avatar:
+        "https://loremflickr.com/240/240/man,women/?random=61.98078135474472",
+      introduction: "Dignissimos sapiente occaecati nisi totam. Accusam",
+      followers_count: 0
+    }
+  ]
+};
+
 const dummyUser = {
   currentUser: {
     id: 1,
