@@ -7,7 +7,12 @@ const passport = require('../config/passport')
 const userController = require('../controllers/api/userController.js')
 const tweetController = require('../controllers/api/tweetController.js')
 
-const authenticated = passport.authenticate('jwt', { session: false })
+const authenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next()
+  }
+  passport.authenticate('jwt', { failureRedirect: '/signIn', session: false })(req, res, next)
+}
 const authenticatedAdmin = (req, res, next) => {
   if (req.user) {
     if (req.user.isAdmin) { return next() }
