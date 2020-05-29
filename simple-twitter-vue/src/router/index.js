@@ -20,7 +20,6 @@ const routes = [
     path: '/signup',
     name: 'Sign-up',
     component: () => import('../views/SignUp.vue')
-    redirect: '/tweets'
   },
   {
     path: '/tweets',
