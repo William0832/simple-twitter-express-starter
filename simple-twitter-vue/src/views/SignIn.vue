@@ -53,6 +53,7 @@
 
 <script>
 import authorizationAPI from "../apis/authorization";
+import { Toast } from '../utils/helpers'
 export default {
   data() {
     return {
@@ -62,7 +63,7 @@ export default {
     };
   },
   methods: {
-    async handleSubmit(e) {
+    async handleSubmit() {
       try{   
         // TODO: 向後端驗證使用者登入資訊是否合法
         if (!this.email || !this.password) {
@@ -80,8 +81,8 @@ export default {
             password: this.password
         })
 
-        const { data , statusText } = response
-
+        const { data } = response
+        //add statusText
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
