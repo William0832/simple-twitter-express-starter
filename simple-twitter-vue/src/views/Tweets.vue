@@ -10,6 +10,8 @@
           UserTop( 
             :top-users='topUsers'
             :current-user='currentUser'
+            @after-add-follow='afterAddFollow'
+            @after-delete-follow='afterDeleteFollow'
             )
 </template>
 
@@ -920,6 +922,12 @@ export default {
           avatar: this.currentUser.avatar
         }
       });
+    },
+    afterAddFollow(userId) {
+      console.log(userId);
+    },
+    afterDeleteFollow(userId) {
+      console.log(userId);
     }
   }
 };

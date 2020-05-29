@@ -9,7 +9,7 @@
         p
           | {{user.introduction}}
         .row.justify-content-end(v-if='user.id != currentUser.id')
-          button.btn.btn-danger(v-if="user.isFollowed" @click.stop.prevent="removeFollow(user.id)") Unfollow 
+          button.btn.btn-danger(v-if="user.isFollowed" @click.stop.prevent="deleteFollow(user.id)") Unfollow 
           button.btn.btn-primary(v-else @click.stop.prevent="addFollow(user.id)") Follow 
 </template>
 
@@ -26,7 +26,14 @@ export default {
       required: true
     }
   },
-  methods: {}
+  methods: {
+    addFollow(userId) {
+      this.$emit("after-add-follow", { userId });
+    },
+    deleteFollow(userId) {
+      this.$emit("after-delete-follow", { userId });
+    }
+  }
 };
 </script>
 
