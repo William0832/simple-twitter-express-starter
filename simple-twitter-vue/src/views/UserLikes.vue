@@ -19,7 +19,7 @@ const dummyData = {
     email: "root@example.com",
     password: "$2a$10$OJ3jR93XlEMrQtYMWOIQh.EINWgaRFTXkd0Xi5OC/Vz4maztUXEPe",
     isAdmin: true,
-    image: "https://i.imgur.com/58ImzMM.png",
+    avatar: "https://i.imgur.com/58ImzMM.png",
     createdAt: "2019-07-30T16:24:54.983Z",
     updatedAt: "2019-08-01T10:33:51.095Z",
     Comments: [

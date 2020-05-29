@@ -1,44 +1,46 @@
 <template>
   <div class="mt-4 d-flex flex-column align-items-start">
 
-    <img :src="profile.image" width="250px" height="250px" />
+    <img :src="user.avatar" width="250px" height="250px" />
 
     <div class="mt-2 d-flex flex-column align-items-start">
       <!-- name -->
-      <h2 class="title">{{ profile.name }}</h2>
+      <h2 class="title">{{ user.name }}</h2>
 
       <!-- description -->
-      <p style="width: 300px; text-align: left; word-break: break-all;">{{ profile.description }}</p>
+      <p style="width: 300px; text-align: left; word-break: break-all;">{{ user.introduction }}</p>
       <!-- ul -->
 
       <ul class="list-inline list-unstyled">
         <li style="text-align:left;">
-          <strong>{{profile.Tweets.length}} </strong>Tweets
+          <strong>{{user.Tweets.length}} </strong>Tweets
         </li>
 
         <li style="text-align:left;">
-          <strong>{{profile.Followings.length}}</strong> followings (追蹤者)
+          <strong>{{user.Followings.length}}</strong> followings (追蹤者)
         </li>
 
         <li style="text-align:left;">
-          <strong>{{profile.Followers.length}}</strong> followers (追隨者)
+          <strong>{{user.Followers.length}}</strong> followers (追隨者)
         </li>
 
         <li style="text-align:left;">
-          <strong>{{profile.Likes.length}}</strong> Likes
+          <strong>{{user.Likes.length}}</strong> Likes
         </li>
       </ul>
 
       <div>
+        <!-- v-if="isFollowed === false" -->
         <button
-          v-if="isFollowed === false"
+          
           @click.prevent.stop="follow"
           type="submit"
           class="btn btn-primary"
         >追蹤</button>
 
+        <!-- v-else -->
         <form
-          v-else
+          
           @submit.prevent.stop="unfollow"
           action="/following/72?_method=DELETE"
           method="POST"
@@ -59,27 +61,22 @@
 <script>
 export default {
   props: {
-    initialProfile: {
+    initialUser: {
       type: Object,
       required: true
     },
-    initialIsFollowed: {
-      type: Boolean,
-      required: true
-    }
   },
   data(){
     return {
-      profile: this.initialProfile,
-      isFollowed: this.initialIsFollowed
+      user: this.initialUser,
     }
   },
   methods: {
     follow() {
-      this.isFollowed = true;
+      // this.isFollowed = true;
     },
     unfollow() {
-      this.isFollowed = false;
+      // this.isFollowed = false;
     }
   }
 };

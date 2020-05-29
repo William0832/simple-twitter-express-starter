@@ -1,6 +1,6 @@
 const express = require('express')
 const helpers = require('./_helpers');
-
+const cors = require('cors')
 const app = express()
 const port = 3000
 
@@ -17,6 +17,9 @@ app.locals.moment = require('moment') //let moment function available in pug tem
 
 // use helpers.getUser(req) to replace req.user
 // use helpers.ensureAuthenticated(req) to replace req.isAuthenticated()
+
+// cors 的預設為全開放
+app.use(cors())
 
 //middleware
 app.use(express.static('public'))

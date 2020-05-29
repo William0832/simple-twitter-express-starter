@@ -5,24 +5,26 @@
     <!-- cards -->
     <ul class="list-unstyled">
       <div class="row no-gutters">
-        <li v-for="follower in profile.Followers" :key="follower.id" class="col-6">
+        <li v-for="follower in user.Followers" :key="follower.id" class="col-6">
           <div class="card" style="width: 98%;">
             <div id="card-contents" class="row no-gutters mt-2">
               <!-- image -->
               <div class="col-4">
-                <img :src="follower.image" alt height="100" width="100" />
+                <img :src="follower.avatar" alt height="100" width="100" />
               </div>
 
               <!-- user info -->
               <div class="col-8 d-flex flex-column align-items-start">
                 <h5 class>{{follower.name}}</h5>
-                <p style="text-align: left; width: 90%;">{{follower.description}}</p>
+                <p style="text-align: left; width: 90%;">{{follower.introduction}}</p>
 
+                <!-- follow-BTN -->
                 <div class="d-flex justify-content-between mb-2" style="width: 130px;">
                   <!-- 判斷式可能要改 -->
 
+                  
                   <form 
-                    v-if="follower.Followship.followerId === profile.id"
+                    v-if="followingList.includes(follower.id)"
                     @submit.prevent.stop="unFollow"
                   >
                     <button
@@ -35,6 +37,7 @@
 
                   <button v-else @click.prevent.stop="follow" class="btn btn-primary">Follow</button>
                 </div>
+                
               </div>
             </div>
           </div>
@@ -48,15 +51,24 @@
 <script>
 export default {
   props: {
-    initialProfile: {
+    initialUser: {
       type: Object,
       required: true
-    }
+    },
+    // initialFollowingList: {
+    //   type: Array,
+    //   required: true
+    // }
   },
   data() {
     return {
-      profile: this.initialProfile
-    };
+      user: this.initialUser,
+      // followingList: this.initialFollowingList
+      followingList: [2,3]
+    }
+  },
+  created(){
+    console.log('op', this.followingList)
   },
   methods: {
     follow(){
