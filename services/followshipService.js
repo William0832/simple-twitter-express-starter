@@ -57,15 +57,17 @@ const followshipService = {
   },
   deleteFollowship: async (req, res, callback) => {
     try {
-      const followship = await Followship.findOne({
-        where: {
-          followerId: helpers.getUser(req).id,
-          followingId: req.params.followingId
+      const followship = await Followship.destroy(
+        {
+          where: {
+            followerId: helpers.getUser(req).id,
+            followingId: req.params.followingId
+          }
         }
-      })
+      )
 
       if (followship) {
-        await followship.destroy()
+
         return callback({ status: "success", message: "", followship: followship })
       }
       else {
