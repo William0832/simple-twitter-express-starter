@@ -1,5 +1,6 @@
 const express = require('express')
 const helpers = require('./_helpers');
+const cors = require('cors')
 
 const app = express()
 const port = 3000
@@ -15,6 +16,7 @@ if (process.env.NODE_ENV !== 'production') {      // 如果不是 production 模
 const passport = require('./config/passport')
 app.locals.moment = require('moment') //let moment function available in pug templates
 
+app.use(cors()) // cors 的預設為全開放
 // use helpers.getUser(req) to replace req.user
 // use helpers.ensureAuthenticated(req) to replace req.isAuthenticated()
 
@@ -39,3 +41,4 @@ app.get('/', (req, res) => res.send('Hello World!'))
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 require('./routes')(app)
+module.exports = app
