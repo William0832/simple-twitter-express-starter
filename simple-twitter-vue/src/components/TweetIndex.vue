@@ -22,15 +22,10 @@ import { fromNowFilter } from "../utils/mixins";
 export default {
   mixins: [fromNowFilter],
   props: {
-    initTweets: {
+    tweets: {
       type: Array,
       required: true
     }
-  },
-  data() {
-    return {
-      tweets: this.initTweets
-    };
   },
   methods: {
     addLike() {}
