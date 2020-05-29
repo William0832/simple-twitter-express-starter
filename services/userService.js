@@ -70,19 +70,16 @@ const userService = {
   getLikes: async (req, res, callback) => {
     try {
       let user = await User.findByPk(req.params.id, {
-        include: [
-          {
-            model: Like,
-            include: [
-              {
-                model: Tweet,
-                include: [User, Reply, Like]
-              }
-            ]
-          }
-        ]
+        include: [{ model: Tweet, as: 'LikedTweets', include: [User, Reply] }]
       })
-      callback({ user: user.toJSON() })
+      let currentUser = helpers.getUser(req).toJSON()
+      user = user.toJSON()
+      let likedTweets = user.LikedTweets
+      user.LikedTweets = likedTweets.map((t) => ({
+        ...t,
+        isLiked: currentUser.LikedTweets.map((ct) => ct.id).includes(t.id)
+      }))
+      callback({ user })
     } catch (err) {
       callback({ status: 'error', message: err.toString() })
     }
