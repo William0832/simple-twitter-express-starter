@@ -23,6 +23,7 @@ import { Toast } from "../utils/helpers";
 
 //api
 import tweetsAPI from "../apis/tweet";
+import followshipAPI from "../apis/followship";
 
 const dummyUser = {
   currentUser: {
@@ -99,8 +100,26 @@ export default {
         });
       }
     },
-    afterAddFollow(userId) {
-      console.log(userId);
+    async afterAddFollow(userId) {
+      try {
+        const response = await followshipAPI.followship.create(userId);
+
+        const { data } = response;
+
+        console.log(userId);
+
+        //add statusText
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.fetchTweets();
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: error
+        });
+      }
     },
     afterDeleteFollow(userId) {
       console.log(userId);

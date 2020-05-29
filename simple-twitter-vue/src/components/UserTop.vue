@@ -28,10 +28,10 @@ export default {
   },
   methods: {
     addFollow(userId) {
-      this.$emit("after-add-follow", { userId });
+      this.$emit("after-add-follow", userId);
     },
     deleteFollow(userId) {
-      this.$emit("after-delete-follow", { userId });
+      this.$emit("after-delete-follow", userId);
     }
   }
 };
