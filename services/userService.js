@@ -2,7 +2,7 @@ db = require('../models')
 const { User, Tweet, Reply, Like } = db
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
-
+const helpers = require('../_helpers')
 const getImgLink = (file) => {
   return new Promise((resolve, reject) => {
     if (!file) return resolve(null)
@@ -38,7 +38,14 @@ const userService = {
       let user = await User.findByPk(req.params.id, {
         include: [{ model: User, as: 'Followers' }]
       })
-      callback({ user: user.toJSON() })
+      let currentUser = helpers.getUser(req).toJSON()
+      user = user.toJSON()
+      let followers = user.Followers
+      user.Followers = followers.map((u) => ({
+        ...u,
+        isFollowed: currentUser.Followings.map((d) => d.id).includes(u.id)
+      }))
+      callback({ user })
     } catch (err) {
       callback({ status: 'error', message: err.toString() })
     }
@@ -48,7 +55,14 @@ const userService = {
       let user = await User.findByPk(req.params.id, {
         include: [{ model: User, as: 'Followings' }]
       })
-      callback({ user: user.toJSON() })
+      let currentUser = helpers.getUser(req).toJSON()
+      user = user.toJSON()
+      let followings = user.Followings
+      user.Followings = followings.map((u) => ({
+        ...u,
+        isFollowed: currentUser.Followings.map((d) => d.id).includes(u.id)
+      }))
+      callback({ user })
     } catch (err) {
       callback({ status: 'error', message: err.toString() })
     }
