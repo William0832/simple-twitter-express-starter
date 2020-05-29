@@ -121,8 +121,26 @@ export default {
         });
       }
     },
-    afterDeleteFollow(userId) {
-      console.log(userId);
+    async afterDeleteFollow(userId) {
+      try {
+        const response = await followshipAPI.followship.delete(userId);
+
+        const { data } = response;
+
+        console.log(userId);
+
+        //add statusText
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.fetchTweets();
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: error
+        });
+      }
     }
   }
 };
