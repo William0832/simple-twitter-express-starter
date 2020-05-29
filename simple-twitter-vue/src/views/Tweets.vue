@@ -5,7 +5,7 @@
           TweetNew(:user-id='currentUser.id' @after-create-tweet='afterCreateTweet')
           TweetIndex( :init-tweets='tweets')
         .col-md-4
-          UserTop
+          UserTop( :top-users='topUsers')
 </template>
 
 <script>
@@ -887,10 +887,14 @@ export default {
   },
   created() {
     this.fetchTweets();
+    this.fetchTopUsers();
   },
   methods: {
     fetchTweets() {
       this.tweets = dummyTweets.tweets;
+    },
+    fetchTopUsers() {
+      this.topUsers = dummyTopUsers.topUsers;
     },
     afterCreateTweet(tweet) {
       // console.log(tweet);
