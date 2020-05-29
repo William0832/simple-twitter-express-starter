@@ -58,7 +58,12 @@ const followshipService = {
   },
   deleteFollowship: async (req, res, callback) => {
     try {
-      const followship = await Followship.findByPk(req.params.followingId)
+      const followship = await Followship.findOne({
+        where: {
+          followerId: helpers.getUser(req).id,
+          followingId: req.params.followingId
+        }
+      })
 
       if (followship) {
         await followship.destroy()
