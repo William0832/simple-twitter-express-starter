@@ -13,7 +13,20 @@ const getImgLink = (file) => {
     })
   })
 }
-
+const letsCheck = (user, currentUser) => {
+  user.isCurrentUser = currentUser.id === user.id ? true : false
+  user.isFollowed = currentUser.Followings.map((d) => d.id).includes(user.id)
+    ? true
+    : false
+}
+const letsCount = (user) => {
+  user.counter = {
+    tweets: user.Tweets.length || 0,
+    following: user.Followings.length || 0,
+    follower: user.Followers.length || 0,
+    like: user.LikedTweets.length || 0
+  }
+}
 const userService = {
   getTweets: async (req, res, callback) => {
     try {
@@ -36,7 +49,12 @@ const userService = {
   getFollowers: async (req, res, callback) => {
     try {
       let user = await User.findByPk(req.params.id, {
-        include: [{ model: User, as: 'Followers' }]
+        include: [
+          Tweet,
+          { model: User, as: 'Followers' },
+          { model: User, as: 'Followings' },
+          { model: Tweet, as: 'LikedTweets' }
+        ]
       })
       let currentUser = helpers.getUser(req).toJSON()
       user = user.toJSON()
@@ -45,6 +63,8 @@ const userService = {
         ...u,
         isFollowed: currentUser.Followings.map((d) => d.id).includes(u.id)
       }))
+      letsCheck(user, currentUser)
+      letsCount(user)
       callback({ user })
     } catch (err) {
       callback({ status: 'error', message: err.toString() })
@@ -53,15 +73,21 @@ const userService = {
   getFollowings: async (req, res, callback) => {
     try {
       let user = await User.findByPk(req.params.id, {
-        include: [{ model: User, as: 'Followings' }]
+        include: [
+          Tweet,
+          { model: User, as: 'Followers' },
+          { model: User, as: 'Followings' },
+          { model: Tweet, as: 'LikedTweets' }
+        ]
       })
       let currentUser = helpers.getUser(req).toJSON()
       user = user.toJSON()
-      let followings = user.Followings
-      user.Followings = followings.map((u) => ({
+      user.Followings = user.Followings.map((u) => ({
         ...u,
         isFollowed: currentUser.Followings.map((d) => d.id).includes(u.id)
       }))
+      letsCheck(user, currentUser)
+      letsCount(user)
       callback({ user })
     } catch (err) {
       callback({ status: 'error', message: err.toString() })
