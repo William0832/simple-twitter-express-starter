@@ -95,16 +95,29 @@ const userService = {
   },
   getLikes: async (req, res, callback) => {
     try {
+      let need =
+        'User，包含 Tweets, Likes, , , isliked, (followers, followings) => 括弧裡的可以只給array.length'
       let user = await User.findByPk(req.params.id, {
-        include: [{ model: Tweet, as: 'LikedTweets', include: [User, Reply] }]
+        include: [
+          Tweet,
+          { model: User, as: 'Followers' },
+          { model: User, as: 'Followings' },
+          { model: Tweet, as: 'LikedTweets', include: [User, Reply, Like] }
+        ]
       })
       let currentUser = helpers.getUser(req).toJSON()
       user = user.toJSON()
-      let likedTweets = user.LikedTweets
-      user.LikedTweets = likedTweets.map((t) => ({
+      user.LikedTweets = user.LikedTweets.map((t) => ({
         ...t,
+        counter: {
+          reply: t.Replies.length || 0,
+          like: t.Likes.length || 0
+        },
         isLiked: currentUser.LikedTweets.map((ct) => ct.id).includes(t.id)
       }))
+      letsCheck(user, currentUser)
+      letsCount(user)
+      console.log(user.LikedTweets)
       callback({ user })
     } catch (err) {
       callback({ status: 'error', message: err.toString() })
