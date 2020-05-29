@@ -24,38 +24,6 @@ import { Toast } from "../utils/helpers";
 //api
 import tweetsAPI from "../apis/tweet";
 
-const dummyTopUsers = {
-  topUsers: [
-    {
-      id: 2,
-      name: "user1",
-      avatar:
-        "https://loremflickr.com/240/240/man,women/?random=58.745905329569716",
-      introduction: "Aut dicta quos in itaque eos voluptas. Fugit eveni",
-      followers_count: 2,
-      isFollowed: true
-    },
-    {
-      id: 1,
-      name: "root",
-      avatar:
-        "https://loremflickr.com/240/240/man,women/?random=76.38409798671886",
-      introduction: "Qui sequi officia. Ut quia eos vero quae occaecati",
-      followers_count: 0,
-      isFollowed: false
-    },
-    {
-      id: 3,
-      name: "user2",
-      avatar:
-        "https://loremflickr.com/240/240/man,women/?random=61.98078135474472",
-      introduction: "Dignissimos sapiente occaecati nisi totam. Accusam",
-      followers_count: 1,
-      isFollowed: true
-    }
-  ]
-};
-
 const dummyUser = {
   currentUser: {
     id: 1,
@@ -92,8 +60,6 @@ export default {
 
         const { data } = response;
 
-        console.log(data);
-
         this.tweets = data.tweets;
         this.topUsers = data.topUsers;
       } catch (error) {
@@ -106,22 +72,32 @@ export default {
     // fetchTopUsers() {
     //   this.topUsers = dummyTopUsers.topUsers;
     // },
-    afterCreateTweet(tweet) {
-      // console.log(tweet);
-      this.tweets.unshift({
-        id: tweet.id,
-        description: tweet.description,
-        UserId: this.currentUser.id,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        Replies_count: 0,
-        Likes_count: 0,
-        User: {
-          id: this.currentUser.id,
-          name: this.currentUser.name,
-          avatar: this.currentUser.avatar
+    async afterCreateTweet(tweet) {
+      try {
+        if (!tweet.description) {
+          throw new Error("Tweet can not be empty!");
         }
-      });
+
+        if (tweet.description.length) {
+          throw new Error("Tweet should be shorter than 140 characters!");
+        }
+
+        const response = await tweetsAPI.tweets.create(tweet.description);
+
+        const { data } = response;
+
+        //add statusText
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.fetchTweets();
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: error
+        });
+      }
     },
     afterAddFollow(userId) {
       console.log(userId);

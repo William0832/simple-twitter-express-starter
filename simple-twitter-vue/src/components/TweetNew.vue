@@ -13,8 +13,6 @@
 </template>
 
 <script>
-import { v4 as uuid } from "uuid";
-
 export default {
   props: {
     userId: {
@@ -30,7 +28,6 @@ export default {
   methods: {
     handleSubmit() {
       this.$emit("after-create-tweet", {
-        id: uuid(), // 尚未串接 API 暫時使用隨機的 id
         description: this.description
       });
       this.description = ""; // 將表單內的資料清空
