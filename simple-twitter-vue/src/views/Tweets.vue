@@ -2,10 +2,15 @@
   .container.py-5
       .row
         .col-md-8
-          TweetNew(:user-id='currentUser.id' @after-create-tweet='afterCreateTweet')
+          TweetNew(
+            :user-id='currentUser.id' 
+            @after-create-tweet='afterCreateTweet')
           TweetIndex( :init-tweets='tweets')
         .col-md-4
-          UserTop( :top-users='topUsers')
+          UserTop( 
+            :top-users='topUsers'
+            :current-user='currentUser'
+            )
 </template>
 
 <script>
@@ -840,7 +845,8 @@ const dummyTopUsers = {
       avatar:
         "https://loremflickr.com/240/240/man,women/?random=58.745905329569716",
       introduction: "Aut dicta quos in itaque eos voluptas. Fugit eveni",
-      followers_count: 2
+      followers_count: 2,
+      isFollowed: true
     },
     {
       id: 1,
@@ -848,7 +854,8 @@ const dummyTopUsers = {
       avatar:
         "https://loremflickr.com/240/240/man,women/?random=76.38409798671886",
       introduction: "Qui sequi officia. Ut quia eos vero quae occaecati",
-      followers_count: 0
+      followers_count: 0,
+      isFollowed: false
     },
     {
       id: 3,
@@ -856,7 +863,8 @@ const dummyTopUsers = {
       avatar:
         "https://loremflickr.com/240/240/man,women/?random=61.98078135474472",
       introduction: "Dignissimos sapiente occaecati nisi totam. Accusam",
-      followers_count: 0
+      followers_count: 1,
+      isFollowed: true
     }
   ]
 };
