@@ -1,8 +1,8 @@
 <template>
   <div class="container-fluid">
     <div class="row px-5 mx-auto" style="width: 85%;">
-      <UserProfileCard :initial-user="user" class="col-md-4 mr-auto" />
-      <UserFollowerCard :initial-user="user" :initial-followingList="currentUserFollowingList" class="col-md-8" />
+      <UserProfileCard :is-current-user="isCurrentUser" :initial-user="user" :initial-following-list="currentUserFollowingList" class="col-md-4 mr-auto" />
+      <UserFollowerCard :initial-user="user" :initial-following-list="currentUserFollowingList"  class="col-md-8" />
     </div>
   </div>
 </template>
@@ -69,7 +69,7 @@ const dummyData = {
   }
 };
 const dummyCurrentUser = {
-  id: 1,
+  id: 2,
   email: "root@example.com",
   password: "$2a$10$7Uj1HYTMVXcjHZFDCkYhyeJ4eS9DRz9JooBeEAdMIJ0E6CXzxfFni",
   name: "root",
@@ -142,7 +142,8 @@ export default {
         Likes: []
       },
       currentUser: {},
-      currentUserFollowingList: []
+      currentUserFollowingList: [],
+      isCurrentUser: null
     };
   },
   created() {
@@ -183,7 +184,13 @@ export default {
         Likes
       };
       this.currentUser = dummyCurrentUser;
-      
+
+      // 判斷currentUser是否在查看自己的profile
+      if(this.currentUser.id === Number(userId)){
+        this.isCurrentUser = true
+      } else {
+        this.isCurrentUser = false
+      }
     },
     getCurrentUserFollowingList() {
       // 把currentUser follow 的 id們 做成array

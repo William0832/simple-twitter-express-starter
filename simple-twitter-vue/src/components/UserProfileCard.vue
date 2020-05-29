@@ -29,10 +29,9 @@
         </li>
       </ul>
 
-      <div>
-        <!-- v-if="isFollowed === false" -->
+      <div id='follow-btns'>
         <button
-          
+          v-if="followingList.includes(user.id) && !isCurrent"   
           @click.prevent.stop="follow"
           type="submit"
           class="btn btn-primary"
@@ -40,7 +39,7 @@
 
         <!-- v-else -->
         <form
-          
+          v-else-if="!followingList.includes(user.id) && !isCurrent"
           @submit.prevent.stop="unfollow"
           action="/following/72?_method=DELETE"
           method="POST"
@@ -50,9 +49,9 @@
         </form>
 
         <!-- v-if current user  -->
-        <router-link to="/users/1/edit" class="btn btn-primary ml-2">user-edit</router-link>
-      </div>
+        <router-link v-else to="/users/1/edit" class="btn btn-primary ml-2">edit profile</router-link>
 
+      </div>
     </div>
 
   </div>
@@ -65,10 +64,20 @@ export default {
       type: Object,
       required: true
     },
+    initialFollowingList: {
+      type: Array,
+      required: true
+    },
+    isCurrentUser: {
+      type: Boolean,
+      required: true
+    }
   },
   data(){
     return {
       user: this.initialUser,
+      followingList: this.initialFollowingList,
+      isCurrent: this.isCurrentUser
     }
   },
   methods: {

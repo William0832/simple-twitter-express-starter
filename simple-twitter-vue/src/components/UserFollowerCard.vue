@@ -55,20 +55,16 @@ export default {
       type: Object,
       required: true
     },
-    // initialFollowingList: {
-    //   type: Array,
-    //   required: true
-    // }
+    initialFollowingList: {
+      type: Array,
+      required: true
+    }
   },
   data() {
     return {
       user: this.initialUser,
-      // followingList: this.initialFollowingList
-      followingList: [2,3]
+      followingList: this.initialFollowingList
     }
-  },
-  created(){
-    console.log('op', this.followingList)
   },
   methods: {
     follow(){

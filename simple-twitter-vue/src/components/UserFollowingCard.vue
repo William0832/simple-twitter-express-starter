@@ -54,14 +54,23 @@ export default {
     initialUser: {
       type: Object,
       required: true
-    }
+    },
+    initialFollowingList: {
+      type: Array,
+      required: true
+    },
+    
   },
   data() {
     return {
-      user: this.initialUser
+      user: this.initialUser,
+      followingList: this.initialFollowingList
     };
   },
   methods: {
+    follow(){
+
+    },
     unFollow() {
       // 更改畫面isFollow的狀態
       // 讓後端API改變db資料

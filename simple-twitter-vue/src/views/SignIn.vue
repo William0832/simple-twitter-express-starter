@@ -88,7 +88,7 @@ export default {
         }
 
         localStorage.setItem("token", data.token);
-        this.$router.push("/");
+        this.$router.push("/tweets");
       } catch(error){
           this.password = "";
           Toast.fire({
