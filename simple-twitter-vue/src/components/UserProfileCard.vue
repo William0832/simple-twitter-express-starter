@@ -65,6 +65,10 @@ export default {
   created() {
     console.log("p", this.user);
   },
+  created(){
+    console.log('p', this.initialUser)
+    console.log(this.isCurrent)
+  },
   methods: {
     follow() {
       // this.isFollowed = true;
