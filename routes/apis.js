@@ -8,6 +8,7 @@ const helpers = require('../_helpers')
 const userController = require('../controllers/api/userController.js')
 const tweetController = require('../controllers/api/tweetController.js')
 const replyController = require('../controllers/api/replyController.js')
+const followshipController = require('../controllers/api/followshipController.js')
 
 const authenticated = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
@@ -81,5 +82,8 @@ router.put(
 //Reply routes
 router.get('/tweets/:tweet_id/replies', authenticated, replyController.getReplies)
 router.post('/tweets/:tweet_id/replies', authenticated, replyController.postReply)
+//Followship routes
+router.post('/followships/', authenticated, followshipController.postFollowship)
+router.delete('/followships/:followingId', authenticated, followshipController.deleteFollowship)
 
 module.exports = router
