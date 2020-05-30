@@ -4,13 +4,14 @@
       .col-3.d-flex.align-items-center.justify-content-center
         img(:src="tweet.User.avatar")
       .col-8.text-left
-        a(hred='#')
-          h3 @{{tweet.User.name}} , {{tweet.createdAt | fromNow}}
+        h3
+          a(href='#')  @{{tweet.User.name}}
+          | , {{tweet.createdAt | fromNow}}
         p
           | {{tweet.description}}
         .row.justify-content-start
           .col.mw-50
-            a(href='#')
+            router-link(:to="{ name: 'replies', params: { tweet_id: tweet.id }}")
               button.btn.btn-light Reply ({{tweet.Replies_count}})
           .col.mw-50
             button.btn.btn-light(@click.stop.prevent="addLike") Like ({{tweet.Likes_count}} )
