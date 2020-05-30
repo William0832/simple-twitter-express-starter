@@ -25,6 +25,9 @@ const routes = [
     path: '/tweets',
     name: 'tweets',
     component: tweets
+    path: '/tweets/:tweet_id/replies',
+    name: 'replies',
+    component: () => import('../views/Reply')
   },
   {
     path: '*',
