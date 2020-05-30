@@ -1,5 +1,7 @@
 <template lang="pug">
   .container
+    .row
+      h3 Tweet
     .row.border.border-secondary.rounded.my-1
       .col-3.d-flex.align-items-center.justify-content-center
         img(:src="tweet.User.avatar")

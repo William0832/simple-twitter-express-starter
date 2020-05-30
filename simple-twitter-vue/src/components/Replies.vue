@@ -1,6 +1,8 @@
 <template lang="pug">
   .container
-    .row.border.border-secondary.rounded.my-1(v-for='reply in replies' :key='tweet.id')
+    .row
+      h3 Replies
+    .row.border.border-secondary.rounded.my-1(v-for='reply in replies' :key='reply.id')
       .col-3.d-flex.align-items-center.justify-content-center
         img(:src="reply.User.avatar")
       .col-8.text-left
@@ -16,7 +18,7 @@ export default {
   mixins: [fromNowFilter],
   props: {
     replies: {
-      type: Object,
+      type: Array,
       required: true
     }
   }
