@@ -41,6 +41,6 @@ router.delete('/followships/:followingId', authenticated, followshipController.d
 
 // like routes
 router.post('/tweets/:id/like', authenticated, likeController.like)
-router.delete('/tweets/:id/like', authenticated, likeController.unlike)
+router.post('/tweets/:id/unlike', authenticated, likeController.unlike)
 
 module.exports = router
