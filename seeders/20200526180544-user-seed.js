@@ -3,9 +3,9 @@ const bcrypt = require('bcrypt-nodejs')
 const faker = require('faker')
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
+  up: async (queryInterface, Sequelize) => {
 
-    return queryInterface.bulkInsert('Users', [{
+    await queryInterface.bulkInsert('Users', [{
       email: 'root@example.com',
       password: bcrypt.hashSync('12345678', bcrypt.genSaltSync(10), null),
       name: 'root',
@@ -34,7 +34,19 @@ module.exports = {
       updatedAt: new Date()
     }], {})
 
-
+    return queryInterface.bulkInsert('Users',
+      Array.from({ length: 50 }).map(d =>
+        ({
+          email: faker.internet.email(),
+          password: bcrypt.hashSync('12345678', bcrypt.genSaltSync(10), null),
+          name: faker.name.findName(),
+          avatar: `https://loremflickr.com/240/240/man,women/?random=${Math.random() * 100}`,
+          introduction: faker.lorem.text(),
+          role: 'user',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        })
+      ), {});
 
   },
 
