@@ -33,7 +33,7 @@ router.get('/', authenticated, (req, res) => res.redirect('/tweets'))
 //Tweets routes
 router.get('/tweets', authenticated, tweetController.getTweets)
 router.post('/tweets', authenticated, tweetController.postTweets)
-
+router.get('/tweets/:tweet_id', authenticated, tweetController.getTweet)
 
 
 module.exports = router
