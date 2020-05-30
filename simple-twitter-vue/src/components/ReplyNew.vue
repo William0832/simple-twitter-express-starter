@@ -2,7 +2,7 @@
   form.container(@submit.stop.prevent="handleSubmit")
     div.row.form-group.mb-4
       textarea.col.form-control(
-        v-model="description"
+        v-model="comment"
         rows="3"
         name="reply"
         placeholder='What\'s on your mind?')
@@ -22,15 +22,15 @@ export default {
   },
   data() {
     return {
-      description: ""
+      comment: ""
     };
   },
   methods: {
     handleSubmit() {
       this.$emit("after-create-reply", {
-        description: this.description
+        comment: this.comment
       });
-      this.description = ""; // 將表單內的資料清空
+      this.comment = ""; // 將表單內的資料清空
     }
   }
 };

@@ -32,6 +32,7 @@ const replyService = {
       // if (!req.body.comment) {
       //   return callback({ status: 'error', message: "reply didn't exist" })
       // }
+      console.log(req.body.comment)
 
       const reply = await Reply.create({
         UserId: helpers.getUser(req).id,

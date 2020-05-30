@@ -60,8 +60,21 @@ export default {
         console.log(error);
       }
     },
-    afterCreateReply(description) {
-      console.log(description);
+    async afterCreateReply(comment) {
+      try {
+        const { tweet_id: tweetId } = this.$route.params;
+        const respond = await replyAPI.reply.create(tweetId, comment);
+
+        const { data } = respond;
+
+        if (data.status !== "success") {
+          console.log("error");
+        }
+
+        this.fetchReplies();
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 };
