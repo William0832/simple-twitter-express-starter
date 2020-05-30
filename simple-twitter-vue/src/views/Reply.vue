@@ -5,7 +5,7 @@
           ReplyUserDashboard
         .col-md-8
           ReplyTweet(:tweet ='tweet')
-          Replies
+          Replies(:replies ='replies')
 </template>
 
 <script>
@@ -33,6 +33,30 @@ const dummyTweet = {
   isLiked: false
 };
 
+const dummyReplies = {
+  Replies: [
+    {
+      id: 10,
+      comment: "Voluptatibus accusantium expedita vel aspernatur dolor ea.",
+      createdAt: "2020-05-29T09:22:46.000Z",
+      User: {
+        id: 3,
+        name: "user2"
+      }
+    },
+    {
+      id: 17,
+      comment:
+        "Molestiae incidunt totam esse velit alias a at. Omnis impedit ad vel reiciendis aliquam. Debitis repellat nostrum explicabo amet alias. Laud",
+      createdAt: "2020-05-29T09:22:46.000Z",
+      User: {
+        id: 2,
+        name: "user1"
+      }
+    }
+  ]
+};
+
 export default {
   components: {
     ReplyUserDashboard,
@@ -52,6 +76,9 @@ export default {
   methods: {
     fetchTweet() {
       this.tweet = dummyTweet;
+    },
+    fetchReplies() {
+      this.replies = dummyReplies.Replies;
     }
   }
 };
