@@ -16,5 +16,24 @@ export default {
         }
       })
     }
+  },
+  likes: {
+    create(tweetId) {
+      return apiHelper.post(`/tweets/${tweetId}/like`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+        validateStatus: function (status) {
+          return status < 500; // Resolve only if the status code is less than 500
+        }
+      })
+    },
+    delete(tweetId) {
+      return apiHelper.delete(`/tweets/${tweetId}/like`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+        validateStatus: function (status) {
+          return status < 500; // Resolve only if the status code is less than 500
+        }
+      })
+    }
   }
+
 }

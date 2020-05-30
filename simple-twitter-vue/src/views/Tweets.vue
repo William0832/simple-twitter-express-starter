@@ -5,7 +5,9 @@
           TweetNew(
             :user-id='currentUser.id' 
             @after-create-tweet='afterCreateTweet')
-          TweetIndex( :tweets='tweets')
+          TweetIndex( :tweets='tweets'
+            @after-add-like='afterAddLike'
+            @after-delete-like='afterDeleteLike')
         .col-md-4
           UserTop( 
             :top-users='topUsers'
@@ -128,6 +130,44 @@ export default {
         const { data } = response;
 
         console.log(userId);
+
+        //add statusText
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.fetchTweets();
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: error
+        });
+      }
+    },
+    async afterAddLike(tweetId) {
+      try {
+        const response = await tweetsAPI.likes.create(tweetId);
+
+        const { data } = response;
+
+        //add statusText
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.fetchTweets();
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: error
+        });
+      }
+    },
+    async afterDeleteLike(tweetId) {
+      try {
+        const response = await tweetsAPI.likes.delete(tweetId);
+
+        const { data } = response;
 
         //add statusText
         if (data.status !== "success") {

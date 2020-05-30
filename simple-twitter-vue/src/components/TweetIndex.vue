@@ -14,7 +14,8 @@
             router-link(:to="{ name: 'replies', params: { tweet_id: tweet.id }}")
               button.btn.btn-light Reply ({{tweet.Replies_count}})
           .col.mw-50
-            button.btn.btn-light(@click.stop.prevent="addLike") Like ({{tweet.Likes_count}} )
+            button.btn.btn-danger(v-if ='tweet.isLiked' @click.stop.prevent="deleteLike(tweet.id)") Dislike ({{tweet.Likes_count}} )
+            button.btn.btn-light(v-else @click.stop.prevent="addLike(tweet.id)") Like ({{tweet.Likes_count}} )
 </template>
 
 <script>
@@ -29,7 +30,12 @@ export default {
     }
   },
   methods: {
-    addLike() {}
+    addLike(tweetId) {
+      this.$emit("after-add-like", tweetId);
+    },
+    deleteLike(tweetId) {
+      this.$emit("after-delete-like", tweetId);
+    }
   }
 };
 </script>
