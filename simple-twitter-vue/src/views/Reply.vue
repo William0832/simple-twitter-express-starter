@@ -6,12 +6,14 @@
         .col-md-8
           ReplyTweet(:tweet ='tweet')
           Replies(:replies ='replies')
+          ReplyNew(@after-create-reply='afterCreateReply')
 </template>
 
 <script>
 import ReplyUserDashboard from "../components/ReplyUserDashboard";
 import ReplyTweet from "../components/ReplyTweet";
 import Replies from "../components/Replies";
+import ReplyNew from "../components/ReplyNew";
 
 const dummyTweet = {
   id: 52,
@@ -65,7 +67,8 @@ export default {
   components: {
     ReplyUserDashboard,
     ReplyTweet,
-    Replies
+    Replies,
+    ReplyNew
   },
   data() {
     return {
@@ -84,6 +87,9 @@ export default {
     },
     fetchReplies() {
       this.replies = dummyReplies.Replies;
+    },
+    afterCreateReply(description) {
+      console.log(description);
     }
   }
 };
