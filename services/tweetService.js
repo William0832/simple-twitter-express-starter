@@ -109,6 +109,32 @@ const tweetService = {
     catch (error) {
       console.log(error);
     }
+  },
+  getTweet: async (req, res, callback) => {
+
+    try {
+      const tweet = await Tweet.findByPk(req.params.tweet_id, {
+        attributes: ['id', 'description', 'createdAt'],
+        include: [{ model: User, attributes: ['id', 'name', 'avatar'] }]
+      })
+
+      if (tweet) {
+        return callback({
+          tweet
+        })
+      } else {
+        return callback({
+          status: 'error',
+          message: 'target tweet didn\'t exist!'
+        })
+      }
+
+
+    } catch (error) {
+      console.log(error)
+    }
+
+
   }
 }
 
