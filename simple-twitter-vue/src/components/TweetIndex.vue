@@ -31,6 +31,7 @@ export default {
   },
   methods: {
     addLike(tweetId) {
+      console.log("addLike");
       this.$emit("after-add-like", tweetId);
     },
     deleteLike(tweetId) {

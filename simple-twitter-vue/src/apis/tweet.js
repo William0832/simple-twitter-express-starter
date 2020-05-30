@@ -15,10 +15,8 @@ export default {
           return status < 500; // Resolve only if the status code is less than 500
         }
       })
-    }
-  },
-  likes: {
-    create(tweetId) {
+    },
+    like(tweetId) {
       return apiHelper.post(`/tweets/${tweetId}/like`, {
         headers: { Authorization: `Bearer ${getToken()}` },
         validateStatus: function (status) {
@@ -26,7 +24,7 @@ export default {
         }
       })
     },
-    delete(tweetId) {
+    unlike(tweetId) {
       return apiHelper.delete(`/tweets/${tweetId}/like`, {
         headers: { Authorization: `Bearer ${getToken()}` },
         validateStatus: function (status) {

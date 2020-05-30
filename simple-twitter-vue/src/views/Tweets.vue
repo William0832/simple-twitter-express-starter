@@ -81,7 +81,7 @@ export default {
           throw new Error("Tweet can not be empty!");
         }
 
-        if (tweet.description.length) {
+        if (tweet.description.length > 140) {
           throw new Error("Tweet should be shorter than 140 characters!");
         }
 
@@ -146,8 +146,9 @@ export default {
     },
     async afterAddLike(tweetId) {
       try {
-        const response = await tweetsAPI.likes.create(tweetId);
-
+        console.log("afterAddLike", tweetId);
+        const response = await tweetsAPI.tweets.like(tweetId);
+        console.log("afterAddLike2");
         const { data } = response;
 
         //add statusText
@@ -165,10 +166,10 @@ export default {
     },
     async afterDeleteLike(tweetId) {
       try {
-        const response = await tweetsAPI.likes.delete(tweetId);
+        const response = await tweetsAPI.tweets.unlike(tweetId);
 
         const { data } = response;
-
+        console.log(data);
         //add statusText
         if (data.status !== "success") {
           throw new Error(data.message);

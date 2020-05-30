@@ -40,6 +40,11 @@ const isOwner = (req, res, next) => {
   return res.status(302).json({ status: 'error', message: '沒有修改權限' })
 }
 
+const checkRoute = (req, res, next) => {
+  console.log('here!')
+  return next()
+}
+
 //User routes
 router.post('/signup', userController.signUp)
 router.post('/signin', userController.signIn)
@@ -89,6 +94,6 @@ router.delete('/followships/:followingId', authenticated, followshipController.d
 
 // like routes
 router.post('/tweets/:id/like', authenticated, likeController.like)
-router.delete('/tweets/:id/like', authenticated, likeController.unlike)
+router.post('/tweets/:id/unlike', authenticated, likeController.unlike)
 
 module.exports = router

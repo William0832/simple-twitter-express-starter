@@ -13,7 +13,7 @@ const likeService = {
       const tweet = await Tweet.findByPk(tweetId, {
         attributes: ['id']
       })
-
+      console.log(tweet)
       if (!tweet) {
         return callback({ status: 'error', message: 'This tweet doesn\'t exist.' })
       }
