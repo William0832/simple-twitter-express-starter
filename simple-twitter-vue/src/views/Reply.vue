@@ -2,7 +2,7 @@
   .container.py-5
       .row
         .col-md-4
-          ReplyUserDashboard
+          UserProfileCard(:user ='user')
         .col-md-8
           ReplyTweet(:tweet ='tweet' :user='user')
           Replies(:replies ='replies')
@@ -10,27 +10,41 @@
 </template>
 
 <script>
-import ReplyUserDashboard from "../components/ReplyUserDashboard";
 import ReplyTweet from "../components/ReplyTweet";
 import Replies from "../components/Replies";
 import ReplyNew from "../components/ReplyNew";
+import UserProfileCard from "../components/UserProfileCard";
 import { Toast } from "../utils/helpers";
 
 //api
 import replyAPI from "../apis/reply";
+import userAPI from "../apis/users";
 
 export default {
   components: {
-    ReplyUserDashboard,
     ReplyTweet,
     Replies,
-    ReplyNew
+    ReplyNew,
+    UserProfileCard
   },
   data() {
     return {
       tweet: {},
       replies: [],
-      user: {}
+      user: {
+        id: -1,
+        email: "",
+        name: "",
+        avatar: "",
+        introduction: "",
+        role: "user",
+        isCurrentUser: false,
+        isFollowed: false,
+        tweetsCount: 0,
+        followingCount: 0,
+        followerCount: 0,
+        likeCount: 0
+      }
     };
   },
   created() {
@@ -46,7 +60,9 @@ export default {
         const { data } = respond;
 
         this.tweet = data.tweet;
-        this.user = this.tweet.User;
+        this.user.id = this.tweet.User.id;
+
+        this.fetchUserProfile();
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -60,6 +76,22 @@ export default {
 
         const { data } = respond;
         this.replies = data.tweet.Replies;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: error
+        });
+      }
+    },
+    async fetchUserProfile() {
+      try {
+        const respond = await userAPI.getUserProfile(this.user.id);
+
+        const { data } = respond;
+
+        this.user = data.user;
+
+        console.log(this.user);
       } catch (error) {
         Toast.fire({
           icon: "error",
