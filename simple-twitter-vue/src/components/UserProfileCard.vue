@@ -80,6 +80,10 @@ export default {
       isCurrent: this.isCurrentUser
     }
   },
+  created(){
+    console.log('p', this.initialUser)
+    console.log(this.isCurrent)
+  },
   methods: {
     follow() {
       // this.isFollowed = true;
