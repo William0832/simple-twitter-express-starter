@@ -13,7 +13,7 @@ const replyService = {
         include: [
           {
             model: Reply, attributes: ['id', 'comment', 'createdAt'],
-            include: [{ model: User, attributes: ['id', 'name'] }]
+            include: [{ model: User, attributes: ['id', 'name', 'avatar'] }]
           }
         ]
       })
