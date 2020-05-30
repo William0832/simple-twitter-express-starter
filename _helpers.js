@@ -1,12 +1,15 @@
 function ensureAuthenticated(req) {
-  return req.isAuthenticated();
+  return req.isAuthenticated()
 }
 
 function getUser(req) {
-  return req.user;
+  if (req.user) {
+    let user = req.user.dataValues ? req.user.toJSON() : req.user
+    return user
+  }
 }
 
 module.exports = {
   ensureAuthenticated,
-  getUser,
-};
+  getUser
+}
