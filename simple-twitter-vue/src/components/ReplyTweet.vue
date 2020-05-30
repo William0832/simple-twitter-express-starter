@@ -17,5 +17,14 @@
 </template>
 
 <script>
-export default {};
+import { fromNowFilter } from "../utils/mixins";
+export default {
+  mixins: [fromNowFilter],
+  props: {
+    tweet: {
+      type: Object,
+      required: true
+    }
+  }
+};
 </script>

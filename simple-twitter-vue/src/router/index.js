@@ -19,6 +19,8 @@ const routes = [
     path: '/signup',
     name: 'Sign-up',
     component: () => import('../views/SignUp.vue')
+  },
+  {
     path: '/tweets/:tweet_id/replies',
     name: 'replies',
     component: () => import('../views/Reply')
