@@ -6,7 +6,7 @@
     <ul class="list-unstyled">
       <div class="row no-gutters">
         <li v-for="follower in user.Followers" :key="follower.id" class="col-6">
-          <div class="card" style="width: 98%;">
+          <div class="card mb-1" style="width: 98%; min-height: 300px;">
             <div id="card-contents" class="row no-gutters mt-2">
               <!-- image -->
               <div class="col-4">
@@ -16,7 +16,7 @@
               <!-- user info -->
               <div class="col-8 d-flex flex-column align-items-start">
                 <h5 class>{{follower.name}}</h5>
-                <p style="text-align: left; width: 90%;">{{follower.introduction}}</p>
+                <p style="text-align: left; width: 90%; min-height: 90%;">{{follower.introduction}}</p>
 
                 <!-- follow-BTN -->
                 <div class="d-flex justify-content-between mb-2" style="width: 130px;">
@@ -65,6 +65,9 @@ export default {
       user: this.initialUser,
       followingList: this.initialFollowingList
     }
+  },
+  created(){
+    console.log('initialUser0', this.initialUser)
   },
   methods: {
     follow(){

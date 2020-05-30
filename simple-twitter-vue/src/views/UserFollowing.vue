@@ -47,12 +47,38 @@ export default {
   methods: {
     async fetchProfileData(userId) {
       try {
-        const response = await UsersAPI.getFollowers(userId)
+        const response = await UsersAPI.getFollowings(userId)
 
         // if(statusText !== 'ok') throw new Error
-
-        this.user = response.data.user
+        const { 
+          id,
+          email,
+          name,
+          avatar,
+          introduction,
+          role,
+          Followings
+        } = response.data.user
         
+        // this.user = response.data.user
+        // console.log('this', response.data.user)
+
+        this.user = {
+          ...this.user,
+          id,
+          email,
+          name,
+          avatar,
+          introduction,
+          role,
+          Followings,
+
+          // 以下應該要分開
+          // Followersid,
+          // Tweetsid,
+          // Likes
+        },
+        console.log('this.user', this.user)
         // 判斷currentUser是否在查看自己的profile        
         // this.currentUser = dummydata
         // if(this.currentUser.id === Number(userId)){

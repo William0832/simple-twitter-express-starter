@@ -4,9 +4,9 @@
     <h2 class="mt-5 mb-4 d-flex align-items-start">Following</h2>
     <!-- cards -->
     <ul class="list-unstyled">
-      <div class="row no-gutters d-flex justify-content-around">
+      <div class="row no-gutters d-flex justify-content-start">
         <li v-for="following in user.Followings" :key="following.id" class="col-6">
-          <div class="card" style="width: 98%;">
+          <div class="card mb-1" style="width: 98%; min-height: 300px;">
             <div id="card-contents" class="row no-gutters mt-2">
               <!-- avatar -->
               <div class="col-4">
@@ -16,7 +16,7 @@
               <!-- user info -->
               <div class="col-8 d-flex flex-column align-items-start">
                 <h5 class>{{following.name}}</h5>
-                <p style="text-align: left; width: 90%;">{{following.introduction}}</p>
+                <p style="text-align: left; width: 90%; min-height: 90%;">{{following.introduction}}</p>
 
                 <!-- follow-BTN -->
                 <div class="d-flex justify-content-between mb-2" style="width: 130px;">
@@ -66,6 +66,10 @@ export default {
       user: this.initialUser,
       followingList: this.initialFollowingList
     };
+  },
+  created(){
+    console.log('0', this.initialUser)
+    this.user = this.initialUser
   },
   methods: {
     follow(){
