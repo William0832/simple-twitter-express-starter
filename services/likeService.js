@@ -9,7 +9,7 @@ const likeService = {
   like: async (req, res, callback) => {
     try {
       const userId = helpers.getUser(req).id
-      const tweetId = req.body.id
+      const tweetId = req.params.id
       const tweet = await Tweet.findByPk(tweetId, {
         attributes: ['id']
       })
@@ -18,25 +18,21 @@ const likeService = {
         return callback({ status: 'error', message: 'This tweet doesn\'t exist.' })
       }
 
-      let likedUsers = Tweet.findByPk(tweetId, {
-        include: [{ model: User, as: 'likedUsers', attributes: ['id'] }]
-      })
+      // 找Like資料庫有沒有該筆tweetId 與 userId
+      let likedTweet = await Like.findOne({ where: { TwitterId: tweetId, UserId: userId }   })
 
-      let userList = likedUsers.map(user => user.id.toString())
+      // 如果有，代表User已按like，如果沒有，就新增一筆Like紀錄
+      if(likedTweet){
+        return callback({ status: 'error', message: "User has already liked this tweet." })
+      } else {
+        console.log('user likes this tweet!')
 
-      if (!userList.includes(userId)) {
-        console.log('user liked this tweet')
         const like = await Like.create({
           UserId: userId,
           TweetId: tweetId
         })
 
-        return callback({
-          like
-        })
-      }
-      else {
-        return callback({ status: 'error', message: "User has already liked this tweet." })
+        return callback({ status: "success", message: "", like })
       }
     } catch (error) {
       console.log(error)
