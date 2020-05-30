@@ -45,7 +45,7 @@ const tweetService = {
 
       topUsers = topUsers.map(user => ({
         ...user.dataValues,
-        introduction: user.introduction.substring(0, 50),
+        introduction: user.introduction ? user.introduction.substring(0, 50) : null,
         isFollowed: followedUserId.includes(user.id) ? true : false
       }))
 
