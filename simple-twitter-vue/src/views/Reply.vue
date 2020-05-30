@@ -47,7 +47,7 @@ export default {
     };
   },
   created() {
-    this.fetchTweet;
+    this.fetchTweet();
   },
   methods: {
     fetchTweet() {

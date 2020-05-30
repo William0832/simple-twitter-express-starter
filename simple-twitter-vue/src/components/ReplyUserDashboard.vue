@@ -1,3 +1,3 @@
 <template lang="pug">
-  h1 ReplyUserDashboard
+  h1 User
 </template>
