@@ -23,20 +23,12 @@
                   <!-- 判斷式可能要改 -->
 
                   <!-- v-if="follower.Followship.followerId === profile.id" -->
-                  <form 
-                    
-                    @submit.prevent.stop="unFollow"
-                  >
-                    <button
-                      type="submit"
-                      
-                      class="btn btn-danger"
-                    >Unfollow</button>
-
+                  <form @submit.prevent.stop="unFollow(following.id)">
+                    <button type="submit" class="btn btn-danger">Unfollow</button>
                   </form>
 
                   <!-- v-else -->
-                  <button @click.prevent.stop="follow" class="btn btn-primary">Follow</button>
+                  <button @click.prevent.stop="follow(following.id)" class="btn btn-primary">Follow</button>
                 </div>
               </div>
             </div>
@@ -49,6 +41,9 @@
 </template>
 
 <script>
+import UsersAPI from "../apis/users";
+import { Toast } from "../utils/helpers";
+
 export default {
   props: {
     initialUser: {
@@ -58,8 +53,7 @@ export default {
     initialFollowingList: {
       type: Array,
       required: true
-    },
-    
+    }
   },
   data() {
     return {
@@ -67,17 +61,48 @@ export default {
       followingList: this.initialFollowingList
     };
   },
-  created(){
-    console.log('0', this.initialUser)
-    this.user = this.initialUser
+  created() {
+    console.log("0", this.initialUser);
+    this.user = this.initialUser;
   },
   methods: {
-    follow(){
+    async follow(userId) {
+      try {
+        const { data } = await UsersAPI.follow(userId);
 
+        console.log("data", data);
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        // 通知父層
+        this.$emit('after-follow', userId)
+
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法加入追蹤，請稍後再試"
+        });
+      }
     },
-    unFollow() {
-      // 更改畫面isFollow的狀態
-      // 讓後端API改變db資料
+    async unfollow(userId) {
+      try {
+        const { data } = await UsersAPI.unfollow({ userId });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        // 通知父層
+        this.$emit('after-unfollow', userId)
+
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取消追蹤，請稍後再試"
+        });
+      }
     }
   }
 };

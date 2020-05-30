@@ -1,8 +1,20 @@
 <template>
   <div class="container-fluid">
     <div class="row px-5 mx-auto" style="width: 85%;">
-      <UserProfileCard :is-current-user="isCurrentUser" :initial-user="user" :initial-following-list="currentUserFollowingList" class="col-md-4 mr-auto" />
-      <UserFollowerCard :initial-user="user" :initial-following-list="currentUserFollowingList"  class="col-md-8" />
+      <UserProfileCard
+        :is-current-user="isCurrentUser"
+        :initial-user="user"
+        :initial-following-list="currentUserFollowingList"
+        class="col-md-4 mr-auto"
+      />
+      <UserFollowerCard
+        :initial-user="user"
+        :initial-following-list="currentUserFollowingList"
+
+        @after-follow="afterFollow"
+        @after-unfollow="afterUnfollow"
+        class="col-md-8"
+      />
     </div>
   </div>
 </template>
@@ -10,9 +22,8 @@
 <script>
 import UserProfileCard from "../components/UserProfileCard";
 import UserFollowerCard from "../components/UserFollowerCard";
-import UsersAPI from '../apis/users'
-import { Toast } from '../utils/helpers'
-
+import UsersAPI from "../apis/users";
+import { Toast } from "../utils/helpers";
 
 export default {
   components: {
@@ -47,10 +58,10 @@ export default {
   },
   methods: {
     async fetchUserData(userId) {
-      try{
-        const response = await UsersAPI.getFollowers(userId)
-        const { data } = response
-        console.log('response', data)
+      try {
+        const response = await UsersAPI.getFollowers(userId);
+        const { data } = response;
+        console.log("response", data);
 
         // Followings,
         // Tweets,
@@ -74,27 +85,18 @@ export default {
           avatar,
           introduction,
           role,
-          Followers,
+          Followers
 
           // Tweets,
           // Likes
         };
 
-
-        this.isCurrentUser = false
-
-        // // 判斷currentUser是否在查看自己的profile
-        // if(this.currentUser.id === Number(userId)){
-        //   this.isCurrentUser = true
-        // } else {
-        //   this.isCurrentUser = false
-        // }
-
-      } catch(error) {
+        this.isCurrentUser = false;
+      } catch (error) {
         Toast.fire({
-          icon: 'error',
-          title: '無法取得資料'
-        })
+          icon: "error",
+          title: "無法取得資料"
+        });
       }
     },
     getCurrentUserFollowingList() {
@@ -103,7 +105,37 @@ export default {
       //   user => user.id
       // );
       // console.log(currentUserFollowingList)
-      this.currentUserFollowingList = [2, 3]
+      this.currentUserFollowingList = [2, 3];
+    },
+    afterFollow() {
+      console.log('followed')
+      
+      this.users = this.users.map(user => {
+        if (user.id !== userId) {
+          return user;
+        } else {
+          return {
+            ...user,
+            // followerCount: user.followerCount + 1,
+            isFollowed: true
+          };
+        }
+      });
+    },
+    afterUnfollow() {
+      console.log('unfollowed')
+
+      this.users = this.users.map(user => {
+        if (user.id !== userId) {
+          return user;
+        } else {
+          return {
+            ...user,
+            followerCount: user.followerCount - 1,
+            isFollowed: false
+          };
+        }
+      });
     }
   }
 };

@@ -1,8 +1,19 @@
 <template>
   <div class="container-fluid">
     <div class="row px-5 mx-auto" style="width: 85%;">
-      <UserProfileCard :initial-following-list="currentUserFollowingList" :is-current-user="isCurrentUser" :initial-user="user" class="col-md-4 mr-auto" />
-      <UserFollowingCard :initial-user="user" :initial-following-list="currentUserFollowingList" class="col-md-8" />
+      <UserProfileCard
+        :initial-following-list="currentUserFollowingList"
+        :is-current-user="isCurrentUser"
+        :initial-user="user"
+        class="col-md-4 mr-auto"
+      />
+      <UserFollowingCard
+        :initial-user="user"
+        :initial-following-list="currentUserFollowingList"
+        @after-follow="afterFollow"
+        @after-unfollow="afterUnfollow"
+        class="col-md-8"
+      />
     </div>
   </div>
 </template>
@@ -10,8 +21,8 @@
 <script>
 import UserProfileCard from "../components/UserProfileCard";
 import UserFollowingCard from "../components/UserFollowingCard";
-import UsersAPI from '../apis/users'
-import { Toast } from '../utils/helpers'
+import UsersAPI from "../apis/users";
+import { Toast } from "../utils/helpers";
 
 export default {
   components: {
@@ -32,7 +43,7 @@ export default {
         // 以下應該要分開
         Followers: [],
         Tweets: [],
-        Likes:[]
+        Likes: []
       },
       // currentUser: {},
       currentUserFollowingList: [],
@@ -47,10 +58,10 @@ export default {
   methods: {
     async fetchProfileData(userId) {
       try {
-        const response = await UsersAPI.getFollowings(userId)
+        const response = await UsersAPI.getFollowings(userId);
 
         // if(statusText !== 'ok') throw new Error
-        const { 
+        const {
           id,
           email,
           name,
@@ -58,10 +69,7 @@ export default {
           introduction,
           role,
           Followings
-        } = response.data.user
-        
-        // this.user = response.data.user
-        // console.log('this', response.data.user)
+        } = response.data.user;
 
         this.user = {
           ...this.user,
@@ -71,39 +79,49 @@ export default {
           avatar,
           introduction,
           role,
-          Followings,
+          Followings
 
           // 以下應該要分開
-          // Followersid,
-          // Tweetsid,
+          // Followers,
+          // Tweets,
           // Likes
-        },
-        console.log('this.user', this.user)
-        // 判斷currentUser是否在查看自己的profile        
-        // this.currentUser = dummydata
-        // if(this.currentUser.id === Number(userId)){
-        //   this.isCurrentUser = true
-        // } else {
-        //   this.isCurrentUser = false
-        // }
-
-        this.isCurrentUser = false
-      } catch(error){
+        };
+      } catch (error) {
         Toast.fire({
-          icon: 'error',
-          title: '無法取得資料'
-        })
-      }      
+          icon: "error",
+          title: "無法取得資料"
+        });
+      }
     },
-    getCurrentUserFollowingList() {
-      // // 把currentUser follow 的 id們 做成array
-      // let currentUserFollowingList = this.currentUser.Followings.map(
-      //   user => user.id
-      // );
-      // console.log(currentUserFollowingList)
-      // this.currentUserFollowingList = currentUserFollowingList
+    afterFollow() {
+      console.log('followed')
       
-      this.currentUserFollowingList = [2, 3] // 暫時
+      this.users = this.users.map(user => {
+        if (user.id !== userId) {
+          return user;
+        } else {
+          return {
+            ...user,
+            // followerCount: user.followerCount + 1,
+            isFollowed: true
+          };
+        }
+      });
+    },
+    afterUnfollow() {
+      console.log('unfollowed')
+
+      this.users = this.users.map(user => {
+        if (user.id !== userId) {
+          return user;
+        } else {
+          return {
+            ...user,
+            followerCount: user.followerCount - 1,
+            isFollowed: false
+          };
+        }
+      });
     }
   }
 };

@@ -32,7 +32,7 @@
       <div id='follow-btns'>
         <button
           v-if="followingList.includes(user.id) && !isCurrent"   
-          @click.prevent.stop="follow"
+          @click.prevent.stop="follow(user.id)"
           type="submit"
           class="btn btn-primary"
         >追蹤</button>
@@ -40,7 +40,7 @@
         <!-- v-else -->
         <form
           v-else-if="!followingList.includes(user.id) && !isCurrent"
-          @submit.prevent.stop="unfollow"
+          @submit.prevent.stop="unFollow(user.id)"
           action="/following/72?_method=DELETE"
           method="POST"
           style="display: contents;"
@@ -85,11 +85,43 @@ export default {
     console.log(this.isCurrent)
   },
   methods: {
-    follow() {
-      // this.isFollowed = true;
+    async follow(userId) {
+      try {
+        const { data } = await UsersAPI.follow(userId);
+
+        console.log("data", data);
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        // 通知父層
+        this.$emit('after-follow', userId)
+
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法加入追蹤，請稍後再試"
+        });
+      }
     },
-    unfollow() {
-      // this.isFollowed = false;
+    async unfollow(userId) {
+      try {
+        const { data } = await UsersAPI.unfollow({ userId });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        // 通知父層
+        this.$emit('after-unfollow', userId)
+
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取消追蹤，請稍後再試"
+        });
+      }
     }
   }
 };

@@ -25,7 +25,7 @@
                   
                   <form 
                     v-if="followingList.includes(follower.id)"
-                    @submit.prevent.stop="unFollow"
+                    @submit.prevent.stop="unFollow(following.id)"
                   >
                     <button
                       type="submit"
@@ -35,7 +35,7 @@
 
                   </form>
 
-                  <button v-else @click.prevent.stop="follow" class="btn btn-primary">Follow</button>
+                  <button v-else @click.prevent.stop="follow(following.id)" class="btn btn-primary">Follow</button>
                 </div>
                 
               </div>
@@ -49,6 +49,9 @@
 </template>
 
 <script>
+import UsersAPI from "../apis/users";
+import { Toast } from "../utils/helpers";
+
 export default {
   props: {
     initialUser: {
@@ -70,13 +73,43 @@ export default {
     console.log('initialUser0', this.initialUser)
   },
   methods: {
-    follow(){
-      // 更改畫面isFollow的狀態
-      // 讓後端API改變db資料
+    async follow(userId) {
+      try {
+        const { data } = await UsersAPI.follow(userId);
+
+        console.log("data", data);
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        // 通知父層
+        this.$emit('after-follow', userId)
+
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法加入追蹤，請稍後再試"
+        });
+      }
     },
-    unFollow(){
-      // 更改畫面isFollow的狀態
-      // 讓後端API改變db資料
+    async unfollow(userId) {
+      try {
+        const { data } = await UsersAPI.unfollow({ userId });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        // 通知父層
+        this.$emit('after-unfollow', userId)
+
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取消追蹤，請稍後再試"
+        });
+      }
     }
   }
 };
