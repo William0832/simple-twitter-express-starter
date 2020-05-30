@@ -4,7 +4,7 @@
         .col-md-4
           ReplyUserDashboard
         .col-md-8
-          ReplyTweet(:tweet ='tweet')
+          ReplyTweet(:tweet ='tweet' :user='user')
           Replies(:replies ='replies')
           ReplyNew(@after-create-reply='afterCreateReply')
 </template>
@@ -15,25 +15,8 @@ import ReplyTweet from "../components/ReplyTweet";
 import Replies from "../components/Replies";
 import ReplyNew from "../components/ReplyNew";
 
-const dummyTweet = {
-  id: 52,
-  description: "ggsfgs",
-  UserId: 1,
-  createdAt: "2020-05-29T14:57:21.000Z",
-  updatedAt: "2020-05-29T14:57:21.000Z",
-  Replies_count: 0,
-  Likes_count: 0,
-  User: {
-    id: 1,
-    name: "root",
-    avatar:
-      "https://loremflickr.com/240/240/man,women/?random=52.91279172455272"
-  },
-  Likes: {
-    UserId: null
-  },
-  isLiked: false
-};
+//api
+import replyAPI from "../apis/reply";
 
 const dummyReplies = {
   Replies: [
@@ -79,13 +62,21 @@ export default {
   },
   created() {
     const { tweet_id: tweetId } = this.$route.params;
-    console.log(tweetId);
-    this.fetchTweet();
+    this.fetchTweet(tweetId);
     this.fetchReplies();
   },
   methods: {
-    fetchTweet() {
-      this.tweet = dummyTweet;
+    async fetchTweet(tweetId) {
+      try {
+        const respond = await replyAPI.getTweet(tweetId);
+
+        const { data } = respond;
+
+        this.tweet = data.tweet;
+        this.user = this.tweet.User;
+      } catch (error) {
+        console.log(error);
+      }
     },
     fetchReplies() {
       this.replies = dummyReplies.Replies;

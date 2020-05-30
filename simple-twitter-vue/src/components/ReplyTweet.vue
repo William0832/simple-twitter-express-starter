@@ -4,16 +4,16 @@
       h3 Tweet
     .row.border.border-secondary.rounded.my-1
       .col-3.d-flex.align-items-center.justify-content-center
-        img(:src="tweet.User.avatar")
+        img(:src="user.avatar")
       .col-8.text-left
         h3
           | 
-          a(href='#') @{{tweet.User.name}}
+          a(href='#') @{{user.name}}
           |  , {{tweet.createdAt | fromNow}}
         p
           | {{tweet.description}}
         .row.justify-content-start
-          button.btn.btn-light(@click.stop.prevent="addLike") Like ({{tweet.Likes_count}} )
+          button.btn.btn-light(@click.stop.prevent="addLike") Like 
 </template>
 
 <script>
@@ -24,7 +24,14 @@ export default {
     tweet: {
       type: Object,
       required: true
+    },
+    user: {
+      type: Object,
+      required: true
     }
+  },
+  methods: {
+    addLike() {}
   }
 };
 </script>
