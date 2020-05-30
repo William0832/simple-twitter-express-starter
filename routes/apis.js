@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-// const multer = require('multer')
-// const upload = multer({ dest: 'temp/' })
+const multer = require('multer')
+const upload = multer({ dest: 'temp/' })
 const passport = require('../config/passport')
 const helpers = require('../_helpers')
 
@@ -49,6 +49,8 @@ router.get('/', authenticated, (req, res) => res.redirect('/tweets'))
 router.get('/tweets', authenticated, tweetController.getTweets)
 router.post('/tweets', authenticated, tweetController.postTweets)
 router.get('/tweets/:tweet_id', authenticated, tweetController.getTweet)
+
+//User routes
 router.get('/users/:id', authenticated, userController.getUser)
 router.get('/users/:id/tweets', authenticated, userController.getTweets)
 router.get('/users/:id/followers', authenticated, userController.getFollowers)
