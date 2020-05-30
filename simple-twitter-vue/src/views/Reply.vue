@@ -14,6 +14,7 @@ import ReplyUserDashboard from "../components/ReplyUserDashboard";
 import ReplyTweet from "../components/ReplyTweet";
 import Replies from "../components/Replies";
 import ReplyNew from "../components/ReplyNew";
+import { Toast } from "../utils/helpers";
 
 //api
 import replyAPI from "../apis/reply";
@@ -47,7 +48,10 @@ export default {
         this.tweet = data.tweet;
         this.user = this.tweet.User;
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: error
+        });
       }
     },
     async fetchReplies(tweetId) {
@@ -57,23 +61,35 @@ export default {
         const { data } = respond;
         this.replies = data.tweet.Replies;
       } catch (error) {
-        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: error
+        });
       }
     },
     async afterCreateReply(comment) {
       try {
+        console.log(comment);
+        if (!comment) {
+          throw new Error("Reply can not be empty!");
+        }
+
         const { tweet_id: tweetId } = this.$route.params;
         const respond = await replyAPI.reply.create(tweetId, comment);
 
         const { data } = respond;
 
         if (data.status !== "success") {
-          console.log("error");
+          throw new Error(data.message);
         }
 
-        this.fetchReplies();
+        this.fetchReplies(tweetId);
       } catch (error) {
         console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: error
+        });
       }
     }
   }

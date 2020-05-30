@@ -27,9 +27,7 @@ export default {
   },
   methods: {
     handleSubmit() {
-      this.$emit("after-create-reply", {
-        comment: this.comment
-      });
+      this.$emit("after-create-reply", this.comment);
       this.comment = ""; // 將表單內的資料清空
     }
   }

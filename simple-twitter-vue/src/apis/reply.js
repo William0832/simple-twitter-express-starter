@@ -14,7 +14,7 @@ export default {
   },
   reply: {
     create(tweetId, comment) {
-      return apiHelper.post(`/tweets/${tweetId}/replies	`, comment, {
+      return apiHelper.post(`/tweets/${tweetId}/replies	`, { comment }, {
         headers: { Authorization: `Bearer ${getToken()}` },
         validateStatus: function (status) {
           return status < 500; // Resolve only if the status code is less than 500
