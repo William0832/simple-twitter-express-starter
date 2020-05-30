@@ -18,34 +18,6 @@ import ReplyNew from "../components/ReplyNew";
 //api
 import replyAPI from "../apis/reply";
 
-const dummyReplies = {
-  Replies: [
-    {
-      id: 10,
-      comment: "Voluptatibus accusantium expedita vel aspernatur dolor ea.",
-      createdAt: "2020-05-29T09:22:46.000Z",
-      User: {
-        id: 3,
-        name: "user2",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=55.42792213290439"
-      }
-    },
-    {
-      id: 17,
-      comment:
-        "Molestiae incidunt totam esse velit alias a at. Omnis impedit ad vel reiciendis aliquam. Debitis repellat nostrum explicabo amet alias. Laud",
-      createdAt: "2020-05-29T09:22:46.000Z",
-      User: {
-        id: 2,
-        name: "user1",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=69.1250168900434"
-      }
-    }
-  ]
-};
-
 export default {
   components: {
     ReplyUserDashboard,
@@ -63,7 +35,7 @@ export default {
   created() {
     const { tweet_id: tweetId } = this.$route.params;
     this.fetchTweet(tweetId);
-    this.fetchReplies();
+    this.fetchReplies(tweetId);
   },
   methods: {
     async fetchTweet(tweetId) {
@@ -78,8 +50,15 @@ export default {
         console.log(error);
       }
     },
-    fetchReplies() {
-      this.replies = dummyReplies.Replies;
+    async fetchReplies(tweetId) {
+      try {
+        const respond = await replyAPI.getReplies(tweetId);
+
+        const { data } = respond;
+        this.replies = data.tweet.Replies;
+      } catch (error) {
+        console.log(error);
+      }
     },
     afterCreateReply(description) {
       console.log(description);
