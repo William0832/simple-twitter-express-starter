@@ -111,6 +111,7 @@ const userService = {
       let followers = user.Followers
       followers = followers.map((u) => ({
         ...u,
+        isCurrentUser: currentUser.id === u.id ? true : false,
         isFollowed: currentUser.Followings.map((d) => d.id).includes(u.id),
         followAt: u.Followship.createdAt
       }))
@@ -142,6 +143,7 @@ const userService = {
       })
       let followings = user.toJSON().Followings.map((u) => ({
         ...u,
+        isCurrentUser: currentUser.id === u.id ? true : false,
         isFollowed: currentUser.Followings.map((d) => d.id).includes(u.id),
         followAt: u.Followship.createdAt
       }))
