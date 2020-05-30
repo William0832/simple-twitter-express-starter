@@ -1,6 +1,6 @@
 <template lang="pug">
   .container
-    .row.border.border-secondary.rounded.my-1(v-for='tweet in tweets' :key='tweet.id')
+    .row.border.border-secondary.rounded.my-1.p-2(v-for='tweet in tweets' :key='tweet.id')
       .col-3.d-flex.align-items-center.justify-content-center
         img(:src="tweet.User.avatar")
       .col-8.text-left

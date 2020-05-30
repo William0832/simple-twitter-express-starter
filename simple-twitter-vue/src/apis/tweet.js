@@ -17,7 +17,7 @@ export default {
       })
     },
     like(tweetId) {
-      return apiHelper.post(`/tweets/${tweetId}/like`, {
+      return apiHelper.post(`/tweets/${tweetId}/like`, {}, {
         headers: { Authorization: `Bearer ${getToken()}` },
         validateStatus: function (status) {
           return status < 500; // Resolve only if the status code is less than 500
@@ -25,7 +25,7 @@ export default {
       })
     },
     unlike(tweetId) {
-      return apiHelper.delete(`/tweets/${tweetId}/like`, {
+      return apiHelper.post(`/tweets/${tweetId}/unlike`, {}, {
         headers: { Authorization: `Bearer ${getToken()}` },
         validateStatus: function (status) {
           return status < 500; // Resolve only if the status code is less than 500
