@@ -7,9 +7,15 @@
         name="reply"
         placeholder='What\'s on your mind?')
     div.row.d-flex.justify-content-end
-      button.col-2(
-        type="submit"
-        class="btn btn-primary mr-0") Reply
+      .col-3
+          button(
+            type="button"
+            class="btn btn-link"
+            @click="$router.back()") 回上一頁
+      .col-3
+        button(
+            type="submit"
+            class="btn btn-primary mr-0") Reply
 </template>
 
 <script>
