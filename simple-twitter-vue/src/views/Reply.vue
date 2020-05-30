@@ -78,6 +78,8 @@ export default {
     };
   },
   created() {
+    const { tweet_id: tweetId } = this.$route.params;
+    console.log(tweetId);
     this.fetchTweet();
     this.fetchReplies();
   },

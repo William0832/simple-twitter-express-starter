@@ -6,8 +6,10 @@
       .col-3.d-flex.align-items-center.justify-content-center
         img(:src="reply.User.avatar")
       .col-8.text-left
-        a(hred='#')
-          h3 @{{reply.User.name}} , {{reply.createdAt | fromNow}}
+        h3
+          | 
+          a(href='#') @{{reply.User.name}}
+          |  , {{reply.createdAt | fromNow}}
         p
           | {{reply.comment}}
 </template>
