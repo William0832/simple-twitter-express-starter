@@ -6,6 +6,17 @@ const tweetController = {
       return res.json(data)
     }
     )
+  },
+  postTweets: (req, res) => {
+    tweetService.postTweets(req, res, (data) => {
+      return res.status(302).json(data)
+    }
+    )
+  },
+  getTweet: (req, res) => {
+    tweetService.getTweet(req, res, (data) => {
+      return res.json(data)
+    })
   }
 }
 
