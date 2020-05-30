@@ -20,14 +20,36 @@ const letsCheck = (user, currentUser) => {
     : false
 }
 const letsCount = (user) => {
-  user.counter = {
-    tweets: user.Tweets.length || 0,
-    following: user.Followings.length || 0,
-    follower: user.Followers.length || 0,
-    like: user.LikedTweets.length || 0
-  }
+  user.tweetsCount = user.Tweets.length || 0
+  user.followingCount = user.Followings.length || 0
+  user.followerCount = user.Followers.length || 0
+  user.likeCount = user.LikedTweets.length || 0
+  delete user.Tweets
+  delete user.Followers
+  delete user.Followings
+  delete user.LikedTweets
 }
 const userService = {
+  getUser: async (req, res, callback) => {
+    try {
+      let user = await User.findByPk(req.params.id, {
+        attributes: ['id', 'email', 'name', 'avatar', 'introduction', 'role'],
+        include: [
+          { model: Tweet, attributes: ['id'] },
+          { model: User, as: 'Followings', attributes: ['id'] },
+          { model: User, as: 'Followers', attributes: ['id'] },
+          { model: Tweet, as: 'LikedTweets', attributes: ['id'] }
+        ]
+      })
+      user = user.toJSON()
+      let currentUser = helpers.getUser(req).toJSON()
+      letsCheck(user, currentUser)
+      letsCount(user)
+      callback({ user })
+    } catch (err) {
+      callback({ status: 'error', message: err.toString() })
+    }
+  },
   getTweets: async (req, res, callback) => {
     try {
       let user = await User.findByPk(req.params.id, {
@@ -95,8 +117,6 @@ const userService = {
   },
   getLikes: async (req, res, callback) => {
     try {
-      let need =
-        'User，包含 Tweets, Likes, , , isliked, (followers, followings) => 括弧裡的可以只給array.length'
       let user = await User.findByPk(req.params.id, {
         include: [
           Tweet,

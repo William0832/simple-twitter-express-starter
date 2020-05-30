@@ -71,7 +71,8 @@ let userController = {
       })
     })
   },
-
+  getUser: (req, res) =>
+    userService.getUser(req, res, (data) => res.json(data)),
   getTweets: (req, res) =>
     userService.getTweets(req, res, (data) => res.json(data)),
   getFollowers: (req, res) =>

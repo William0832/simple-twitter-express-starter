@@ -41,7 +41,7 @@ const isOwner = (req, res, next) => {
 //User routes
 router.post('/signup', userController.signUp)
 router.post('/signin', userController.signIn)
-
+router.get('/users/:id', authenticated, userController.getUser)
 router.get('/users/:id/tweets', authenticated, userController.getTweets)
 router.get('/users/:id/followers', authenticated, userController.getFollowers)
 router.get('/users/:id/followings', authenticated, userController.getFollowings)
