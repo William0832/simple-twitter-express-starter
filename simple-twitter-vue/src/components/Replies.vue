@@ -8,7 +8,7 @@
       .col-8.text-left
         h3
           | 
-          a(href='#') @{{reply.User.name}}
+          router-link(:to="{ name: 'user', params: { id:reply.User.id }}") @{{reply.User.name}}
           |  , {{reply.createdAt | fromNow}}
         p
           | {{reply.comment}}

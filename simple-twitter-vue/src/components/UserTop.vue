@@ -4,7 +4,7 @@
       .col-3.d-flex.align-items-start.justify-content-center
         img(:src="user.avatar")
       .col-8.text-left
-        a(href='#')
+        router-link(:to="{ name: 'user', params: { id:user.id }}") 
           h5 {{user.name}}
         p
           | {{user.introduction}}

@@ -5,7 +5,7 @@
         img(:src="tweet.User.avatar")
       .col-8.text-left
         h3
-          a(href='#')  @{{tweet.User.name}}
+          router-link(:to="{ name: 'user', params: { id:tweet.User.id }}")  @{{tweet.User.name}}
           | , {{tweet.createdAt | fromNow}}
         p
           | {{tweet.description}}

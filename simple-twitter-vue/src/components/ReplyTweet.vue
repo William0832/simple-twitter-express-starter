@@ -6,10 +6,7 @@
       .col-3.d-flex.align-items-center.justify-content-center
         img(:src="user.avatar")
       .col-8.text-left
-        h3
-          | 
-          a(href='#') @{{user.name}}
-          |  , {{tweet.createdAt | fromNow}}
+        h3 @{{user.name}} , {{tweet.createdAt | fromNow}}
         p
           | {{tweet.description}}
         .row.justify-content-start

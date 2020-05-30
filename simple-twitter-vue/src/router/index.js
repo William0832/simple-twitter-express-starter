@@ -27,9 +27,6 @@ const routes = [
     component: () => import('../views/User.vue')
   },
   {
-    path: '/users/:id/edit',
-    name: 'users-profile-edit',
-    component: () => import('../views/UserEdit.vue')
     path: '/tweets',
     name: 'tweets',
     component: tweets
