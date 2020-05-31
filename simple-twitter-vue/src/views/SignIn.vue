@@ -53,7 +53,7 @@
 
 <script>
 import authorizationAPI from "../apis/authorization";
-import { Toast } from '../utils/helpers'
+import { Toast } from "../utils/helpers";
 export default {
   data() {
     return {
@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     async handleSubmit() {
-      try{   
+      try {
         // TODO: 向後端驗證使用者登入資訊是否合法
         if (!this.email || !this.password) {
           Toast.fire({
@@ -77,29 +77,28 @@ export default {
         this.isProcessing = true;
 
         const response = await authorizationAPI.signIn({
-            email: this.email,
-            password: this.password
-        })
+          email: this.email,
+          password: this.password
+        });
 
-        const { data } = response
+        const { data } = response;
         //add statusText
-        if (data.status !== 'success') {
-          throw new Error(data.message)
+        if (data.status !== "success") {
+          throw new Error(data.message);
         }
 
         localStorage.setItem("token", data.token);
         this.$router.push("/");
-      } catch(error){
-          this.password = "";
-          Toast.fire({
-            icon: "warning",
-            title: "請確認您輸入了正確的帳號密碼"
-          });
-          this.isProcessing = false;
-          console.log(error);
-        }
+      } catch (error) {
+        this.password = "";
+        Toast.fire({
+          icon: "warning",
+          title: "請確認您輸入了正確的帳號密碼"
+        });
+        this.isProcessing = false;
+        console.log(error);
+      }
     }
   }
 };
-
 </script>
