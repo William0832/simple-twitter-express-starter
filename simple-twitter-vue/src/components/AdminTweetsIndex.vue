@@ -20,9 +20,8 @@
                 span.text-danger(aria-hidden='true') ×
 </template>
 
-
 <script>
-import { fromNowFilter } from "../utils/mixins";
+import { fromNowFilter } from '../utils/mixins'
 
 export default {
   mixins: [fromNowFilter],
@@ -35,15 +34,15 @@ export default {
   filters: {
     peek(description) {
       if (description.length > 50) {
-        return `${description.substr(0, 50)} ...`;
+        return `${description.substr(0, 50)} ...`
       }
-      return description ? description : "-";
+      return description ? description : '-'
     }
   },
   methods: {
     deteleTweet(tweetId) {
-      this.$emit("after-delete-tweet", tweetId);
+      this.$emit('after-delete-tweet', tweetId)
     }
   }
-};
+}
 </script>

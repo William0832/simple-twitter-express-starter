@@ -25,7 +25,7 @@
               td {{user.tweetsCount}}
               td {{user.followersCount}}
               td {{user.followingsCount}}
-              td {{user.likersCount}}
+              td {{user.likesCount}}
 </template>
 
 <script>
@@ -38,28 +38,28 @@ export default {
   },
   data() {
     return {
-      sortKey: "tweetsCount",
+      sortKey: 'tweetsCount',
       keys: {
-        id: "id",
-        name: "name",
-        tweets: "tweetsCount",
-        followers: "followersCount",
-        followings: "followingsCount",
-        likes: "likersCount"
+        id: 'id',
+        name: 'name',
+        tweets: 'tweetsCount',
+        followers: 'followersCount',
+        followings: 'followingsCount',
+        likes: 'likesCount'
       },
       reverse: false
-    };
+    }
   },
   computed: {
     sortedUsers() {
-      if (this.sortKey === "name") {
+      if (this.sortKey === 'name') {
         return this.users
           .slice()
           .sort((a, b) =>
             this.reverse
               ? b.name.localeCompare(a.name)
               : a.name.localeCompare(b.name)
-          );
+          )
       } else {
         return this.users
           .slice()
@@ -67,19 +67,19 @@ export default {
             this.reverse
               ? a[this.sortKey] - b[this.sortKey]
               : b[this.sortKey] - a[this.sortKey]
-          );
+          )
       }
     }
   },
   methods: {
     updateSort(key) {
       if (key === this.sortKey) {
-        this.reverse = !this.reverse;
+        this.reverse = !this.reverse
       } else {
-        this.reverse = false;
+        this.reverse = false
       }
-      this.sortKey = key;
+      this.sortKey = key
     }
   }
-};
+}
 </script>
