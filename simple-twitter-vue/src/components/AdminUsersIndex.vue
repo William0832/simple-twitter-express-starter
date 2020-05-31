@@ -4,16 +4,22 @@
       table.table
         thead.thead-dark
           tr
-            th(scope='col' ) #id
-            th(scope='col') User
-            th(scope='col') Tweets
-            th(scope='col') Followers
-            th(scope='col') Followings
-            th(scope='col') Likes
+            th(scope='col' ) 
+              button.btn.btn-dark(@click ='updateSort(keys.id)') #id
+            th(scope='col') 
+              button.btn.btn-dark(@click ='updateSort(keys.name)') User
+            th(scope='col')
+              button.btn.btn-dark(@click ='updateSort(keys.tweets)') Tweets
+            th(scope='col')
+              button.btn.btn-dark(@click ='updateSort(keys.followers)') Followers
+            th(scope='col') 
+              button.btn.btn-dark(@click ='updateSort(keys.followings)') Followings
+            th(scope='col')
+              button.btn.btn-dark(@click ='updateSort(keys.likes)')  Likes
 
 
         tbody
-            tr(v-for="user in users" :key='user.id' style="height: 100px")
+            tr(v-for="user in sortedUsers" :key='user.id'  style="height: 100px")
               th(scope='row') {{user.id}}
               td {{user.name}}
               td {{user.tweetsCount}}
@@ -28,6 +34,51 @@ export default {
     users: {
       type: Array,
       required: true
+    }
+  },
+  data() {
+    return {
+      sortKey: "tweetsCount",
+      keys: {
+        id: "id",
+        name: "name",
+        tweets: "tweetsCount",
+        followers: "followersCount",
+        followings: "followingsCount",
+        likes: "likersCount"
+      },
+      reverse: false
+    };
+  },
+  computed: {
+    sortedUsers() {
+      if (this.sortKey === "name") {
+        return this.users
+          .slice()
+          .sort((a, b) =>
+            this.reverse
+              ? b.name.localeCompare(a.name)
+              : a.name.localeCompare(b.name)
+          );
+      } else {
+        return this.users
+          .slice()
+          .sort((a, b) =>
+            this.reverse
+              ? a[this.sortKey] - b[this.sortKey]
+              : b[this.sortKey] - a[this.sortKey]
+          );
+      }
+    }
+  },
+  methods: {
+    updateSort(key) {
+      if (key === this.sortKey) {
+        this.reverse = !this.reverse;
+      } else {
+        this.reverse = false;
+      }
+      this.sortKey = key;
     }
   }
 };
