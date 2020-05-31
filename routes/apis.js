@@ -5,9 +5,12 @@ const upload = multer({ dest: 'temp/' })
 const passport = require('../config/passport')
 const helpers = require('../_helpers')
 
+const adminController = require('../controllers/api/adminController.js')
 const userController = require('../controllers/api/userController.js')
 const tweetController = require('../controllers/api/tweetController.js')
-const adminController = require('../controllers/api/adminController.js')
+const replyController = require('../controllers/api/replyController.js')
+const followshipController = require('../controllers/api/followshipController.js')
+const likeController = require('../controllers/api/likeController')
 
 const authenticated = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
@@ -38,9 +41,24 @@ const isOwner = (req, res, next) => {
   return res.status(302).json({ status: 'error', message: '沒有修改權限' })
 }
 
+const checkRoute = (req, res, next) => {
+  console.log('here!')
+  return next()
+}
+
 //User routes
 router.post('/signup', userController.signUp)
 router.post('/signin', userController.signIn)
+
+//Root
+router.get('/', authenticated, (req, res) => res.redirect('/tweets'))
+
+//Tweets routes
+router.get('/tweets', authenticated, tweetController.getTweets)
+router.post('/tweets', authenticated, tweetController.postTweets)
+router.get('/tweets/:tweet_id', authenticated, tweetController.getTweet)
+
+//User routes
 router.get('/users/:id', authenticated, userController.getUser)
 router.get('/users/:id/tweets', authenticated, userController.getTweets)
 router.get('/users/:id/followers', authenticated, userController.getFollowers)
@@ -75,5 +93,29 @@ router.get(
   authenticatedAdmin,
   adminController.getUsers
 )
+
+//Reply routes
+router.get(
+  '/tweets/:tweet_id/replies',
+  authenticated,
+  replyController.getReplies
+)
+router.post(
+  '/tweets/:tweet_id/replies',
+  authenticated,
+  replyController.postReply
+)
+
+//Followship routes
+router.post('/followships/', authenticated, followshipController.postFollowship)
+router.delete(
+  '/followships/:followingId',
+  authenticated,
+  followshipController.deleteFollowship
+)
+
+// like routes
+router.post('/tweets/:id/like', authenticated, likeController.like)
+router.post('/tweets/:id/unlike', authenticated, likeController.unlike)
 
 module.exports = router

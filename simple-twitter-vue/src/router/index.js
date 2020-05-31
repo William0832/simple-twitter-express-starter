@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import NotFound from '../views/NotFound.vue'
+import tweets from '../views/Tweets'
 
 Vue.use(VueRouter)
 
@@ -29,6 +30,21 @@ const routes = [
     path: '/admin/users',
     name: 'admin-users',
     component: () => import('../views/AdminUsers.vue')
+  },
+  {
+    path: '/users/:id',
+    name: 'user',
+    component: () => import('../views/User.vue')
+  },
+  {
+    path: '/tweets',
+    name: 'tweets',
+    component: tweets
+  },
+  {
+    path: '/tweets/:tweet_id/replies',
+    name: 'replies',
+    component: () => import('../views/Reply')
   },
   {
     path: '*',
