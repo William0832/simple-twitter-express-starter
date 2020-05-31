@@ -1,7 +1,10 @@
 <template lang="pug">
    .container.py-5
     AdminNavs
-    AdminTweetsIndex(:tweets='this.tweets')
+    AdminTweetsIndex(
+      :tweets='this.tweets'
+      @after-delete-tweet =' afterDeleteTweet'
+      )
 </template>
 
 <script>
@@ -1975,6 +1978,9 @@ export default {
   methods: {
     fetchTweets() {
       this.tweets = dummyTweets.tweets;
+    },
+    afterDeleteTweet(tweetId) {
+      console.log(tweetId);
     }
   }
 };

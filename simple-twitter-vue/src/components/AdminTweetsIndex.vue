@@ -16,7 +16,7 @@
             td.text-left {{tweet.description | peek}}
             td {{tweet.createdAt | fromNow}}
             td.align-middle.d-flex.justify-content-center 
-              button.close(type='button', aria-label='Close')
+              button.close(type='button', aria-label='Close' @click.stop.prevent='deteleTweet(tweet.id)')
                 span.text-danger(aria-hidden='true') ×
 </template>
 
@@ -38,6 +38,11 @@ export default {
         return `${description.substr(0, 50)} ...`;
       }
       return description ? description : "-";
+    }
+  },
+  methods: {
+    deteleTweet(tweetId) {
+      this.$emit("after-delete-tweet", tweetId);
     }
   }
 };
