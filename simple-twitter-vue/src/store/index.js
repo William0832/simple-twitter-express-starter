@@ -9,13 +9,13 @@ export default new Vuex.Store({
       id: -1,
       name: '',
       email: '',
-      image: '',
-      isAdmin: false
+      role: 'user'
     },
     isAuthenticated: false
   },
   mutations: {
     setCurrentUser(state, currentUser) {
+      console.log('setCurrentUser', currentUser)
       state.currentUser = {
         ...state.currentUser,
         // 將 API 取得的 currentUser 覆蓋掉 Vuex state 中的 currentUser

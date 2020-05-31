@@ -7,54 +7,23 @@
     #navbarSupportedContent.navbar-collapse.collapse
       .ml-auto.d-flex.align-items-center
         // is user is admin
-        a(href="#")
+        router-link.text-white.mr-3(to='#' v-if="currentUser.role=='admin'")
           | 管理員後台
         // is user is login
-        template(v-if="currentUser.isAdmin")
-          a(href="#")
-            | 使用者 您好
-          button.btn.btn-sm.btn-outline-success.my-2.my-sm-0(type='button')
-            | 登出
+        router-link.text-white.mr-3(to='#')
+          | 使用者 您好
+        button.btn.btn-sm.btn-outline-success.my-2.my-sm-0(type='button')
+          | 登出
 </template>
 
 
 <script>
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: "管理者",
-    email: "root@example.com",
-    image: "https://i.pravatar.cc/300",
-    isAdmin: true
-  },
-  isAuthenticated: true
-};
+import { mapState } from "vuex";
 
 export default {
   name: "Navbar",
-  data() {
-    return {
-      currentUser: {
-        id: -1,
-        name: "",
-        email: "",
-        image: "",
-        isAdmin: false
-      },
-      isAuthenticated: false
-    };
-  },
-  created() {
-    this.fetchUser();
-  },
-  methods: {
-    fetchUser() {
-      this.currentUser = {
-        ...this.currentUser,
-        ...dummyUser.currentUser
-      };
-      this.isAuthenticated = dummyUser.isAuthenticated;
-    }
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"])
   }
 };
 </script>
