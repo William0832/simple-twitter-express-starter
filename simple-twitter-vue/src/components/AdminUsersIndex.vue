@@ -5,21 +5,30 @@
         thead.thead-dark
           tr
             th(scope='col' ) #id
-            th(scope='col' style="width: 50%") Tweet
-            th(scope='col') Posted
-            th(scope='col') Delete
+            th(scope='col') User
+            th(scope='col') Tweets
+            th(scope='col') Followers
+            th(scope='col') Followings
+            th(scope='col') Likes
 
 
         tbody
-            tr(v-for="tweet in tweets" :key='tweet.id' style="height: 100px")
-              th(scope='row') {{tweet.id}}
-              td {{tweet.description | peek}}
-              td {{tweet.createdAt | fromNow}}
-              td.align-middle.d-flex.justify-content-center 
-                button.close(type='button', aria-label='Close')
-                  span.text-danger(aria-hidden='true') ×
+            tr(v-for="user in users" :key='user.id' style="height: 100px")
+              th(scope='row') {{user.id}}
+              td {{user.name}}
+              td {{user.tweetsCount}}
+              td {{user.followersCount}}
+              td {{user.followingsCount}}
+              td {{user.likersCount}}
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    users: {
+      type: Array,
+      required: true
+    }
+  }
+};
 </script>
