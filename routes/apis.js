@@ -10,6 +10,7 @@ const tweetController = require('../controllers/api/tweetController.js')
 const adminController = require('../controllers/api/adminController.js')
 const followshipController = require('../controllers/api/followshipController.js')
 const likeController = require('../controllers/api/likeController')
+const replyController = require('../controllers/api/replyController.js')
 
 const authenticated = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
@@ -86,5 +87,11 @@ module.exports = router
 // like routes
 router.post('/tweets/:id/like', authenticated, likeController.like)
 router.post('/tweets/:id/unlike', authenticated, likeController.unlike)
+//Root
+router.get('/', authenticated, (req, res) => res.redirect('/tweets'))
+
+//Reply routes
+router.get('/tweets/:tweet_id/replies', authenticated, replyController.getReplies)
+router.post('/tweets/:tweet_id/replies', authenticated, replyController.postReply)
 
 module.exports = router
