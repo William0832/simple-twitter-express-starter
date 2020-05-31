@@ -26,7 +26,6 @@ const letsCount = (user) => {
   user.likeCount = user.Likes ? user.Likes.length : 0
 }
 const removeKeys = (data, keys) => {
-  console.log(data)
   if (Object.keys(data).includes(...keys)) {
     keys.forEach((k) => {
       delete data[k]
@@ -58,7 +57,6 @@ const userService = {
       removeKeys(user, ['Tweets', 'Followers', 'Followings', 'Likes'])
       callback({ user })
     } catch (err) {
-      console.log(err)
       callback({ status: 'error', message: err.toString() })
     }
   },
