@@ -2,7 +2,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcrypt-nodejs')
 const db = require('../models')
-const { User, Like, Tweet } = db
+const { User, Like } = db
 
 // setup passport strategy
 passport.use(
@@ -48,9 +48,9 @@ jwtOptions.secretOrKey = process.env.JWT_SECRET
 let strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
   User.findByPk(jwt_payload.id, {
     include: [
-      { model: Tweet, as: 'LikedTweets' },
-      { model: User, as: 'Followers' },
-      { model: User, as: 'Followings' }
+      { model: Like, attributes: ['tweetId'] },
+      { model: User, as: 'Followers', attributes: ['id'] },
+      { model: User, as: 'Followings', attributes: ['id'] }
     ]
   }).then((user) => {
     if (!user) return next(null, false)

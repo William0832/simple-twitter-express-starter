@@ -20,14 +20,23 @@ const letsCheck = (user, currentUser) => {
     : false
 }
 const letsCount = (user) => {
-  user.tweetsCount = user.Tweets.length || 0
-  user.followingCount = user.Followings.length || 0
-  user.followerCount = user.Followers.length || 0
-  user.likeCount = user.LikedTweets.length || 0
-  delete user.Tweets
-  delete user.Followers
-  delete user.Followings
-  delete user.LikedTweets
+  user.tweetsCount = user.Tweets ? user.Tweets.length : 0
+  user.followingCount = user.Followings ? user.Followings.length : 0
+  user.followerCount = user.Followers ? user.Followers.length : 0
+  user.likeCount = user.Likes ? user.Likes.length : 0
+}
+const removeKeys = (data, keys) => {
+  if (Object.keys(data).includes(...keys)) {
+    keys.forEach((k) => {
+      delete data[k]
+    })
+  } else {
+    data.forEach((d) => {
+      keys.forEach((k) => {
+        delete d[k]
+      })
+    })
+  }
 }
 const userService = {
   getUser: async (req, res, callback) => {
@@ -38,13 +47,14 @@ const userService = {
           { model: Tweet, attributes: ['id'] },
           { model: User, as: 'Followings', attributes: ['id'] },
           { model: User, as: 'Followers', attributes: ['id'] },
-          { model: Tweet, as: 'LikedTweets', attributes: ['id'] }
+          { model: Like, attributes: ['tweetId'] }
         ]
       })
       user = user.toJSON()
-      let currentUser = helpers.getUser(req).toJSON()
+      let currentUser = helpers.getUser(req)
       letsCheck(user, currentUser)
       letsCount(user)
+      removeKeys(user, ['Tweets', 'Followers', 'Followings', 'Likes'])
       callback({ user })
     } catch (err) {
       callback({ status: 'error', message: err.toString() })
@@ -52,101 +62,140 @@ const userService = {
   },
   getTweets: async (req, res, callback) => {
     try {
-      let user = await User.findByPk(req.params.id, {
+      let currentUser = helpers.getUser(req)
+      let tweets = await Tweet.findAll({
+        where: { UserId: req.params.id },
         include: [
-          {
-            model: Tweet,
-            include: [User, Reply, Like]
-          },
-          { model: Like },
-          { model: User, as: 'Followings' },
-          { model: User, as: 'Followers' }
-        ]
+          { model: User, attributes: ['id', 'email', 'name', 'avatar'] },
+          { model: Reply, attributes: ['id', 'UserId'] },
+          { model: Like, attributes: ['id', 'UserId'] }
+        ],
+        order: [['createdAt', 'DESC']]
       })
-      callback({ user: user.toJSON() })
+      tweets = tweets.map((t) => ({
+        ...t.dataValues,
+        repliesCount: t.Replies.length || 0,
+        likesCount: t.Likes.length || 0,
+        isLiked: currentUser.Likes
+          ? currentUser.Likes.map((cl) => cl.tweetId).includes(t.id)
+          : null
+      }))
+      removeKeys(tweets, ['Replies', 'Likes'])
+      callback({ tweets })
     } catch (err) {
       callback({ status: 'error', message: err.toString() })
     }
   },
   getFollowers: async (req, res, callback) => {
     try {
+      let currentUser = helpers.getUser(req)
       let user = await User.findByPk(req.params.id, {
         include: [
-          Tweet,
-          { model: User, as: 'Followers' },
-          { model: User, as: 'Followings' },
-          { model: Tweet, as: 'LikedTweets' }
+          {
+            model: User,
+            as: 'Followers',
+            attributes: [
+              'id',
+              'email',
+              'name',
+              'avatar',
+              'introduction',
+              'role'
+            ]
+          }
         ]
       })
-      let currentUser = helpers.getUser(req).toJSON()
       user = user.toJSON()
       let followers = user.Followers
-      user.Followers = followers.map((u) => ({
+      followers = followers.map((u) => ({
         ...u,
-        isFollowed: currentUser.Followings.map((d) => d.id).includes(u.id)
+        isCurrentUser: currentUser.id === u.id ? true : false,
+        isFollowed: currentUser.Followings.map((d) => d.id).includes(u.id),
+        followAt: u.Followship.createdAt
       }))
-      letsCheck(user, currentUser)
-      letsCount(user)
-      callback({ user })
+      followers.sort((a, b) => b.followAt - a.followAt)
+      removeKeys(followers, ['Followship'])
+      callback({ followers })
     } catch (err) {
       callback({ status: 'error', message: err.toString() })
     }
   },
   getFollowings: async (req, res, callback) => {
     try {
+      let currentUser = helpers.getUser(req)
       let user = await User.findByPk(req.params.id, {
         include: [
-          Tweet,
-          { model: User, as: 'Followers' },
-          { model: User, as: 'Followings' },
-          { model: Tweet, as: 'LikedTweets' }
+          {
+            model: User,
+            as: 'Followings',
+            attributes: [
+              'id',
+              'email',
+              'name',
+              'avatar',
+              'introduction',
+              'role'
+            ]
+          }
         ]
       })
-      let currentUser = helpers.getUser(req).toJSON()
-      user = user.toJSON()
-      user.Followings = user.Followings.map((u) => ({
+      let followings = user.toJSON().Followings.map((u) => ({
         ...u,
-        isFollowed: currentUser.Followings.map((d) => d.id).includes(u.id)
+        isCurrentUser: currentUser.id === u.id ? true : false,
+        isFollowed: currentUser.Followings.map((d) => d.id).includes(u.id),
+        followAt: u.Followship.createdAt
       }))
-      letsCheck(user, currentUser)
-      letsCount(user)
-      callback({ user })
+      followings.sort((a, b) => b.followAt - a.followAt)
+      removeKeys(followings, ['Followship'])
+      callback({ followings })
     } catch (err) {
       callback({ status: 'error', message: err.toString() })
     }
   },
   getLikes: async (req, res, callback) => {
     try {
+      let currentUser = helpers.getUser(req)
       let user = await User.findByPk(req.params.id, {
         include: [
-          Tweet,
-          { model: User, as: 'Followers' },
-          { model: User, as: 'Followings' },
-          { model: Tweet, as: 'LikedTweets', include: [User, Reply, Like] }
+          {
+            model: Like,
+            attributes: ['createdAt'],
+            include: [
+              {
+                model: Tweet,
+                attributes: ['id', 'description', 'createdAt'],
+                include: [
+                  {
+                    model: User,
+                    attributes: ['id', 'email', 'name', 'avatar']
+                  },
+                  {
+                    model: Reply,
+                    attributes: ['id', 'UserId']
+                  },
+                  {
+                    model: Like,
+                    attributes: ['id', 'UserId']
+                  }
+                ]
+              }
+            ]
+          }
         ]
       })
-      let currentUser = helpers.getUser(req).toJSON()
-      user = user.toJSON()
-      user.LikedTweets = user.LikedTweets.map((t) => ({
-        ...t,
-        counter: {
-          reply: t.Replies.length || 0,
-          like: t.Likes.length || 0
-        },
-        isLiked: currentUser.LikedTweets.map((ct) => ct.id).includes(t.id)
+
+      let likes = user.toJSON().Likes.map((l) => ({
+        ...l.Tweet,
+        likeAt: l.createdAt,
+        repliesCount: l.Tweet.Replies ? l.Tweet.Replies.length : 0,
+        likesCount: l.Tweet.Likes ? l.Tweet.Likes.length : 0,
+        isLiked: currentUser.Likes
+          ? currentUser.Likes.map((cl) => cl.tweetId).includes(l.Tweet.id)
+          : null
       }))
-      letsCheck(user, currentUser)
-      letsCount(user)
-      console.log(user.LikedTweets)
-      callback({ user })
-    } catch (err) {
-      callback({ status: 'error', message: err.toString() })
-    }
-  },
-  getEditPage: async (req, res, callback) => {
-    try {
-      let user = await User.findByPk(req.params.id)
-      callback({ user: user.toJSON() })
+      removeKeys(likes, ['Replies', 'Likes'])
+      likes.sort((a, b) => b.likeAt - a.likeAt)
+      callback({ likes })
     } catch (err) {
       callback({ status: 'error', message: err.toString() })
     }

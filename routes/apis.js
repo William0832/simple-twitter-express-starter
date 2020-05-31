@@ -46,21 +46,9 @@ router.get('/users/:id/tweets', authenticated, userController.getTweets)
 router.get('/users/:id/followers', authenticated, userController.getFollowers)
 router.get('/users/:id/followings', authenticated, userController.getFollowings)
 router.get('/users/:id/likes', authenticated, userController.getLikes)
-router.get(
-  '/users/:id/edit',
-  authenticated,
-  isOwner,
-  userController.getEditPage
-)
-// 修改 userController 改用 putUser
+router.get('/users/:id/edit', authenticated, isOwner, userController.getUser)
+// 更新資料用POST 不符合RESTful路由設計 但TEST要過只能如此
 router.post(
-  '/users/:id/edit',
-  authenticated,
-  isOwner,
-  upload.single('avatar'),
-  userController.putUser
-)
-router.put(
   '/users/:id/edit',
   authenticated,
   isOwner,
