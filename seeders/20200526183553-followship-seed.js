@@ -3,13 +3,20 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('Followships',
-      Array.from({ length: 3 }).map(d =>
-        ({
-          followerId: 1 + Math.random() * 2,
-          followingId: 1 + Math.random() * 2,
+      Array.from({ length: 50 }).map(d => {
+        let followship = {
+          followerId: 1 + Math.random() * 52,
+          followingId: 1 + Math.random() * 52,
           createdAt: new Date(),
           updatedAt: new Date(),
-        })
+        }
+
+        while (followship.followerId === followship.followingId) {
+          followingId = 1 + Math.random() * 52
+        }
+
+        return followship
+      }
       ), {});
 
 
