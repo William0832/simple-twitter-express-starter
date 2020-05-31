@@ -58,7 +58,18 @@ let userController = {
       })
     })
   },
-
+  getUser: (req, res) =>
+    userService.getUser(req, res, (data) => res.json(data)),
+  getTweets: (req, res) =>
+    userService.getTweets(req, res, (data) => res.json(data)),
+  getFollowers: (req, res) =>
+    userService.getFollowers(req, res, (data) => res.json(data)),
+  getFollowings: (req, res) =>
+    userService.getFollowings(req, res, (data) => res.json(data)),
+  getLikes: (req, res) =>
+    userService.getLikes(req, res, (data) => res.json(data)),
+  putUser: (req, res) =>
+    userService.putUser(req, res, (data) => res.status(302).json(data))
 }
 
 module.exports = userController
