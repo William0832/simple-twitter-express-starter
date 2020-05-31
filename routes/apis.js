@@ -76,4 +76,11 @@ router.get(
   adminController.getUsers
 )
 
+//Vuex get current user
+router.get(
+  '/current-user',
+  authenticated,
+  userController.getCurrentUser
+)
+
 module.exports = router
