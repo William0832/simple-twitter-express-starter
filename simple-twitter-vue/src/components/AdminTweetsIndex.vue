@@ -11,9 +11,9 @@
 
 
       tbody
-          tr(v-for="tweet in tweets" :key='tweet.id' style="height: 100px")
+          tr(v-for="tweet in tweets" :key='tweet.id' style="height: 50px")
             th(scope='row') {{tweet.id}}
-            td {{tweet.description | peek}}
+            td.text-left {{tweet.description | peek}}
             td {{tweet.createdAt | fromNow}}
             td.align-middle.d-flex.justify-content-center 
               button.close(type='button', aria-label='Close')
@@ -32,10 +32,12 @@ export default {
       required: true
     }
   },
-  filter: {
-    peek: function(tweet) {
-      if (!tweet) return "";
-      return tweet.subString(0, 50);
+  filters: {
+    peek(description) {
+      if (description.length > 50) {
+        return `${description.substr(0, 50)} ...`;
+      }
+      return description ? description : "-";
     }
   }
 };

@@ -30,27 +30,29 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:37.000Z",
         updatedAt: "2020-05-29T09:22:37.000Z"
       },
-      Replies: {
-        id: 1,
-        TweetId: 12,
-        UserId: 3,
-        comment: "laudantium",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 3,
-          email: "user2@example.com",
-          password:
-            "$2a$10$714kdA7VvRb8GS6.WxBmFu.OIdvbuysDXoUQusvkSo8N8q6W6H3By",
-          name: "user2",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=55.42792213290439",
-          introduction: "enim",
-          role: "user",
-          createdAt: "2020-05-29T09:22:37.000Z",
-          updatedAt: "2020-05-29T09:22:37.000Z"
+      Replies: [
+        {
+          id: 1,
+          TweetId: 12,
+          UserId: 3,
+          comment: "laudantium",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 3,
+            email: "user2@example.com",
+            password:
+              "$2a$10$714kdA7VvRb8GS6.WxBmFu.OIdvbuysDXoUQusvkSo8N8q6W6H3By",
+            name: "user2",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=55.42792213290439",
+            introduction: "enim",
+            role: "user",
+            createdAt: "2020-05-29T09:22:37.000Z",
+            updatedAt: "2020-05-29T09:22:37.000Z"
+          }
         }
-      }
+      ]
     },
     {
       id: 9,
@@ -72,28 +74,51 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:37.000Z",
         updatedAt: "2020-05-29T09:22:37.000Z"
       },
-      Replies: {
-        id: 2,
-        TweetId: 9,
-        UserId: 2,
-        comment: "qui",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
+      Replies: [
+        {
           id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
+          TweetId: 9,
+          UserId: 2,
+          comment: "qui",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
+        },
+        {
+          id: 5,
+          TweetId: 9,
+          UserId: 3,
+          comment: "doloribus",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 3,
+            email: "user2@example.com",
+            password:
+              "$2a$10$714kdA7VvRb8GS6.WxBmFu.OIdvbuysDXoUQusvkSo8N8q6W6H3By",
+            name: "user2",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=55.42792213290439",
+            introduction: "enim",
+            role: "user",
+            createdAt: "2020-05-29T09:22:37.000Z",
+            updatedAt: "2020-05-29T09:22:37.000Z"
+          }
         }
-      }
+      ]
     },
     {
       id: 25,
@@ -116,27 +141,52 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: 3,
-        TweetId: 25,
-        UserId: 1,
-        comment: "soluta",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 1,
-          email: "root@example.com",
-          password:
-            "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
-          name: "root",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
-          introduction: "incidunt",
-          role: "admin",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
+      Replies: [
+        {
+          id: 3,
+          TweetId: 25,
+          UserId: 1,
+          comment: "soluta",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 1,
+            email: "root@example.com",
+            password:
+              "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
+            name: "root",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
+            introduction: "incidunt",
+            role: "admin",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
+        },
+        {
+          id: 20,
+          TweetId: 25,
+          UserId: 2,
+          comment:
+            "Aut cum magnam. Omnis quibusdam maiores vel at sed. Velit excepturi aliquam ea quia optio recusandae ad vel. Porro totam laborum aut distinc",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
         }
-      }
+      ]
     },
     {
       id: 21,
@@ -159,71 +209,31 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: 4,
-        TweetId: 21,
-        UserId: 2,
-        comment:
-          "Voluptas veritatis architecto. Illum fugit est consequuntur ratione doloribus ut veniam. Laudantium molestiae maxime modi omnis omnis vitae ",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
+      Replies: [
+        {
+          id: 4,
+          TweetId: 21,
+          UserId: 2,
+          comment:
+            "Voluptas veritatis architecto. Illum fugit est consequuntur ratione doloribus ut veniam. Laudantium molestiae maxime modi omnis omnis vitae ",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
         }
-      }
-    },
-    {
-      id: 9,
-      description:
-        "Iure explicabo ut molestiae. Voluptate voluptas repellat doloribus. Qui nulla est quaerat quia.\n \rOmnis excepturi saepe perspiciatis sint qu",
-      UserId: 3,
-      createdAt: "2020-05-29T09:22:36.000Z",
-      updatedAt: "2020-05-29T09:22:36.000Z",
-      User: {
-        id: 3,
-        email: "user2@example.com",
-        password:
-          "$2a$10$714kdA7VvRb8GS6.WxBmFu.OIdvbuysDXoUQusvkSo8N8q6W6H3By",
-        name: "user2",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=55.42792213290439",
-        introduction: "enim",
-        role: "user",
-        createdAt: "2020-05-29T09:22:37.000Z",
-        updatedAt: "2020-05-29T09:22:37.000Z"
-      },
-      Replies: {
-        id: 5,
-        TweetId: 9,
-        UserId: 3,
-        comment: "doloribus",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 3,
-          email: "user2@example.com",
-          password:
-            "$2a$10$714kdA7VvRb8GS6.WxBmFu.OIdvbuysDXoUQusvkSo8N8q6W6H3By",
-          name: "user2",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=55.42792213290439",
-          introduction: "enim",
-          role: "user",
-          createdAt: "2020-05-29T09:22:37.000Z",
-          updatedAt: "2020-05-29T09:22:37.000Z"
-        }
-      }
+      ]
     },
     {
       id: 18,
@@ -245,28 +255,30 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: 6,
-        TweetId: 18,
-        UserId: 2,
-        comment: "et",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
+      Replies: [
+        {
+          id: 6,
+          TweetId: 18,
+          UserId: 2,
+          comment: "et",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
         }
-      }
+      ]
     },
     {
       id: 15,
@@ -287,28 +299,52 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: 7,
-        TweetId: 15,
-        UserId: 2,
-        comment: "Qui odit quia.",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
+      Replies: [
+        {
+          id: 7,
+          TweetId: 15,
+          UserId: 2,
+          comment: "Qui odit quia.",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
+        },
+        {
+          id: 18,
+          TweetId: 15,
+          UserId: 2,
+          comment: "in",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
         }
-      }
+      ]
     },
     {
       id: 16,
@@ -330,28 +366,51 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: 8,
-        TweetId: 16,
-        UserId: 2,
-        comment: "architecto aut molestiae",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
+      Replies: [
+        {
+          id: 8,
+          TweetId: 16,
+          UserId: 2,
+          comment: "architecto aut molestiae",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
+        },
+        {
+          id: 14,
+          TweetId: 16,
+          UserId: 1,
+          comment: "Qui sit sed sequi atque.",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 1,
+            email: "root@example.com",
+            password:
+              "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
+            name: "root",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
+            introduction: "incidunt",
+            role: "admin",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
         }
-      }
+      ]
     },
     {
       id: 7,
@@ -372,29 +431,31 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:37.000Z",
         updatedAt: "2020-05-29T09:22:37.000Z"
       },
-      Replies: {
-        id: 9,
-        TweetId: 7,
-        UserId: 2,
-        comment:
-          "Aut sit quaerat libero optio laborum quia atque nam ut.\nOdio unde sed fugiat nesciunt ut optio.\nConsectetur qui alias suscipit.",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
+      Replies: [
+        {
+          id: 9,
+          TweetId: 7,
+          UserId: 2,
+          comment:
+            "Aut sit quaerat libero optio laborum quia atque nam ut.\nOdio unde sed fugiat nesciunt ut optio.\nConsectetur qui alias suscipit.",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
         }
-      }
+      ]
     },
     {
       id: 14,
@@ -416,27 +477,220 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: 10,
-        TweetId: 14,
-        UserId: 3,
-        comment: "Voluptatibus accusantium expedita vel aspernatur dolor ea.",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 3,
-          email: "user2@example.com",
-          password:
-            "$2a$10$714kdA7VvRb8GS6.WxBmFu.OIdvbuysDXoUQusvkSo8N8q6W6H3By",
-          name: "user2",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=55.42792213290439",
-          introduction: "enim",
-          role: "user",
-          createdAt: "2020-05-29T09:22:37.000Z",
-          updatedAt: "2020-05-29T09:22:37.000Z"
+      Replies: [
+        {
+          id: 10,
+          TweetId: 14,
+          UserId: 3,
+          comment: "Voluptatibus accusantium expedita vel aspernatur dolor ea.",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 3,
+            email: "user2@example.com",
+            password:
+              "$2a$10$714kdA7VvRb8GS6.WxBmFu.OIdvbuysDXoUQusvkSo8N8q6W6H3By",
+            name: "user2",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=55.42792213290439",
+            introduction: "enim",
+            role: "user",
+            createdAt: "2020-05-29T09:22:37.000Z",
+            updatedAt: "2020-05-29T09:22:37.000Z"
+          }
+        },
+        {
+          id: 17,
+          TweetId: 14,
+          UserId: 2,
+          comment:
+            "Molestiae incidunt totam esse velit alias a at. Omnis impedit ad vel reiciendis aliquam. Debitis repellat nostrum explicabo amet alias. Laud",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
+        },
+        {
+          id: 26,
+          TweetId: 14,
+          UserId: 1,
+          comment: "aaaa",
+          createdAt: "2020-05-30T07:21:05.000Z",
+          updatedAt: "2020-05-30T07:21:05.000Z",
+          User: {
+            id: 1,
+            email: "root@example.com",
+            password:
+              "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
+            name: "root",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
+            introduction: "incidunt",
+            role: "admin",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
+        },
+        {
+          id: 27,
+          TweetId: 14,
+          UserId: 1,
+          comment: "sss",
+          createdAt: "2020-05-30T07:24:18.000Z",
+          updatedAt: "2020-05-30T07:24:18.000Z",
+          User: {
+            id: 1,
+            email: "root@example.com",
+            password:
+              "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
+            name: "root",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
+            introduction: "incidunt",
+            role: "admin",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
+        },
+        {
+          id: 33,
+          TweetId: 14,
+          UserId: 1,
+          comment: "dddd",
+          createdAt: "2020-05-30T07:31:05.000Z",
+          updatedAt: "2020-05-30T07:31:05.000Z",
+          User: {
+            id: 1,
+            email: "root@example.com",
+            password:
+              "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
+            name: "root",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
+            introduction: "incidunt",
+            role: "admin",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
+        },
+        {
+          id: 34,
+          TweetId: 14,
+          UserId: 1,
+          comment: "sss",
+          createdAt: "2020-05-30T07:32:15.000Z",
+          updatedAt: "2020-05-30T07:32:15.000Z",
+          User: {
+            id: 1,
+            email: "root@example.com",
+            password:
+              "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
+            name: "root",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
+            introduction: "incidunt",
+            role: "admin",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
+        },
+        {
+          id: 35,
+          TweetId: 14,
+          UserId: 1,
+          comment: "sfaf",
+          createdAt: "2020-05-30T07:34:34.000Z",
+          updatedAt: "2020-05-30T07:34:34.000Z",
+          User: {
+            id: 1,
+            email: "root@example.com",
+            password:
+              "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
+            name: "root",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
+            introduction: "incidunt",
+            role: "admin",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
+        },
+        {
+          id: 36,
+          TweetId: 14,
+          UserId: 1,
+          comment: "ggg",
+          createdAt: "2020-05-30T07:35:16.000Z",
+          updatedAt: "2020-05-30T07:35:16.000Z",
+          User: {
+            id: 1,
+            email: "root@example.com",
+            password:
+              "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
+            name: "root",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
+            introduction: "incidunt",
+            role: "admin",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
+        },
+        {
+          id: 37,
+          TweetId: 14,
+          UserId: 1,
+          comment: "ddaf",
+          createdAt: "2020-05-30T07:36:34.000Z",
+          updatedAt: "2020-05-30T07:36:34.000Z",
+          User: {
+            id: 1,
+            email: "root@example.com",
+            password:
+              "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
+            name: "root",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
+            introduction: "incidunt",
+            role: "admin",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
+        },
+        {
+          id: 38,
+          TweetId: 14,
+          UserId: 1,
+          comment: "dd",
+          createdAt: "2020-05-30T07:37:05.000Z",
+          updatedAt: "2020-05-30T07:37:05.000Z",
+          User: {
+            id: 1,
+            email: "root@example.com",
+            password:
+              "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
+            name: "root",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
+            introduction: "incidunt",
+            role: "admin",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
         }
-      }
+      ]
     },
     {
       id: 36,
@@ -458,29 +712,31 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:37.000Z",
         updatedAt: "2020-05-29T09:22:37.000Z"
       },
-      Replies: {
-        id: 11,
-        TweetId: 36,
-        UserId: 2,
-        comment:
-          "Quis nihil odit omnis quaerat sed. Dicta expedita nostrum ea corporis. Illo et non possimus. Voluptatem velit voluptatem. Sed rem et quia eo",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
+      Replies: [
+        {
+          id: 11,
+          TweetId: 36,
+          UserId: 2,
+          comment:
+            "Quis nihil odit omnis quaerat sed. Dicta expedita nostrum ea corporis. Illo et non possimus. Voluptatem velit voluptatem. Sed rem et quia eo",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
         }
-      }
+      ]
     },
     {
       id: 8,
@@ -503,28 +759,30 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: 12,
-        TweetId: 8,
-        UserId: 2,
-        comment: "iusto molestias molestiae",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
+      Replies: [
+        {
+          id: 12,
+          TweetId: 8,
+          UserId: 2,
+          comment: "iusto molestias molestiae",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
         }
-      }
+      ]
     },
     {
       id: 39,
@@ -546,70 +804,30 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: 13,
-        TweetId: 39,
-        UserId: 3,
-        comment:
-          "Itaque quae reprehenderit ut quisquam architecto.\nQui at delectus expedita quis natus et.\nOmnis quidem nam adipisci et qui.",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 3,
-          email: "user2@example.com",
-          password:
-            "$2a$10$714kdA7VvRb8GS6.WxBmFu.OIdvbuysDXoUQusvkSo8N8q6W6H3By",
-          name: "user2",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=55.42792213290439",
-          introduction: "enim",
-          role: "user",
-          createdAt: "2020-05-29T09:22:37.000Z",
-          updatedAt: "2020-05-29T09:22:37.000Z"
+      Replies: [
+        {
+          id: 13,
+          TweetId: 39,
+          UserId: 3,
+          comment:
+            "Itaque quae reprehenderit ut quisquam architecto.\nQui at delectus expedita quis natus et.\nOmnis quidem nam adipisci et qui.",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 3,
+            email: "user2@example.com",
+            password:
+              "$2a$10$714kdA7VvRb8GS6.WxBmFu.OIdvbuysDXoUQusvkSo8N8q6W6H3By",
+            name: "user2",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=55.42792213290439",
+            introduction: "enim",
+            role: "user",
+            createdAt: "2020-05-29T09:22:37.000Z",
+            updatedAt: "2020-05-29T09:22:37.000Z"
+          }
         }
-      }
-    },
-    {
-      id: 16,
-      description:
-        "In tenetur sed. Esse magni non cum. Blanditiis facere sed. Voluptas debitis expedita non est officia.",
-      UserId: 1,
-      createdAt: "2020-05-29T09:22:36.000Z",
-      updatedAt: "2020-05-29T09:22:36.000Z",
-      User: {
-        id: 1,
-        email: "root@example.com",
-        password:
-          "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
-        name: "root",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
-        introduction: "incidunt",
-        role: "admin",
-        createdAt: "2020-05-29T09:22:36.000Z",
-        updatedAt: "2020-05-29T09:22:36.000Z"
-      },
-      Replies: {
-        id: 14,
-        TweetId: 16,
-        UserId: 1,
-        comment: "Qui sit sed sequi atque.",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 1,
-          email: "root@example.com",
-          password:
-            "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
-          name: "root",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
-          introduction: "incidunt",
-          role: "admin",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
-        }
-      }
+      ]
     },
     {
       id: 44,
@@ -630,28 +848,30 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:37.000Z",
         updatedAt: "2020-05-29T09:22:37.000Z"
       },
-      Replies: {
-        id: 15,
-        TweetId: 44,
-        UserId: 2,
-        comment: "Dolores consequatur dolores.",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
+      Replies: [
+        {
+          id: 15,
+          TweetId: 44,
+          UserId: 2,
+          comment: "Dolores consequatur dolores.",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
         }
-      }
+      ]
     },
     {
       id: 45,
@@ -672,115 +892,53 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:37.000Z",
         updatedAt: "2020-05-29T09:22:37.000Z"
       },
-      Replies: {
-        id: 16,
-        TweetId: 45,
-        UserId: 2,
-        comment:
-          "Autem quas consequatur qui quae. Doloribus sint alias et. Exercitationem dignissimos repellat iusto odit qui id. Et modi sunt ratione quia d",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
+      Replies: [
+        {
+          id: 16,
+          TweetId: 45,
+          UserId: 2,
+          comment:
+            "Autem quas consequatur qui quae. Doloribus sint alias et. Exercitationem dignissimos repellat iusto odit qui id. Et modi sunt ratione quia d",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
+        },
+        {
+          id: 25,
+          TweetId: 45,
+          UserId: 3,
+          comment:
+            "Autem fugit dolores autem corporis dolor cumque et iusto. Et laudantium earum molestias excepturi est. Aut eaque officia ullam corrupti assu",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 3,
+            email: "user2@example.com",
+            password:
+              "$2a$10$714kdA7VvRb8GS6.WxBmFu.OIdvbuysDXoUQusvkSo8N8q6W6H3By",
+            name: "user2",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=55.42792213290439",
+            introduction: "enim",
+            role: "user",
+            createdAt: "2020-05-29T09:22:37.000Z",
+            updatedAt: "2020-05-29T09:22:37.000Z"
+          }
         }
-      }
-    },
-    {
-      id: 14,
-      description: "Nisi natus aut eligendi sed facilis est eligendi.",
-      UserId: 2,
-      createdAt: "2020-05-29T09:22:36.000Z",
-      updatedAt: "2020-05-29T09:22:36.000Z",
-      User: {
-        id: 2,
-        email: "user1@example.com",
-        password:
-          "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-        name: "user1",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-        introduction:
-          "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-        role: "user",
-        createdAt: "2020-05-29T09:22:36.000Z",
-        updatedAt: "2020-05-29T09:22:36.000Z"
-      },
-      Replies: {
-        id: 17,
-        TweetId: 14,
-        UserId: 2,
-        comment:
-          "Molestiae incidunt totam esse velit alias a at. Omnis impedit ad vel reiciendis aliquam. Debitis repellat nostrum explicabo amet alias. Laud",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
-        }
-      }
-    },
-    {
-      id: 15,
-      description: "eum accusamus repellat",
-      UserId: 1,
-      createdAt: "2020-05-29T09:22:36.000Z",
-      updatedAt: "2020-05-29T09:22:36.000Z",
-      User: {
-        id: 1,
-        email: "root@example.com",
-        password:
-          "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
-        name: "root",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
-        introduction: "incidunt",
-        role: "admin",
-        createdAt: "2020-05-29T09:22:36.000Z",
-        updatedAt: "2020-05-29T09:22:36.000Z"
-      },
-      Replies: {
-        id: 18,
-        TweetId: 15,
-        UserId: 2,
-        comment: "in",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
-        }
-      }
+      ]
     },
     {
       id: 6,
@@ -801,74 +959,31 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: 19,
-        TweetId: 6,
-        UserId: 2,
-        comment:
-          "Porro dolore accusamus debitis omnis.\nSequi corporis fuga voluptatem.",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
+      Replies: [
+        {
+          id: 19,
+          TweetId: 6,
+          UserId: 2,
+          comment:
+            "Porro dolore accusamus debitis omnis.\nSequi corporis fuga voluptatem.",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
         }
-      }
-    },
-    {
-      id: 25,
-      description:
-        "Libero et a. Aut dolores corrupti et exercitationem. Id officia deleniti iure sunt voluptatem atque. Dolorem eius ea ut assumenda consequatu",
-      UserId: 2,
-      createdAt: "2020-05-29T09:22:36.000Z",
-      updatedAt: "2020-05-29T09:22:36.000Z",
-      User: {
-        id: 2,
-        email: "user1@example.com",
-        password:
-          "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-        name: "user1",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-        introduction:
-          "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-        role: "user",
-        createdAt: "2020-05-29T09:22:36.000Z",
-        updatedAt: "2020-05-29T09:22:36.000Z"
-      },
-      Replies: {
-        id: 20,
-        TweetId: 25,
-        UserId: 2,
-        comment:
-          "Aut cum magnam. Omnis quibusdam maiores vel at sed. Velit excepturi aliquam ea quia optio recusandae ad vel. Porro totam laborum aut distinc",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
-        }
-      }
+      ]
     },
     {
       id: 23,
@@ -889,28 +1004,30 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: 21,
-        TweetId: 23,
-        UserId: 2,
-        comment: "Non qui rerum quidem consequatur et est mollitia.",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
+      Replies: [
+        {
+          id: 21,
+          TweetId: 23,
+          UserId: 2,
+          comment: "Non qui rerum quidem consequatur et est mollitia.",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
         }
-      }
+      ]
     },
     {
       id: 46,
@@ -932,29 +1049,31 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: 22,
-        TweetId: 46,
-        UserId: 2,
-        comment:
-          "Et dolores beatae et excepturi voluptatem nostrum placeat aliquid. Labore quo corrupti accusantium. Velit similique dignissimos at assumenda",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
+      Replies: [
+        {
+          id: 22,
+          TweetId: 46,
+          UserId: 2,
+          comment:
+            "Et dolores beatae et excepturi voluptatem nostrum placeat aliquid. Labore quo corrupti accusantium. Velit similique dignissimos at assumenda",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
         }
-      }
+      ]
     },
     {
       id: 28,
@@ -976,449 +1095,52 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: 23,
-        TweetId: 28,
-        UserId: 3,
-        comment: "Labore ratione voluptas iusto.",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 3,
-          email: "user2@example.com",
-          password:
-            "$2a$10$714kdA7VvRb8GS6.WxBmFu.OIdvbuysDXoUQusvkSo8N8q6W6H3By",
-          name: "user2",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=55.42792213290439",
-          introduction: "enim",
-          role: "user",
-          createdAt: "2020-05-29T09:22:37.000Z",
-          updatedAt: "2020-05-29T09:22:37.000Z"
+      Replies: [
+        {
+          id: 23,
+          TweetId: 28,
+          UserId: 3,
+          comment: "Labore ratione voluptas iusto.",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 3,
+            email: "user2@example.com",
+            password:
+              "$2a$10$714kdA7VvRb8GS6.WxBmFu.OIdvbuysDXoUQusvkSo8N8q6W6H3By",
+            name: "user2",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=55.42792213290439",
+            introduction: "enim",
+            role: "user",
+            createdAt: "2020-05-29T09:22:37.000Z",
+            updatedAt: "2020-05-29T09:22:37.000Z"
+          }
+        },
+        {
+          id: 24,
+          TweetId: 28,
+          UserId: 2,
+          comment:
+            "Eveniet voluptatem rem ipsa et.\nAb aliquam amet illo dolor voluptates.\nAmet adipisci in ipsam quis voluptas sed in necessitatibus.",
+          createdAt: "2020-05-29T09:22:46.000Z",
+          updatedAt: "2020-05-29T09:22:46.000Z",
+          User: {
+            id: 2,
+            email: "user1@example.com",
+            password:
+              "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
+            name: "user1",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
+            introduction:
+              "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
+            role: "user",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
         }
-      }
-    },
-    {
-      id: 28,
-      description: "Corrupti quo qui provident quia error.",
-      UserId: 2,
-      createdAt: "2020-05-29T09:22:36.000Z",
-      updatedAt: "2020-05-29T09:22:36.000Z",
-      User: {
-        id: 2,
-        email: "user1@example.com",
-        password:
-          "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-        name: "user1",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-        introduction:
-          "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-        role: "user",
-        createdAt: "2020-05-29T09:22:36.000Z",
-        updatedAt: "2020-05-29T09:22:36.000Z"
-      },
-      Replies: {
-        id: 24,
-        TweetId: 28,
-        UserId: 2,
-        comment:
-          "Eveniet voluptatem rem ipsa et.\nAb aliquam amet illo dolor voluptates.\nAmet adipisci in ipsam quis voluptas sed in necessitatibus.",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 2,
-          email: "user1@example.com",
-          password:
-            "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-          name: "user1",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-          introduction:
-            "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-          role: "user",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
-        }
-      }
-    },
-    {
-      id: 45,
-      description: "quo",
-      UserId: 3,
-      createdAt: "2020-05-29T09:22:36.000Z",
-      updatedAt: "2020-05-29T09:22:36.000Z",
-      User: {
-        id: 3,
-        email: "user2@example.com",
-        password:
-          "$2a$10$714kdA7VvRb8GS6.WxBmFu.OIdvbuysDXoUQusvkSo8N8q6W6H3By",
-        name: "user2",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=55.42792213290439",
-        introduction: "enim",
-        role: "user",
-        createdAt: "2020-05-29T09:22:37.000Z",
-        updatedAt: "2020-05-29T09:22:37.000Z"
-      },
-      Replies: {
-        id: 25,
-        TweetId: 45,
-        UserId: 3,
-        comment:
-          "Autem fugit dolores autem corporis dolor cumque et iusto. Et laudantium earum molestias excepturi est. Aut eaque officia ullam corrupti assu",
-        createdAt: "2020-05-29T09:22:46.000Z",
-        updatedAt: "2020-05-29T09:22:46.000Z",
-        User: {
-          id: 3,
-          email: "user2@example.com",
-          password:
-            "$2a$10$714kdA7VvRb8GS6.WxBmFu.OIdvbuysDXoUQusvkSo8N8q6W6H3By",
-          name: "user2",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=55.42792213290439",
-          introduction: "enim",
-          role: "user",
-          createdAt: "2020-05-29T09:22:37.000Z",
-          updatedAt: "2020-05-29T09:22:37.000Z"
-        }
-      }
-    },
-    {
-      id: 14,
-      description: "Nisi natus aut eligendi sed facilis est eligendi.",
-      UserId: 2,
-      createdAt: "2020-05-29T09:22:36.000Z",
-      updatedAt: "2020-05-29T09:22:36.000Z",
-      User: {
-        id: 2,
-        email: "user1@example.com",
-        password:
-          "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-        name: "user1",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-        introduction:
-          "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-        role: "user",
-        createdAt: "2020-05-29T09:22:36.000Z",
-        updatedAt: "2020-05-29T09:22:36.000Z"
-      },
-      Replies: {
-        id: 26,
-        TweetId: 14,
-        UserId: 1,
-        comment: "aaaa",
-        createdAt: "2020-05-30T07:21:05.000Z",
-        updatedAt: "2020-05-30T07:21:05.000Z",
-        User: {
-          id: 1,
-          email: "root@example.com",
-          password:
-            "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
-          name: "root",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
-          introduction: "incidunt",
-          role: "admin",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
-        }
-      }
-    },
-    {
-      id: 14,
-      description: "Nisi natus aut eligendi sed facilis est eligendi.",
-      UserId: 2,
-      createdAt: "2020-05-29T09:22:36.000Z",
-      updatedAt: "2020-05-29T09:22:36.000Z",
-      User: {
-        id: 2,
-        email: "user1@example.com",
-        password:
-          "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-        name: "user1",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-        introduction:
-          "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-        role: "user",
-        createdAt: "2020-05-29T09:22:36.000Z",
-        updatedAt: "2020-05-29T09:22:36.000Z"
-      },
-      Replies: {
-        id: 27,
-        TweetId: 14,
-        UserId: 1,
-        comment: "sss",
-        createdAt: "2020-05-30T07:24:18.000Z",
-        updatedAt: "2020-05-30T07:24:18.000Z",
-        User: {
-          id: 1,
-          email: "root@example.com",
-          password:
-            "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
-          name: "root",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
-          introduction: "incidunt",
-          role: "admin",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
-        }
-      }
-    },
-    {
-      id: 14,
-      description: "Nisi natus aut eligendi sed facilis est eligendi.",
-      UserId: 2,
-      createdAt: "2020-05-29T09:22:36.000Z",
-      updatedAt: "2020-05-29T09:22:36.000Z",
-      User: {
-        id: 2,
-        email: "user1@example.com",
-        password:
-          "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-        name: "user1",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-        introduction:
-          "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-        role: "user",
-        createdAt: "2020-05-29T09:22:36.000Z",
-        updatedAt: "2020-05-29T09:22:36.000Z"
-      },
-      Replies: {
-        id: 33,
-        TweetId: 14,
-        UserId: 1,
-        comment: "dddd",
-        createdAt: "2020-05-30T07:31:05.000Z",
-        updatedAt: "2020-05-30T07:31:05.000Z",
-        User: {
-          id: 1,
-          email: "root@example.com",
-          password:
-            "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
-          name: "root",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
-          introduction: "incidunt",
-          role: "admin",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
-        }
-      }
-    },
-    {
-      id: 14,
-      description: "Nisi natus aut eligendi sed facilis est eligendi.",
-      UserId: 2,
-      createdAt: "2020-05-29T09:22:36.000Z",
-      updatedAt: "2020-05-29T09:22:36.000Z",
-      User: {
-        id: 2,
-        email: "user1@example.com",
-        password:
-          "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-        name: "user1",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-        introduction:
-          "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-        role: "user",
-        createdAt: "2020-05-29T09:22:36.000Z",
-        updatedAt: "2020-05-29T09:22:36.000Z"
-      },
-      Replies: {
-        id: 34,
-        TweetId: 14,
-        UserId: 1,
-        comment: "sss",
-        createdAt: "2020-05-30T07:32:15.000Z",
-        updatedAt: "2020-05-30T07:32:15.000Z",
-        User: {
-          id: 1,
-          email: "root@example.com",
-          password:
-            "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
-          name: "root",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
-          introduction: "incidunt",
-          role: "admin",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
-        }
-      }
-    },
-    {
-      id: 14,
-      description: "Nisi natus aut eligendi sed facilis est eligendi.",
-      UserId: 2,
-      createdAt: "2020-05-29T09:22:36.000Z",
-      updatedAt: "2020-05-29T09:22:36.000Z",
-      User: {
-        id: 2,
-        email: "user1@example.com",
-        password:
-          "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-        name: "user1",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-        introduction:
-          "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-        role: "user",
-        createdAt: "2020-05-29T09:22:36.000Z",
-        updatedAt: "2020-05-29T09:22:36.000Z"
-      },
-      Replies: {
-        id: 35,
-        TweetId: 14,
-        UserId: 1,
-        comment: "sfaf",
-        createdAt: "2020-05-30T07:34:34.000Z",
-        updatedAt: "2020-05-30T07:34:34.000Z",
-        User: {
-          id: 1,
-          email: "root@example.com",
-          password:
-            "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
-          name: "root",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
-          introduction: "incidunt",
-          role: "admin",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
-        }
-      }
-    },
-    {
-      id: 14,
-      description: "Nisi natus aut eligendi sed facilis est eligendi.",
-      UserId: 2,
-      createdAt: "2020-05-29T09:22:36.000Z",
-      updatedAt: "2020-05-29T09:22:36.000Z",
-      User: {
-        id: 2,
-        email: "user1@example.com",
-        password:
-          "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-        name: "user1",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-        introduction:
-          "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-        role: "user",
-        createdAt: "2020-05-29T09:22:36.000Z",
-        updatedAt: "2020-05-29T09:22:36.000Z"
-      },
-      Replies: {
-        id: 36,
-        TweetId: 14,
-        UserId: 1,
-        comment: "ggg",
-        createdAt: "2020-05-30T07:35:16.000Z",
-        updatedAt: "2020-05-30T07:35:16.000Z",
-        User: {
-          id: 1,
-          email: "root@example.com",
-          password:
-            "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
-          name: "root",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
-          introduction: "incidunt",
-          role: "admin",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
-        }
-      }
-    },
-    {
-      id: 14,
-      description: "Nisi natus aut eligendi sed facilis est eligendi.",
-      UserId: 2,
-      createdAt: "2020-05-29T09:22:36.000Z",
-      updatedAt: "2020-05-29T09:22:36.000Z",
-      User: {
-        id: 2,
-        email: "user1@example.com",
-        password:
-          "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-        name: "user1",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-        introduction:
-          "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-        role: "user",
-        createdAt: "2020-05-29T09:22:36.000Z",
-        updatedAt: "2020-05-29T09:22:36.000Z"
-      },
-      Replies: {
-        id: 37,
-        TweetId: 14,
-        UserId: 1,
-        comment: "ddaf",
-        createdAt: "2020-05-30T07:36:34.000Z",
-        updatedAt: "2020-05-30T07:36:34.000Z",
-        User: {
-          id: 1,
-          email: "root@example.com",
-          password:
-            "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
-          name: "root",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
-          introduction: "incidunt",
-          role: "admin",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
-        }
-      }
-    },
-    {
-      id: 14,
-      description: "Nisi natus aut eligendi sed facilis est eligendi.",
-      UserId: 2,
-      createdAt: "2020-05-29T09:22:36.000Z",
-      updatedAt: "2020-05-29T09:22:36.000Z",
-      User: {
-        id: 2,
-        email: "user1@example.com",
-        password:
-          "$2a$10$X.93jPbvSLJvPrAjMVyurOa82FZK0DpajNe0a4yDyo/A6PMndem4e",
-        name: "user1",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=69.1250168900434",
-        introduction:
-          "Id vero temporibus similique deserunt ea. Et placeat repudiandae maiores vel ut. Aut aut doloremque nulla nostrum architecto illo ex quibusdam iusto. Dolor et alias ullam aliquid culpa natus facere.",
-        role: "user",
-        createdAt: "2020-05-29T09:22:36.000Z",
-        updatedAt: "2020-05-29T09:22:36.000Z"
-      },
-      Replies: {
-        id: 38,
-        TweetId: 14,
-        UserId: 1,
-        comment: "dd",
-        createdAt: "2020-05-30T07:37:05.000Z",
-        updatedAt: "2020-05-30T07:37:05.000Z",
-        User: {
-          id: 1,
-          email: "root@example.com",
-          password:
-            "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
-          name: "root",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
-          introduction: "incidunt",
-          role: "admin",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
-        }
-      }
+      ]
     },
     {
       id: 52,
@@ -1439,27 +1161,29 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: 39,
-        TweetId: 52,
-        UserId: 1,
-        comment: "afdaf",
-        createdAt: "2020-05-30T12:46:31.000Z",
-        updatedAt: "2020-05-30T12:46:31.000Z",
-        User: {
-          id: 1,
-          email: "root@example.com",
-          password:
-            "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
-          name: "root",
-          avatar:
-            "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
-          introduction: "incidunt",
-          role: "admin",
-          createdAt: "2020-05-29T09:22:36.000Z",
-          updatedAt: "2020-05-29T09:22:36.000Z"
+      Replies: [
+        {
+          id: 39,
+          TweetId: 52,
+          UserId: 1,
+          comment: "afdaf",
+          createdAt: "2020-05-30T12:46:31.000Z",
+          updatedAt: "2020-05-30T12:46:31.000Z",
+          User: {
+            id: 1,
+            email: "root@example.com",
+            password:
+              "$2a$10$99njYFZOf1M0maJOd56qVOuu.MwZmji2bR6NJkTsWPdnj3rlGJ8Um",
+            name: "root",
+            avatar:
+              "https://loremflickr.com/240/240/man,women/?random=52.91279172455272",
+            introduction: "incidunt",
+            role: "admin",
+            createdAt: "2020-05-29T09:22:36.000Z",
+            updatedAt: "2020-05-29T09:22:36.000Z"
+          }
         }
-      }
+      ]
     },
     {
       id: 1,
@@ -1481,25 +1205,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 2,
@@ -1521,25 +1227,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 3,
@@ -1562,25 +1250,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 4,
@@ -1601,25 +1271,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 5,
@@ -1642,25 +1294,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 10,
@@ -1681,25 +1315,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:37.000Z",
         updatedAt: "2020-05-29T09:22:37.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 11,
@@ -1721,25 +1337,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 13,
@@ -1761,25 +1359,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 17,
@@ -1801,25 +1381,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:37.000Z",
         updatedAt: "2020-05-29T09:22:37.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 19,
@@ -1842,25 +1404,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 20,
@@ -1882,25 +1426,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 22,
@@ -1922,25 +1448,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 24,
@@ -1963,25 +1471,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 26,
@@ -2002,25 +1492,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 27,
@@ -2042,25 +1514,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 29,
@@ -2083,25 +1537,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 30,
@@ -2124,25 +1560,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 31,
@@ -2165,25 +1583,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 32,
@@ -2206,25 +1606,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 33,
@@ -2246,25 +1628,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:37.000Z",
         updatedAt: "2020-05-29T09:22:37.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 34,
@@ -2286,25 +1650,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 35,
@@ -2325,25 +1671,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:37.000Z",
         updatedAt: "2020-05-29T09:22:37.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 37,
@@ -2365,25 +1693,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 38,
@@ -2406,25 +1716,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 40,
@@ -2446,25 +1738,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 41,
@@ -2486,25 +1760,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:37.000Z",
         updatedAt: "2020-05-29T09:22:37.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 42,
@@ -2525,25 +1781,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:37.000Z",
         updatedAt: "2020-05-29T09:22:37.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 43,
@@ -2565,25 +1803,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 47,
@@ -2605,25 +1825,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 48,
@@ -2645,25 +1847,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:37.000Z",
         updatedAt: "2020-05-29T09:22:37.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 49,
@@ -2685,25 +1869,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 50,
@@ -2725,25 +1891,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 51,
@@ -2764,25 +1912,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 53,
@@ -2803,25 +1933,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     },
     {
       id: 54,
@@ -2842,25 +1954,7 @@ const dummyTweets = {
         createdAt: "2020-05-29T09:22:36.000Z",
         updatedAt: "2020-05-29T09:22:36.000Z"
       },
-      Replies: {
-        id: null,
-        TweetId: null,
-        UserId: null,
-        comment: null,
-        createdAt: null,
-        updatedAt: null,
-        User: {
-          id: null,
-          email: null,
-          password: null,
-          name: null,
-          avatar: null,
-          introduction: null,
-          role: null,
-          createdAt: null,
-          updatedAt: null
-        }
-      }
+      Replies: []
     }
   ]
 };

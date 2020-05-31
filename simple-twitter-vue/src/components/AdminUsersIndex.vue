@@ -5,17 +5,17 @@
         thead.thead-dark
           tr
             th(scope='col' ) 
-              button.btn.btn-dark(@click ='updateSort(keys.id)') #id
+              button.btn.btn-dark(@click.stop.prevent ='updateSort(keys.id)') #id
             th(scope='col') 
-              button.btn.btn-dark(@click ='updateSort(keys.name)') User
+              button.btn.btn-dark(@click.stop.prevent ='updateSort(keys.name)') User
             th(scope='col')
-              button.btn.btn-dark(@click ='updateSort(keys.tweets)') Tweets
+              button.btn.btn-dark(@click.stop.prevent ='updateSort(keys.tweets)') Tweets
             th(scope='col')
-              button.btn.btn-dark(@click ='updateSort(keys.followers)') Followers
+              button.btn.btn-dark(@click.stop.prevent ='updateSort(keys.followers)') Followers
             th(scope='col') 
-              button.btn.btn-dark(@click ='updateSort(keys.followings)') Followings
+              button.btn.btn-dark(@click.stop.prevent ='updateSort(keys.followings)') Followings
             th(scope='col')
-              button.btn.btn-dark(@click ='updateSort(keys.likes)')  Likes
+              button.btn.btn-dark(@click.stop.prevent ='updateSort(keys.likes)')  Likes
 
 
         tbody
