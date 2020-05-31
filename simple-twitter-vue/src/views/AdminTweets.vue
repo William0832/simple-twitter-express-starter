@@ -1,7 +1,7 @@
 <template lang="pug">
    .container.py-5
     AdminNavs
-    AdminNavs
+    AdminTweetsIndex(:tweets='this.tweets')
 </template>
 
 <script>
