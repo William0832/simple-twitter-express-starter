@@ -1,9 +1,11 @@
 const express = require('express')
 const helpers = require('./_helpers');
+const cors = require('cors')
 
 const app = express()
 const port = 3000
 
+app.use(cors()) // cors 的預設為全開放
 const bodyParser = require('body-parser')
 const session = require('express-session')
 

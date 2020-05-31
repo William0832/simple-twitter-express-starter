@@ -88,6 +88,10 @@ export default {
         }
 
         localStorage.setItem("token", data.token);
+
+        //store user in vuex
+        this.$store.commit("setCurrentUser", data.user);
+
         this.$router.push("/");
       } catch (error) {
         this.password = "";
