@@ -4,6 +4,8 @@
       <UserProfileCard
         :user="user"
         class="col-md-4 mr-auto"
+        @after-follow-user="afterFollowUser"
+        @after-unfollow-user="afterUnfollowUser"
       />
       <UserFollowerCard
         :follower-list="followerList"
@@ -55,9 +57,8 @@ export default {
     async fetchProfileData(userId) {
       try {
         const response = await UsersAPI.getUserProfile(userId);
-        const { data } = response;
-        // statusText
-        // if(statusText !== 'ok') throw new Error
+        const { data, statusText} = response;
+        if(statusText !== 'OK') throw new Error
 
         const { 
           id,
@@ -99,9 +100,9 @@ export default {
     async fetchFollowersData(userId){
       try {
         const response = await UsersAPI.getFollowers(userId);
-        const{ data } = response
+        const { data, statusText} = response;
+        if(statusText !== 'OK') throw new Error
         this.followerList = data.followers
-        console.log('followers', this.followerList)
 
       } catch {
         Toast.fire({
@@ -110,35 +111,54 @@ export default {
         });
       }
     },
-    afterFollow(userId) {
-      console.log('followed')
-      
-      this.users = this.users.map(user => {
-        if (user.id !== userId) {
-          return user;
+    afterFollow(followerId) {
+      console.log("following:", followerId);
+
+      this.followerList = this.followerList.map(follower => {
+        if (follower.id !== followerId) {
+          return follower;
         } else {
           return {
-            ...user,
-            // followerCount: user.followerCount + 1,
+            ...follower,
+            followerCount: follower.followerCount + 1,
             isFollowed: true
           };
         }
       });
     },
-    afterUnfollow(userId) {
-      console.log('unfollowed')
+    afterUnfollow(followerId) {
+      console.log("unfollowed");
+      console.log("unfollowed: ", followerId);
 
-      this.users = this.users.map(user => {
-        if (user.id !== userId) {
-          return user;
+      this.followerList = this.followerList.map(follower => {
+        if (follower.id !== followerId) {
+          return follower;
         } else {
           return {
-            ...user,
-            followerCount: user.followerCount - 1,
+            ...follower,
+            followerCount: follower.followerCount - 1,
             isFollowed: false
           };
         }
       });
+    },
+    afterFollowUser(userId){
+      if(userId === this.user.id){
+        this.user = {
+          ...this.user,
+          followerCount: this.user.followerCount + 1,
+          isFollowed: true
+        }
+      }
+    },
+    afterUnfollowUser(userId){
+      if(userId === this.user.id){
+        this.user = {
+          ...this.user,
+          followerCount: this.user.followerCount - 1,
+          isFollowed: false
+        }
+      }
     }
   }
 };

@@ -8,6 +8,7 @@ const helpers = require('../_helpers')
 const userController = require('../controllers/api/userController.js')
 const tweetController = require('../controllers/api/tweetController.js')
 const adminController = require('../controllers/api/adminController.js')
+const followshipController = require('../controllers/api/followshipController')
 
 const authenticated = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
@@ -55,6 +56,10 @@ router.post(
   upload.single('avatar'),
   userController.putUser
 )
+
+//Followship routes
+router.post('/followships/', authenticated, followshipController.postFollowship)
+router.delete('/followships/:followingId', authenticated, followshipController.deleteFollowship)
 
 //Admin routes
 router.get(

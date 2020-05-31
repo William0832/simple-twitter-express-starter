@@ -16,27 +16,22 @@
               <!-- user info -->
               <div class="col-8 d-flex flex-column align-items-start">
                 <h5 class>{{follower.name}}</h5>
-                <p style="text-align: left; width: 90%; min-height: 90%;">{{follower.introduction}}</p>
+                <p style="text-align: left; width: 90%;">{{follower.introduction}}</p>
 
-                <!-- follow-BTN -->
-                <div class="d-flex justify-content-between mb-2" style="width: 130px;">
-                  <!-- 判斷式可能要改 -->
+                <!-- follow-BTN  -->
+                <button
+                  v-if="!follower.isFollowed"
+                  @click.prevent.stop="follow(follower.id)"
+                  type="button"
+                  class="btn btn-primary"
+                >追蹤</button>
 
-                  
-                  <form 
-                    v-if="follower.isFollowed" 
-                    @submit.prevent.stop="unFollow(follower.id)"
-                  >
-                    <button
-                      type="submit"
-                      
-                      class="btn btn-danger"
-                    >Unfollow</button>
-
-                  </form>
-
-                  <button v-else @click.prevent.stop="follow(follower.id)" class="btn btn-primary">Follow</button>
-                </div>
+                <button
+                  v-else
+                  @click.prevent.stop="unfollow(follower.id)"
+                  type="button"
+                  class="btn btn-danger"
+                >取消追蹤</button>
                 
               </div>
             </div>
@@ -63,13 +58,10 @@ export default {
     async follow(followerId) {
       try {
         const { data } = await UsersAPI.follow(followerId);
-
         console.log("data", data);
-
-        // if (data.status !== "success") {
-        //   throw new Error(data.message);
-        // }
-
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
         // 通知父層
         this.$emit("after-follow", followerId);
       } catch (error) {
@@ -79,16 +71,17 @@ export default {
         });
       }
     },
-    async unfollow(userId) {
+    async unfollow(followerId) {
       try {
-        const { data } = await UsersAPI.unfollow({ userId });
+        const { data } = await UsersAPI.unfollow(followerId);
+        console.log("data", data);
 
         if (data.status !== "success") {
           throw new Error(data.message);
         }
 
         // 通知父層
-        this.$emit("after-unfollow", userId);
+        this.$emit("after-unfollow", followerId);
       } catch (error) {
         Toast.fire({
           icon: "error",

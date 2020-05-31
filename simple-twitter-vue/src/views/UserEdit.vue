@@ -1,18 +1,13 @@
 <template>
   <div class="container py-5">
-    <UserEditForm :initial-profile="profile" @after-submit="handleAfterSubmit" />
+    <UserEditForm :initial-user="user" @after-submit="handleAfterSubmit" />
   </div>
 </template>
 
 <script>
 import UserEditForm from "../components/UserEditForm";
-const dummyData = {
-  profile: {
-    name: "root",
-    image: "https://i.imgur.com/58ImzMM.png",
-    description: "hi there!"
-  }
-};
+import UsersAPI from "../apis/users";
+import { Toast } from "../utils/helpers";
 
 export default {
   components: {
@@ -20,10 +15,10 @@ export default {
   },
   data() {
     return {
-      profile: {
+      user: {
         name: "",
-        image: "",
-        description: ""
+        avatar: "",
+        introduction: ""
       }
     };
   },
@@ -32,21 +27,45 @@ export default {
     this.fetchProfileData(userId);
   },
   methods: {
-    fetchProfileData(userId) {
-      console.log("userId: ", userId);
-      const { profile } = dummyData;
-      this.profile = {
-        ...this.profile,
-        name: profile.name,
-        image: profile.image,
-        description: profile.description
-      };
+    async fetchProfileData(userId) {
+      try {
+        console.log("userId: ", userId);
+        const response = await UsersAPI.getUserProfile(userId);
+        const { data, statusText } = response;
+        if (statusText !== "OK") throw new Error();
+
+        this.user = {
+          ...this.user,
+          name: data.user.name,
+          avatar: data.user.avatar,
+          introduction: data.user.introduction
+        };
+
+        console.log("this user", this.user);
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得使用者資料"
+        });
+      }
     },
-    handleAfterSubmit(formData) {
-      // 透過 API 將表單資料送到伺服器
-      console.log(formData.entries())
-      for (let [name, value] of formData.entries()) {
-        console.log(name + ": " + value);
+    async handleAfterSubmit(formData) {
+      try {
+        // console.log(formData)
+        // console.log('id999', Number(this.$route.params.id))
+        const { response } = await UsersAPI.putUser({
+          userId: 1,
+          formData
+        });
+        console.log("putUser", response);
+        // if(data.statusText !== 'OK') throw new Error(data.message)
+        // this.$router.push({ name: 'users-followings', params: { id: this.user.id } })
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法編輯資料"
+        });
       }
     }
   }

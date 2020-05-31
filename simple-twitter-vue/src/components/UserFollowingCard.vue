@@ -18,20 +18,20 @@
                 <h5 class>{{following.name}}</h5>
                 <p style="text-align: left; width: 90%;">{{following.introduction}}</p>
 
-                <!-- follow-BTN -->
-                <form v-if="following.isFollowed" @submit.prevent.stop="unFollow(following.id)">
-                  <button type="submit" class="btn btn-danger">Unfollow</button>
-                </form>
-                
-                <form v-else action="POST" @submit.prevent.stop="follow(followingId)">
-                  
-                  <button
-                    type="submit"
-                    class="btn btn-primary"
-                  >Follow</button>
-                  <input hidden name="id" type="text" :value="following.id"/>
+                <!-- follow-BTN  -->
+                <button
+                  v-if="!following.isFollowed"
+                  @click.prevent.stop="follow(following.id)"
+                  type="button"
+                  class="btn btn-primary"
+                >追蹤</button>
 
-                </form>
+                <button
+                  v-else
+                  @click.prevent.stop="unfollow(following.id)"
+                  type="button"
+                  class="btn btn-danger"
+                >取消追蹤</button>
 
               </div>
             </div>
@@ -58,12 +58,11 @@ export default {
     async follow(followingId) {
       try {
         const { data } = await UsersAPI.follow(followingId);
-
         console.log("data", data);
 
-        // if (data.status !== "success") {
-        //   throw new Error(data.message);
-        // }
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
 
         // 通知父層
         this.$emit("after-follow", followingId);
@@ -74,23 +73,24 @@ export default {
         });
       }
     },
-    async unfollow(userId) {
+    async unfollow(followingId) {
       try {
-        const { data } = await UsersAPI.unfollow({ userId });
+        const { data } = await UsersAPI.unfollow(followingId);
+        console.log('unfollow data', data)
 
         if (data.status !== "success") {
           throw new Error(data.message);
         }
 
         // 通知父層
-        this.$emit("after-unfollow", userId);
+        this.$emit("after-unfollow", followingId);
       } catch (error) {
         Toast.fire({
           icon: "error",
           title: "無法取消追蹤，請稍後再試"
         });
       }
-    }
+    },
   }
 };
 </script>>

@@ -1,8 +1,13 @@
 <template>
   <div class="container-fluid">
     <div class="row px-5 mx-auto" style="width: 75%;">
-      <UserProfileCard :initial-profile="profile" class="col-md-4 mr-auto" />
-      <UserLikeCard class="col-md-7" />
+      <UserProfileCard
+        :user="user"
+        class="col-md-4 mr-auto"
+        @after-follow-user="afterFollowUser"
+        @after-unfollow-user="afterUnfollowUser"
+      />
+      <UserLikeCard :likes="likes" class="col-md-7" />
     </div>
   </div>
 </template>
@@ -10,16 +15,13 @@
 <script>
 import UserProfileCard from "../components/UserProfileCard";
 import UserLikeCard from "../components/UserLikeCard";
-// // 拿user profile資料的API
-// import UsersAPI from '../apis/users'
-// // 拿user Likes 資料的API
-
-import { Toast } from '../utils/helpers'
+import UsersAPI from "../apis/users";
+import { Toast } from "../utils/helpers";
 
 export default {
   components: {
     UserProfileCard,
-    UserLikeCard,
+    UserLikeCard
   },
   data() {
     return {
@@ -30,49 +32,96 @@ export default {
         avatar: "",
         introduction: "",
         role: "",
-        Followings: [],
-
-        // 以下應該要分開
-        Followers: [],
-        Tweets: [],
-        Likes:[]
+        isCurrentUser: null,
+        isFollowed: null,
+        tweetsCount: -1,
+        followingCount: -1,
+        followerCount: -1,
+        likeCount: -1
       },
+      likes: []
     };
   },
   created() {
     const { id: userId } = this.$route.params;
     this.fetchProfileData(userId);
+    this.fetchLikesData(userId);
   },
   methods: {
-   async fetchProfileData(userId) {
+    async fetchProfileData(userId) {
       try {
-        console.log(userId)
-        // 從user API 拿資料
-        // const response 
-        // const { data } = response
+        const response = await UsersAPI.getUserProfile(userId);
+        const { data, statusText } = response;
+        if (statusText !== "OK") throw new Error();
 
-        // this.user = {
-        //   ...this.user,
-        //   id,
-        //   email,
-        //   name,
-        //   avatar,
-        //   introduction,
-        //   role,
-        //   Followings,
+        const {
+          id,
+          email,
+          name,
+          avatar,
+          introduction,
+          role,
+          isCurrentUser,
+          isFollowed,
+          tweetsCount,
+          followingCount,
+          followerCount,
+          likeCount
+        } = data.user;
 
-        //   // 以下應該要分開
-        //   Followers,
-        //   Tweets,
-        //   Likes        
-        // };
-
-        // 從user Likes API 拿資料
-      } catch(error) {
+        this.user = {
+          ...this.user,
+          id,
+          email,
+          name,
+          avatar,
+          introduction,
+          role,
+          isCurrentUser,
+          isFollowed,
+          tweetsCount,
+          followingCount,
+          followerCount,
+          likeCount
+        };
+      } catch (error) {
+        console.log(error);
         Toast.fire({
-          icon: 'error',
-          title: '無法取得資料'
-        })
+          icon: "error",
+          title: "無法取得proile資料"
+        });
+      }
+    },
+    async fetchLikesData(userId) {
+      try {
+        const response = await UsersAPI.getLikes(userId);
+        const { data, statusText } = response;
+        if (statusText !== "OK") throw new Error();
+        this.likes = data.likes;
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法取得Followings資料"
+        });
+      }
+    },
+    afterFollowUser(userId) {
+      if (userId === this.user.id) {
+        this.user = {
+          ...this.user,
+          followerCount: this.user.followerCount + 1,
+          isFollowed: true
+        };
+      }
+    },
+    afterUnfollowUser(userId) {
+      if (userId === this.user.id) {
+        this.user = {
+          ...this.user,
+          followerCount: this.user.followerCount - 1,
+          isFollowed: false
+        };
       }
     }
   }

@@ -6,7 +6,6 @@
       </div>
 
       <div class="form-label-group mb-2">
-        <label for="email">email</label>
         <input
           v-model="email"
           id="email"
@@ -21,7 +20,6 @@
       </div>
 
       <div class="form-label-group mb-3">
-        <label for="password">Password</label>
         <input
           v-model="password"
           id="password"
@@ -54,6 +52,7 @@
 <script>
 import authorizationAPI from "../apis/authorization";
 import { Toast } from '../utils/helpers'
+
 export default {
   data() {
     return {
@@ -82,7 +81,7 @@ export default {
         })
 
         const { data } = response
-        //add statusText
+        
         if (data.status !== 'success') {
           throw new Error(data.message)
         }

@@ -37,14 +37,13 @@
         >追蹤</button>
 
         <button
-          v-else-if="!user.isFollowed && !user.isCurrentUser"
+          v-else-if="user.isFollowed && !user.isCurrentUser"
           @click.prevent.stop="unfollow(user.id)"
-          style="display: contents;"
           type="button"
           class="btn btn-danger"
         >取消追蹤</button>
 
-        <router-link v-else :to="{ name: users-profile-edit, query: { id: user.id } }" class="btn btn-primary ml-2">edit profile</router-link>
+        <router-link v-else :to="{ name: 'users-profile-edit', query: { id: user.id } }" class="btn btn-primary ml-2">edit profile</router-link>
 
       </div>
     </div>
@@ -65,17 +64,11 @@ export default {
   methods: {
     async follow(userId) {
       try {
-        console.log(userId);
         const { data } = await UsersAPI.follow(userId);
-
         console.log("data", data);
 
-        if (data.status !== "success") {
-          throw new Error(data.message);
-        }
-
         // 通知父層
-        this.$emit("after-follow", userId);
+        this.$emit("after-follow-user", userId);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -85,14 +78,15 @@ export default {
     },
     async unfollow(userId) {
       try {
-        const { data } = await UsersAPI.unfollow({ userId });
+        const { data } = await UsersAPI.unfollow(userId);
+        console.log("data", data);
 
         if (data.status !== "success") {
           throw new Error(data.message);
         }
 
         // 通知父層
-        this.$emit("after-unfollow", userId);
+        this.$emit("after-unfollow-user", userId);
       } catch (error) {
         Toast.fire({
           icon: "error",
