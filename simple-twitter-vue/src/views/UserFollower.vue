@@ -2,15 +2,11 @@
   <div class="container-fluid">
     <div class="row px-5 mx-auto" style="width: 85%;">
       <UserProfileCard
-        :is-current-user="isCurrentUser"
-        :initial-user="user"
-        :initial-following-list="currentUserFollowingList"
+        :user="user"
         class="col-md-4 mr-auto"
       />
       <UserFollowerCard
-        :initial-user="user"
-        :initial-following-list="currentUserFollowingList"
-
+        :follower-list="followerList"
         @after-follow="afterFollow"
         @after-unfollow="afterUnfollow"
         class="col-md-8"
@@ -39,42 +35,43 @@ export default {
         avatar: "",
         introduction: "",
         role: "",
-        Followings: [],
-
-        // 以下應該要分開
-        Followers: [],
-        Tweets: [],
-        Likes: []
+        isCurrentUser: null,
+        isFollowed: null,
+        tweetsCount: -1,
+        followingCount: -1,
+        followerCount: -1,
+        likeCount: -1
       },
-      currentUser: {},
-      currentUserFollowingList: [],
-      isCurrentUser: null
+       // user的followers清單
+      followerList: []
     };
   },
   created() {
     const { id: userId } = this.$route.params;
-    this.fetchUserData(userId);
-    this.getCurrentUserFollowingList();
+    this.fetchProfileData(userId);
+    this.fetchFollowersData(userId);
   },
   methods: {
-    async fetchUserData(userId) {
+    async fetchProfileData(userId) {
       try {
-        const response = await UsersAPI.getFollowers(userId);
+        const response = await UsersAPI.getUserProfile(userId);
         const { data } = response;
-        console.log("response", data);
+        // statusText
+        // if(statusText !== 'ok') throw new Error
 
-        // Followings,
-        // Tweets,
-        // Likes,
-
-        const {
+        const { 
           id,
           email,
           name,
           avatar,
           introduction,
           role,
-          Followers
+          isCurrentUser,
+          isFollowed,
+          tweetsCount,
+          followingCount,
+          followerCount,
+          likeCount
         } = data.user;
 
         this.user = {
@@ -85,13 +82,13 @@ export default {
           avatar,
           introduction,
           role,
-          Followers
-
-          // Tweets,
-          // Likes
+          isCurrentUser,
+          isFollowed,
+          tweetsCount,
+          followingCount,
+          followerCount,
+          likeCount
         };
-
-        this.isCurrentUser = false;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -99,15 +96,21 @@ export default {
         });
       }
     },
-    getCurrentUserFollowingList() {
-      // // 把currentUser follow 的 id們 做成array
-      // let currentUserFollowingList = this.currentUser.Followings.map(
-      //   user => user.id
-      // );
-      // console.log(currentUserFollowingList)
-      this.currentUserFollowingList = [2, 3];
+    async fetchFollowersData(userId){
+      try {
+        const response = await UsersAPI.getFollowers(userId);
+        const{ data } = response
+        this.followerList = data.followers
+        console.log('followers', this.followerList)
+
+      } catch {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得Followings資料"
+        });
+      }
     },
-    afterFollow() {
+    afterFollow(userId) {
       console.log('followed')
       
       this.users = this.users.map(user => {
@@ -122,7 +125,7 @@ export default {
         }
       });
     },
-    afterUnfollow() {
+    afterUnfollow(userId) {
       console.log('unfollowed')
 
       this.users = this.users.map(user => {

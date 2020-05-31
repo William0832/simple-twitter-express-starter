@@ -1,19 +1,18 @@
 <template>
   <div class="container-fluid">
     <div class="row px-5 mx-auto" style="width: 75%;">
-      <UserProfileCard :initial-profile="profile" class="col-md-4 mr-auto" />
-      <UserTweets class="col-md-7" />
+      <UserProfileCard :user="user" class="col-md-4 mr-auto" />
+      <!-- <UserTweets class="col-md-7" /> -->
     </div>
   </div>
 </template>
 
 <script>
 import UserProfileCard from "../components/UserProfileCard";
-import UserTweets from "../components/UserTweets";
+// import UserTweets from "../components/UserTweets";
+
 // 拿user profile資料的 API
 import UsersAPI from '../apis/users'
-// 拿user tweets資料的 API
-// API
 import { Toast } from '../utils/helpers'
 
 export default {
@@ -47,7 +46,7 @@ export default {
     async fetchProfileData(userId) {
       try{
         // 從user API 拿資料
-        const response 
+        // const response 
         const { data } = response
 
         this.user = {
@@ -78,4 +77,4 @@ export default {
     }
   }
 };
-</script>>
+</script>

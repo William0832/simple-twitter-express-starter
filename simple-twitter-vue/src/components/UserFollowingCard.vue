@@ -5,7 +5,7 @@
     <!-- cards -->
     <ul class="list-unstyled">
       <div class="row no-gutters d-flex justify-content-start">
-        <li v-for="following in user.Followings" :key="following.id" class="col-6">
+        <li v-for="following in followingList" :key="following.id" class="col-6">
           <div class="card mb-1" style="width: 98%; min-height: 300px;">
             <div id="card-contents" class="row no-gutters mt-2">
               <!-- avatar -->
@@ -16,20 +16,23 @@
               <!-- user info -->
               <div class="col-8 d-flex flex-column align-items-start">
                 <h5 class>{{following.name}}</h5>
-                <p style="text-align: left; width: 90%; min-height: 90%;">{{following.introduction}}</p>
+                <p style="text-align: left; width: 90%;">{{following.introduction}}</p>
 
                 <!-- follow-BTN -->
-                <div class="d-flex justify-content-between mb-2" style="width: 130px;">
-                  <!-- 判斷式可能要改 -->
+                <form v-if="following.isFollowed" @submit.prevent.stop="unFollow(following.id)">
+                  <button type="submit" class="btn btn-danger">Unfollow</button>
+                </form>
+                
+                <form v-else action="POST" @submit.prevent.stop="follow(followingId)">
+                  
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                  >Follow</button>
+                  <input hidden name="id" type="text" :value="following.id"/>
 
-                  <!-- v-if="follower.Followship.followerId === profile.id" -->
-                  <form @submit.prevent.stop="unFollow(following.id)">
-                    <button type="submit" class="btn btn-danger">Unfollow</button>
-                  </form>
+                </form>
 
-                  <!-- v-else -->
-                  <button @click.prevent.stop="follow(following.id)" class="btn btn-primary">Follow</button>
-                </div>
               </div>
             </div>
           </div>
@@ -46,39 +49,24 @@ import { Toast } from "../utils/helpers";
 
 export default {
   props: {
-    initialUser: {
-      type: Object,
-      required: true
-    },
-    initialFollowingList: {
+    followingList: {
       type: Array,
       required: true
     }
   },
-  data() {
-    return {
-      user: this.initialUser,
-      followingList: this.initialFollowingList
-    };
-  },
-  created() {
-    console.log("0", this.initialUser);
-    this.user = this.initialUser;
-  },
   methods: {
-    async follow(userId) {
+    async follow(followingId) {
       try {
-        const { data } = await UsersAPI.follow(userId);
+        const { data } = await UsersAPI.follow(followingId);
 
         console.log("data", data);
 
-        if (data.status !== "success") {
-          throw new Error(data.message);
-        }
+        // if (data.status !== "success") {
+        //   throw new Error(data.message);
+        // }
 
         // 通知父層
-        this.$emit('after-follow', userId)
-
+        this.$emit("after-follow", followingId);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -95,8 +83,7 @@ export default {
         }
 
         // 通知父層
-        this.$emit('after-unfollow', userId)
-
+        this.$emit("after-unfollow", userId);
       } catch (error) {
         Toast.fire({
           icon: "error",

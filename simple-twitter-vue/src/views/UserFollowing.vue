@@ -1,15 +1,9 @@
 <template>
   <div class="container-fluid">
     <div class="row px-5 mx-auto" style="width: 85%;">
-      <UserProfileCard
-        :initial-following-list="currentUserFollowingList"
-        :is-current-user="isCurrentUser"
-        :initial-user="user"
-        class="col-md-4 mr-auto"
-      />
+      <UserProfileCard :user="user" class="col-md-4 mr-auto" />
       <UserFollowingCard
-        :initial-user="user"
-        :initial-following-list="currentUserFollowingList"
+        :following-list="followingList"
         @after-follow="afterFollow"
         @after-unfollow="afterUnfollow"
         class="col-md-8"
@@ -38,38 +32,44 @@ export default {
         avatar: "",
         introduction: "",
         role: "",
-        Followings: [],
-
-        // 以下應該要分開
-        Followers: [],
-        Tweets: [],
-        Likes: []
+        isCurrentUser: null,
+        isFollowed: null,
+        tweetsCount: -1,
+        followingCount: -1,
+        followerCount: -1,
+        likeCount: -1
       },
-      // currentUser: {},
-      currentUserFollowingList: [],
-      isCurrentUser: false
+      // user的following清單
+      followingList: []
     };
   },
   created() {
     const { id: userId } = this.$route.params;
     this.fetchProfileData(userId);
-    this.getCurrentUserFollowingList();
+    this.fetchFollowingsData(userId)
   },
   methods: {
     async fetchProfileData(userId) {
       try {
-        const response = await UsersAPI.getFollowings(userId);
-
+        const response = await UsersAPI.getUserProfile(userId);
+        const{ data } = response
+        // , statusText
         // if(statusText !== 'ok') throw new Error
-        const {
+
+        const { 
           id,
           email,
           name,
           avatar,
           introduction,
           role,
-          Followings
-        } = response.data.user;
+          isCurrentUser,
+          isFollowed,
+          tweetsCount,
+          followingCount,
+          followerCount,
+          likeCount
+        } = data.user;
 
         this.user = {
           ...this.user,
@@ -79,37 +79,59 @@ export default {
           avatar,
           introduction,
           role,
-          Followings
-
-          // 以下應該要分開
-          // Followers,
-          // Tweets,
-          // Likes
+          isCurrentUser,
+          isFollowed,
+          tweetsCount,
+          followingCount,
+          followerCount,
+          likeCount
         };
+        
       } catch (error) {
         Toast.fire({
           icon: "error",
-          title: "無法取得資料"
+          title: "無法取得proile資料"
         });
       }
     },
-    afterFollow() {
-      console.log('followed')
+    async fetchFollowingsData(userId){
+      try {
+        const response = await UsersAPI.getFollowings(userId);
+        const{ data } = response
+        this.followingList = data.followings
+      } catch {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得Followings資料"
+        });
+      }
+    },
+    afterFollow(followingId) {
+      console.log("followed");
+      console.log("followingId", followingId)
+      console.log(this.followingList)
+
       
-      this.users = this.users.map(user => {
-        if (user.id !== userId) {
-          return user;
+      // if(this.user.id !== userId){
+      //   console.log(this.user.id, userId)
+      // }
+
+      this.followingList = this.followingList.map(following => {
+        if (following.id !== followingId) {
+          return following;
         } else {
           return {
-            ...user,
-            // followerCount: user.followerCount + 1,
+            ...following,
+            followerCount: following.followerCount + 1,
             isFollowed: true
           };
         }
       });
+
+
     },
-    afterUnfollow() {
-      console.log('unfollowed')
+    afterUnfollow(userId) {
+      console.log("unfollowed");
 
       this.users = this.users.map(user => {
         if (user.id !== userId) {

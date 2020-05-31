@@ -5,7 +5,7 @@
     <!-- cards -->
     <ul class="list-unstyled">
       <div class="row no-gutters">
-        <li v-for="follower in user.Followers" :key="follower.id" class="col-6">
+        <li v-for="follower in followerList" :key="follower.id" class="col-6">
           <div class="card mb-1" style="width: 98%; min-height: 300px;">
             <div id="card-contents" class="row no-gutters mt-2">
               <!-- image -->
@@ -24,8 +24,8 @@
 
                   
                   <form 
-                    v-if="followingList.includes(follower.id)"
-                    @submit.prevent.stop="unFollow(following.id)"
+                    v-if="follower.isFollowed" 
+                    @submit.prevent.stop="unFollow(follower.id)"
                   >
                     <button
                       type="submit"
@@ -35,7 +35,7 @@
 
                   </form>
 
-                  <button v-else @click.prevent.stop="follow(following.id)" class="btn btn-primary">Follow</button>
+                  <button v-else @click.prevent.stop="follow(follower.id)" class="btn btn-primary">Follow</button>
                 </div>
                 
               </div>
@@ -54,38 +54,24 @@ import { Toast } from "../utils/helpers";
 
 export default {
   props: {
-    initialUser: {
-      type: Object,
-      required: true
-    },
-    initialFollowingList: {
+    followerList: {
       type: Array,
       required: true
     }
   },
-  data() {
-    return {
-      user: this.initialUser,
-      followingList: this.initialFollowingList
-    }
-  },
-  created(){
-    console.log('initialUser0', this.initialUser)
-  },
   methods: {
-    async follow(userId) {
+    async follow(followerId) {
       try {
-        const { data } = await UsersAPI.follow(userId);
+        const { data } = await UsersAPI.follow(followerId);
 
         console.log("data", data);
 
-        if (data.status !== "success") {
-          throw new Error(data.message);
-        }
+        // if (data.status !== "success") {
+        //   throw new Error(data.message);
+        // }
 
         // 通知父層
-        this.$emit('after-follow', userId)
-
+        this.$emit("after-follow", followerId);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -102,8 +88,7 @@ export default {
         }
 
         // 通知父層
-        this.$emit('after-unfollow', userId)
-
+        this.$emit("after-unfollow", userId);
       } catch (error) {
         Toast.fire({
           icon: "error",

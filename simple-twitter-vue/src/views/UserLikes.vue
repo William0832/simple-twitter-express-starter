@@ -10,9 +10,9 @@
 <script>
 import UserProfileCard from "../components/UserProfileCard";
 import UserLikeCard from "../components/UserLikeCard";
-// 拿user profile資料的API
-import UsersAPI from '../apis/users'
-// 拿user Likes 資料的API
+// // 拿user profile資料的API
+// import UsersAPI from '../apis/users'
+// // 拿user Likes 資料的API
 
 import { Toast } from '../utils/helpers'
 
@@ -46,25 +46,26 @@ export default {
   methods: {
    async fetchProfileData(userId) {
       try {
+        console.log(userId)
         // 從user API 拿資料
-        const response 
-        const { data } = response
+        // const response 
+        // const { data } = response
 
-        this.user = {
-          ...this.user,
-          id,
-          email,
-          name,
-          avatar,
-          introduction,
-          role,
-          Followings,
+        // this.user = {
+        //   ...this.user,
+        //   id,
+        //   email,
+        //   name,
+        //   avatar,
+        //   introduction,
+        //   role,
+        //   Followings,
 
-          // 以下應該要分開
-          Followers,
-          Tweets,
-          Likes        
-        };
+        //   // 以下應該要分開
+        //   Followers,
+        //   Tweets,
+        //   Likes        
+        // };
 
         // 從user Likes API 拿資料
       } catch(error) {

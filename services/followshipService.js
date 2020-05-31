@@ -9,19 +9,16 @@ const followshipService = {
     try {
       const followerId = String(helpers.getUser(req).id)
       const followingId = req.body.id
-
+    
       if (followerId === followingId) {
         return callback({ status: 'error', message: "users can't follow themselves" })
       }
-
       const followingUser = await User.findByPk(followingId, {
         attributes: ['id']
       })
-
       if (!followingUser) {
         return callback({ status: 'error', message: "following target didn't exist" })
       }
-
       const checkFollowship = await User.findByPk(followerId, {
         attributes: [],
         include: [
@@ -30,7 +27,6 @@ const followshipService = {
           }
         ]
       })
-
       //Check if already following target user
       const followings = checkFollowship.Followings.map(function (following) {
         return String(following.id)
