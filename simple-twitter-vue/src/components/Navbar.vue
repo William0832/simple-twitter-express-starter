@@ -7,7 +7,7 @@
     #navbarSupportedContent.navbar-collapse.collapse
       .ml-auto.d-flex.align-items-center
         // is user is admin
-        router-link.text-white.mr-3(:to='admin-tweets' v-if="currentUser.role=='admin'")
+        router-link.text-white.mr-3(:to="{name:'admin-tweets'}" v-if="currentUser.role==roles.admin")
           | 管理員後台
         // is user is login
         router-link.text-white.mr-3(:to="{name: 'user', params: { id: currentUser.id }}")
@@ -22,6 +22,14 @@ import { mapState } from "vuex";
 
 export default {
   name: "Navbar",
+  data() {
+    return {
+      roles: {
+        admin: "admin",
+        user: "user"
+      }
+    };
+  },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"])
   }
