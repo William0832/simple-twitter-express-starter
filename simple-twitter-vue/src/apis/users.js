@@ -65,5 +65,30 @@ export default {
                 return status < 500;
             }
         })
+    },
+    getReplies(tweetId){
+        return apiHelper.get(`/tweets/${tweetId}/replies`, {
+            headers: { Authorization: `Bearer ${getToken()}` },
+            validateStatus: function (status) {
+                return status < 500;
+            }
+        })
+    },
+    like(tweetId){
+        return apiHelper.post(`/tweets/${tweetId}/like`, null, {
+            headers: { Authorization: `Bearer ${getToken()}` },
+            validateStatus: function (status) {
+                return status < 500;
+            }
+        })
+    },
+    unlike(tweetId){
+        return apiHelper.post(`/tweets/${tweetId}/unlike`, null, {
+            headers: { Authorization: `Bearer ${getToken()}` },
+            validateStatus: function (status) {
+                return status < 500;
+            }
+        })
     }
+
 }          

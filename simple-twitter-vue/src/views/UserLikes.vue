@@ -7,7 +7,12 @@
         @after-follow-user="afterFollowUser"
         @after-unfollow-user="afterUnfollowUser"
       />
-      <UserLikeCard :likes="likes" class="col-md-7" />
+      <UserLikeCard
+        :likes="likes"
+        @after-like="afterLike"
+        @after-unlike="afterUnlike"
+        class="col-md-7"
+      />
     </div>
   </div>
 </template>
@@ -102,7 +107,7 @@ export default {
         console.log(error);
         Toast.fire({
           icon: "error",
-          title: "無法取得Followings資料"
+          title: "無法取得Likes資料"
         });
       }
     },
@@ -123,6 +128,32 @@ export default {
           isFollowed: false
         };
       }
+    },
+    afterLike(tweetId) {
+      this.likes = this.likes.map(like => {
+        if (like.id !== tweetId) {
+          return like;
+        } else {
+          return {
+            ...like,
+            likesCount: like.likesCount + 1,
+            isLiked: true
+          };
+        }
+      });
+    },
+    afterUnlike(tweetId) {
+      this.likes = this.likes.map(like => {
+        if (like.id !== tweetId) {
+          return like;
+        } else {
+          return {
+            ...like,
+            likesCount: like.likesCount - 1,
+            isLiked: false
+          };
+        }
+      });
     }
   }
 };

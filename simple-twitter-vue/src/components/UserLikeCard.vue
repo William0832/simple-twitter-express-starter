@@ -23,8 +23,11 @@
               >{{like.description}}</p>
 
               <div class="d-flex justify-content-between" style="width: 130px;">
-                <a href>Reply</a>
-                <a href>Like</a>
+                <router-link to class="mr-2">Reply({{like.repliesCount}})</router-link>
+
+                <router-link v-if="!like.isLiked" @click.prevent.stop="like(like.id)" to style="color: red;">Like({{like.likesCount}})</router-link>
+                <a href v-else @click.prevent.stop="unlike(like.id)" style="color: red;">Unlike({{like.likesCount}})</a>
+
               </div>
             </div>
           </div>
@@ -36,6 +39,8 @@
 
 <script>
 import { timeFilter } from './../utils/mixins'
+import UsersAPI from "../apis/users";
+import { Toast } from "../utils/helpers";
 
 export default {
   mixins: [timeFilter],
@@ -44,6 +49,44 @@ export default {
       type: Array,
       required: true
     }
+  },
+  methods: {
+    async like(tweetId) {
+      try {
+        const { data } = await UsersAPI.like(tweetId);
+        console.log("like", data);
+
+        // if (data.status !== "success") {
+        //   throw new Error(data.message);
+        // }
+
+        // 通知父層
+        this.$emit("after-like", tweetId);
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法加入like，請稍後再試"
+        });
+      }
+    },
+    async unlike(tweetId) {
+      try {
+        const { data } = await UsersAPI.unlike(tweetId);
+        console.log('unlike data', data)
+
+        // if (data.status !== "success") {
+        //   throw new Error(data.message);
+        // }
+
+        // 通知父層
+        this.$emit("after-unlike", tweetId);
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取消like，請稍後再試"
+        });
+      }
+    },
   }
 };
 </script>>
