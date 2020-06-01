@@ -19,7 +19,7 @@ const likeService = {
       }
 
       // 找Like資料庫有沒有該筆tweetId 與 userId
-      let likedTweet = await Like.findOne({ where: { TwitterId: tweetId, UserId: userId }   })
+      let likedTweet = await Like.findOne({ where: { TweetId: tweetId, UserId: userId }   })
 
       // 如果有，代表User已按like，如果沒有，就新增一筆Like紀錄
       if(likedTweet){

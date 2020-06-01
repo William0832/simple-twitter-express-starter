@@ -83,10 +83,10 @@ export default {
     handleFileChange(e) {
       const { files } = e.target;
       if (files.length === 0) {
-        this.user.image = "";
+        this.user.avatar = "";
       } else {
-        const imageURL = window.URL.createObjectURL(files[0]);
-        this.user.image = imageURL;
+        const avatarURL = window.URL.createObjectURL(files[0]);
+        this.user.avatar = avatarURL;
       }
     },
     handleSubmit(e) {

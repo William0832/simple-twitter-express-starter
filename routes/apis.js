@@ -37,7 +37,8 @@ const authenticatedAdmin = (req, res, next) => {
 }
 const isOwner = (req, res, next) => {
   let user = helpers.getUser(req)
-  if (String(user.id) === req.params.id) return next()
+  if (String(user.id) === req.params.id) { return next() }
+  console.log('userIdoo:', user.id, 'req.params: ', req.params.id)
   return res.status(302).json({ status: 'error', message: '沒有修改權限' })
 }
 

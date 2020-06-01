@@ -51,20 +51,23 @@ export default {
     },
     async handleAfterSubmit(formData) {
       try {
-        // console.log(formData)
-        // console.log('id999', Number(this.$route.params.id))
-        const { response } = await UsersAPI.putUser({
+        // for( let [name, value] of formData.entries()){
+        //   console.log(name,': ii',value)
+        // }
+        const { data } = await UsersAPI.putUser({
           userId: 1,
           formData
         });
-        console.log("putUser", response);
-        // if(data.statusText !== 'OK') throw new Error(data.message)
+
+        console.log('data: ', data)
+        if(data.status !== 'success') throw new Error(data.message)
+        // console.log("putUser", data);
         // this.$router.push({ name: 'users-followings', params: { id: this.user.id } })
       } catch (error) {
         console.log(error);
         Toast.fire({
           icon: "error",
-          title: "無法編輯資料"
+          title: error
         });
       }
     }

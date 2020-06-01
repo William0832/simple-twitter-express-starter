@@ -7,17 +7,22 @@
         @after-follow-user="afterFollowUser"
         @after-unfollow-user="afterUnfollowUser"
       />
-      <UserTweets :tweets="tweets" class="col-md-7" />
+      <UserTweets
+        :tweets="tweets"
+        @after-add-like="afterLike"
+        @after-delete-like="afterUnlike"
+        class="col-md-7"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import UserProfileCard from "../components/UserProfileCard";
-import UserTweets from "../components/UserTweets";
+import UserTweets from "../components/TweetIndex";
 
-// 拿user profile資料的 API
 import UsersAPI from "../apis/users";
+import tweetAPI from "../apis/tweet";
 import { Toast } from "../utils/helpers";
 
 export default {
@@ -47,7 +52,7 @@ export default {
   created() {
     const { id: userId } = this.$route.params;
     this.fetchProfileData(userId);
-    this.fetchTweetsData(userId)
+    this.fetchTweetsData(userId);
   },
   methods: {
     async fetchProfileData(userId) {
@@ -99,10 +104,9 @@ export default {
         const { data, statusText } = response;
         if (statusText !== "OK") throw new Error();
 
-        this.tweets = data.tweets
-
+        this.tweets = data.tweets;
       } catch (error) {
-        console.log(error)
+        console.log(error);
         Toast.fire({
           icon: "error",
           title: "無法取得資料"
@@ -125,6 +129,66 @@ export default {
           followerCount: this.user.followerCount - 1,
           isFollowed: false
         };
+      }
+    },
+    async afterLike(tweetId) {
+      try {
+        console.log("add like");
+        const { data } = await tweetAPI.tweets.like(tweetId);
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.tweets = this.tweets.map(tweet => {
+          if (tweet.id !== tweetId) {
+            return tweet;
+          } else {
+            return {
+              ...tweet,
+              likesCount: tweet.likesCount + 1,
+              isLiked: true
+            };
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法add like，請稍後再試"
+        });
+      }
+    },
+    async afterUnlike(tweetId) {
+      try {
+        console.log("delete like");
+        const { data } = await tweetAPI.tweets.unlike(tweetId);
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        // 如果在自己頁面按dislike，like頁面直接刪除
+        if (this.user.isCurrentUser) {
+          this.tweets = this.tweets.filter(tweet => tweet.id !== tweetId);
+        }
+
+        this.tweets = this.tweets.map(tweet => {
+          if (tweet.id !== tweetId) {
+            return tweet;
+          } else {
+            return {
+              ...tweet,
+              likesCount: tweet.likesCount - 1,
+              isLiked: false
+            };
+          }
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取消like，請稍後再試"
+        });
       }
     }
   }
