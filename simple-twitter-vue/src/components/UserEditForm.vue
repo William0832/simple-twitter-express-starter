@@ -45,13 +45,15 @@
           ></textarea>
         </div>
 
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button :disabled="user.isCurrentUser === false || isProcessing === true" type="submit" class="btn btn-primary">Update</button>
       </div>
     </form>
   </div>
 </template>
 
 <script>
+import { Toast } from "../utils/helpers";
+
 export default {
   props: {
     initialUser: {
@@ -64,12 +66,11 @@ export default {
       user: {
         name: "",
         avatar: "",
-        introduction: ""
-      }
+        introduction: "",
+        isCurrentUser: null
+      },
+      isProcessing: false
     };
-  },
-  created() {
-
   },
   watch: {
     initialUser(newValue){
@@ -89,10 +90,19 @@ export default {
         this.user.avatar = avatarURL;
       }
     },
-    handleSubmit(e) {
-      const form = e.target;
-      const formData = new FormData(form);
-      this.$emit("after-submit", formData);
+    async handleSubmit(e) {
+      try {
+        this.isProcessing = true
+        const form = e.target;
+        const formData = new FormData(form);
+        this.$emit("after-submit", formData);
+      } catch (error) {
+        this.isProcessing = false
+        Toast.fire ({
+          icon: 'error',
+          title: '編輯資料時發生錯誤'
+        })
+      }
     }
   }
 };

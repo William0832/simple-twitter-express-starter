@@ -5,7 +5,7 @@
     <!-- cards -->
     <ul class="list-unstyled">
       <div class="row no-gutters">
-        <li v-for="follower in followerList" :key="follower.id" class="col-6">
+        <li v-for="follower in followList" :key="follower.id" class="col-6">
           <div class="card mb-1" style="width: 98%; min-height: 300px;">
             <div id="card-contents" class="row no-gutters mt-2">
               <!-- image -->
@@ -20,6 +20,7 @@
 
                 <!-- follow-BTN  -->
                 <button
+                  :disabled="isProcessing"
                   v-if="!follower.isFollowed"
                   @click.prevent.stop="follow(follower.id)"
                   type="button"
@@ -27,6 +28,7 @@
                 >追蹤</button>
 
                 <button
+                  :disabled="isProcessing"
                   v-else
                   @click.prevent.stop="unfollow(follower.id)"
                   type="button"
@@ -49,14 +51,20 @@ import { Toast } from "../utils/helpers";
 
 export default {
   props: {
-    followerList: {
+    followList: {
       type: Array,
       required: true
+    }
+  },
+  data(){
+    return {
+      isProcessing: false
     }
   },
   methods: {
     async follow(followerId) {
       try {
+        this.isProcessing = true
         const { data } = await UsersAPI.follow(followerId);
         console.log("data", data);
         if (data.status !== "success") {
@@ -64,7 +72,9 @@ export default {
         }
         // 通知父層
         this.$emit("after-follow", followerId);
+        this.isProcessing = false
       } catch (error) {
+        this.isProcessing = false
         Toast.fire({
           icon: "error",
           title: "無法加入追蹤，請稍後再試"
@@ -73,6 +83,7 @@ export default {
     },
     async unfollow(followerId) {
       try {
+        this.isProcessing = true
         const { data } = await UsersAPI.unfollow(followerId);
         console.log("data", data);
 
@@ -82,7 +93,9 @@ export default {
 
         // 通知父層
         this.$emit("after-unfollow", followerId);
+        this.isProcessing = false
       } catch (error) {
+        this.isProcessing = false
         Toast.fire({
           icon: "error",
           title: "無法取消追蹤，請稍後再試"

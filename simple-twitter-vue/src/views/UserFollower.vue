@@ -8,7 +8,7 @@
         @after-unfollow-user="afterUnfollowUser"
       />
       <UserFollowerCard
-        :follower-list="followerList"
+        :follow-list="followerList"
         @after-follow="afterFollow"
         @after-unfollow="afterUnfollow"
         class="col-md-8"
@@ -19,7 +19,7 @@
 
 <script>
 import UserProfileCard from "../components/UserProfileCard";
-import UserFollowerCard from "../components/UserFollowerCard";
+import UserFollowerCard from "../components/UserFollowCard";
 import UsersAPI from "../apis/users";
 import { Toast } from "../utils/helpers";
 

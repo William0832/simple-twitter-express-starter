@@ -14,8 +14,8 @@
             router-link(:to="{ name: 'replies', params: { tweet_id: tweet.id }}")
               button.btn.btn-light Reply ({{tweet.repliesCount}})
           .col.mw-50
-            button.btn.btn-danger(v-if ='tweet.isLiked' @click.stop.prevent="deleteLike(tweet.id)") Dislike ({{tweet.likesCount}} )
-            button.btn.btn-light(v-else @click.stop.prevent="addLike(tweet.id)") Like ({{tweet.likesCount}} )
+            button.btn.btn-danger(:disabled="isProcessing" v-if ='tweet.isLiked' @click.stop.prevent="deleteLike(tweet.id)") Dislike ({{tweet.likesCount}} )
+            button.btn.btn-light(:disabled="isProcessing" v-else @click.stop.prevent="addLike(tweet.id)") Like ({{tweet.likesCount}} )
 </template>
 
 <script>
@@ -29,13 +29,25 @@ export default {
       required: true
     }
   },
+  data(){
+    return {
+      isProcessing: false
+    }
+  },
   methods: {
     addLike(tweetId) {
+      this.isProcessing = true
       this.$emit("after-add-like", tweetId);
+      setTimeout(() => {
+        this.isProcessing = false
+      }, 500);
     },
     deleteLike(tweetId) {
+      this.isProcessing = true
       this.$emit("after-delete-like", tweetId);
-    }
+      setTimeout(() => {
+        this.isProcessing = false
+      }, 500);    }
   }
 };
 </script>

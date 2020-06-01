@@ -16,13 +16,25 @@ export default {
   data() {
     return {
       user: {
+        id: "",
         name: "",
         avatar: "",
-        introduction: ""
+        introduction: "",
+        isCurrentUser: null
       }
     };
   },
   created() {
+    // 使用者不可以編輯其他人的頁面
+    setTimeout(() => {
+      if(!this.user.isCurrentUser){
+        Toast.fire({
+          icon: 'warning',
+          title: '使用者不允許編輯其他人的頁面'
+        })
+        return this.$router.push(`/users/${this.user.id}`)
+      }
+    }, 500);
     const { id: userId } = this.$route.params;
     this.fetchProfileData(userId);
   },
@@ -36,9 +48,12 @@ export default {
 
         this.user = {
           ...this.user,
+          id: data.user.id,
+          isCurrentUser: data.user.isCurrentUser,
           name: data.user.name,
           avatar: data.user.avatar,
           introduction: data.user.introduction
+          
         };
 
         console.log("this user", this.user);
@@ -51,18 +66,13 @@ export default {
     },
     async handleAfterSubmit(formData) {
       try {
-        // for( let [name, value] of formData.entries()){
-        //   console.log(name,': ii',value)
-        // }
         const { data } = await UsersAPI.putUser({
-          userId: 1,
+          userId: this.user.id,
           formData
         });
-
         console.log('data: ', data)
         if(data.status !== 'success') throw new Error(data.message)
-        // console.log("putUser", data);
-        // this.$router.push({ name: 'users-followings', params: { id: this.user.id } })
+        this.$router.push({ name: 'user', params: { id: this.user.id } })
       } catch (error) {
         console.log(error);
         Toast.fire({

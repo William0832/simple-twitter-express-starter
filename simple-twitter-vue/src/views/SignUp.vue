@@ -58,7 +58,7 @@
         />
       </div>
 
-      <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Submit</button>
+      <button :disabled="isProcessing" class="btn btn-lg btn-primary btn-block mb-3" type="submit">Submit</button>
 
       <div class="text-center mb-3">
         <p>
@@ -81,8 +81,10 @@ export default {
       name: "",
       email: "",
       password: "",
-      passwordCheck: ""
+      passwordCheck: "",
+      isProcessing: false
     };
+    
   },
   methods: {
     async handleSubmit() {
@@ -95,7 +97,7 @@ export default {
           return;
         }
 
-        // this.isProcessing = true;
+        this.isProcessing = true;
 
         const response = await authorizationAPI.signUp({
           email: this.email,
@@ -115,11 +117,11 @@ export default {
 
         this.$router.push("/signin");
       } catch (error) {
+        this.isProcessing = false
         Toast.fire({
           icon: "warning",
           title: "請確認您輸入了正確的帳號密碼"
         });
-        // this.isProcessing = false;
         console.log(error);
       }
     }
