@@ -9,7 +9,7 @@ module.exports = (io) => {
 
   io.on('connection', (socket) => {
     console.log('soket id :', socket.id)
-    console.log('session:', socket.request.session)
+    // console.log('session:', socket.request.session)
 
     io.clients((error, clients) => {
       if (error) throw error;
@@ -24,6 +24,7 @@ module.exports = (io) => {
       else {
         connectedUser[userName].push(socket.id)
       }
+
       console.log(connectedUser)
     })
 
@@ -38,7 +39,19 @@ module.exports = (io) => {
       console.log(connectedUser)
     })
 
-    chatController(io, socket)
+
+    socket.on('chat', (msg) => {
+      console.log(socket.id, 'chat:', msg)
+      io.to('chatRoom').emit('chat', msg);
+    });
+
+    socket.on('invite', (user) => {
+      console.log('id', connectedUser[user])
+      socket.join('chatRoom')
+      io.sockets.connected[connectedUser[user]].join('chatRoom')
+    });
+
+    // chatController(io, socket)
   });
 
 }

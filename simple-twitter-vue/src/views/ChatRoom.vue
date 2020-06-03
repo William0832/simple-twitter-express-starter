@@ -6,6 +6,7 @@
     <form action @submit.stop.prevent="afterSubmit">
       <input id="m" autocomplete="off" v-model="message" />
       <button type="submit">Send</button>
+      <button @click.stop.prevent="afterInvite">Invite</button>
     </form>
   </div>
 </template>
@@ -31,7 +32,7 @@ export default {
     },
     disconnect() {
       console.log("disconnected");
-      this.$socket.emit("logout", "userVue");
+      // this.$socket.emit("logout", "userVue");
     },
     chat(msg) {
       console.log("sockets", msg);
@@ -42,6 +43,9 @@ export default {
     afterSubmit() {
       this.$socket.emit("chat", this.message);
       this.message = "";
+    },
+    afterInvite() {
+      this.$socket.emit("invite", "userHtml");
     }
   }
 };
