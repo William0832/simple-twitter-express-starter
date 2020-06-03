@@ -12,7 +12,7 @@
         // is user is login
         router-link.text-white.mr-3(:to="{name: 'user', params: { id: currentUser.id }}")
           | 使用者 您好
-        button.btn.btn-sm.btn-outline-success.my-2.my-sm-0(type='button')
+        button.btn.btn-sm.btn-outline-success.my-2.my-sm-0(type='button'  @click="logout")
           | 登出
 </template>
 
@@ -32,6 +32,12 @@ export default {
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"])
+  },
+  methods: {
+    logout() {
+      this.$store.commit("revokeAuthentication");
+      this.$router.push("/signin");
+    }
   }
 };
 </script>
