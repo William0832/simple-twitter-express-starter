@@ -10,16 +10,16 @@ const routes = [
   {
     path: '/',
     name: 'root',
-    redirect: '/signin'
+    redirect: '/tweets'
   },
   {
     path: '/signin',
-    name: 'Sign-in',
+    name: 'sign-in',
     component: () => import('../views/SignIn.vue')
   },
   {
     path: '/signup',
-    name: 'Sign-up',
+    name: 'sign-up',
     component: () => import('../views/SignUp.vue')
   },
   {
@@ -78,10 +78,30 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  // 使用 dispatch 呼叫 Vuex 內的 actions
-  store.dispatch('fetchCurrentUser')
+router.beforeEach((async (to, from, next) => {
+  const tokenInLocalStorage = localStorage.getItem('token')
+  const tokenInStore = store.state.token
+  let isAuthenticated = store.state.isAuthenticated
+
+  // 比較 localStorage 和 store 中的 token 是否一樣
+  if (tokenInLocalStorage && tokenInLocalStorage !== tokenInStore) {
+    isAuthenticated = await store.dispatch('fetchCurrentUser')
+  }
+
+  // 如果 token 無效則轉址到登入頁
+  if (!isAuthenticated && to.name !== 'sign-in') {
+    next('/signin')
+    return
+  }
+
+  console.log(isAuthenticated)
+  // 如果 token 有效則轉址到餐聽首頁
+  if (isAuthenticated && to.name === 'sign-in') {
+    next('/tweets')
+    return
+  }
+
   next()
-})
+}))
 
 export default router

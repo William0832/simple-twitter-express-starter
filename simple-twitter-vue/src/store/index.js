@@ -13,7 +13,8 @@ export default new Vuex.Store({
       email: '',
       role: 'user'
     },
-    isAuthenticated: false
+    isAuthenticated: false,
+    token: ''
   },
   mutations: {
     setCurrentUser(state, currentUser) {
@@ -22,12 +23,17 @@ export default new Vuex.Store({
         // 將 API 取得的 currentUser 覆蓋掉 Vuex state 中的 currentUser
         ...currentUser
       }
+
+      // 將使用者驗證用的 token 儲存在 state 中
+      state.token = localStorage.getItem('token')
       // 將使用者的登入狀態改為 true
       state.isAuthenticated = true
     },
     revokeAuthentication(state) {
       state.currentUser = {}
       state.isAuthenticated = false
+      // 登出時一併將 state 內的 token 移除
+      state.token = ''
       localStorage.removeItem('token')
     }
   },
@@ -35,9 +41,11 @@ export default new Vuex.Store({
     async fetchCurrentUser({ commit }) {
       try {
         // 呼叫 usersAPI.getCurrentUser() 方法，並將 response 顯示出來
+
         const { data, statusText } = await usersAPI.getCurrentUser()
 
         if (statusText === 'error') {
+          console.log('statusText!', statusText)
           throw new Error(data)
         }
 
@@ -52,6 +60,7 @@ export default new Vuex.Store({
         })
       } catch (error) {
         console.log('error', error)
+        commit('revokeAuthentication')
         console.error('can not fetch user information')
       }
     }
