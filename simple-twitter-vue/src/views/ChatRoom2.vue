@@ -28,7 +28,7 @@ export default {
     connect() {
       // Fired when the socket connects.
       console.log("connected");
-      this.$socket.emit("login", "userVue");
+      this.$socket.emit("login", "userVue2");
     },
     disconnect() {
       console.log("disconnected");
@@ -41,11 +41,11 @@ export default {
   },
   methods: {
     afterSubmit() {
-      this.$socket.emit("chat", { msg: this.message, room: "room1" });
+      this.$socket.emit("chat", { msg: this.message, room: "room2" });
       this.message = "";
     },
     afterInvite() {
-      this.$socket.emit("invite", { user: "userHtml", room: "room1" });
+      this.$socket.emit("invite", { user: "userVue", room: "room2" });
     }
   }
 };
