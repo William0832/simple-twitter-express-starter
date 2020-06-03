@@ -29,6 +29,10 @@ export default {
       console.log("connected");
       this.$socket.emit("login", "userVue");
     },
+    disconnect() {
+      console.log("disconnected");
+      this.$socket.emit("logout", "userVue");
+    },
     chat(msg) {
       console.log("sockets", msg);
       this.chats.push({ message: msg });

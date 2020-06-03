@@ -31,7 +31,11 @@ app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(methodOverride('_method'))
-app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
+let sessionMiddleware = session({ secret: 'secret', resave: false, saveUninitialized: false })
+app.use(sessionMiddleware)
+io.use(function (socket, next) {
+  sessionMiddleware(socket.request, socket.request.res || {}, next);
+})
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
