@@ -25,12 +25,30 @@ const routes = [
   {
     path: '/admin/tweets',
     name: 'admin-tweets',
-    component: () => import('../views/AdminTweets.vue')
+    component: () => import('../views/AdminTweets.vue'),
+    beforeEnter: (to, from, next) => {
+      const currentUser = store.state.currentUser
+      if (currentUser && !currentUser.isAdmin) {
+        next('/404')
+        return
+      }
+
+      next()
+    }
   },
   {
     path: '/admin/users',
     name: 'admin-users',
-    component: () => import('../views/AdminUsers.vue')
+    component: () => import('../views/AdminUsers.vue'),
+    beforeEnter: (to, from, next) => {
+      const currentUser = store.state.currentUser
+      if (currentUser && !currentUser.isAdmin) {
+        next('/404')
+        return
+      }
+
+      next()
+    }
   },
   {
     path: '/users/:id/tweets',
