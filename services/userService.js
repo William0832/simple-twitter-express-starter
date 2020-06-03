@@ -220,6 +220,9 @@ const userService = {
     } catch (err) {
       callback({ status: 'error', message: 'ooo' + err.toString() })
     }
+  },
+  getCurrentUser: async (req, res, callback) => {
+    callback(helpers.getUser(req))
   }
 }
 

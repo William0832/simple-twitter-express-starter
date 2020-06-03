@@ -80,14 +80,18 @@ export default {
           password: this.password
         });
 
-        const { data } = response
-        
-        if (data.status !== 'success') {
-          throw new Error(data.message)
+        const { data } = response;
+        //add statusText
+        if (data.status !== "success") {
+          throw new Error(data.message);
         }
 
         localStorage.setItem("token", data.token);
-        this.$router.push("/tweets");
+
+        //store user in vuex
+        this.$store.commit("setCurrentUser", data.user);
+
+        this.$router.push("/");
       } catch (error) {
         this.password = "";
         Toast.fire({

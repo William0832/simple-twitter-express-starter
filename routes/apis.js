@@ -128,5 +128,11 @@ router.get('/', authenticated, (req, res) => res.redirect('/tweets'))
 //Reply routes
 router.get('/tweets/:tweet_id/replies', authenticated, replyController.getReplies)
 router.post('/tweets/:tweet_id/replies', authenticated, replyController.postReply)
+//Vuex get current user
+router.get(
+  '/current-user',
+  authenticated,
+  userController.getCurrentUser
+)
 
 module.exports = router
