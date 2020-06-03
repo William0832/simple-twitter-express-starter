@@ -19,7 +19,6 @@ app.locals.moment = require('moment') //let moment function available in pug tem
 //socket requirement
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-const socketController = require('./controllers/socket/socketController')
 const socketPort = 4000
 
 app.use(cors()) // cors 的預設為全開放
@@ -44,11 +43,7 @@ app.use((req, res, next) => {
   next()
 })
 
-// socket
-io.on('connection', (socket) => {
-  console.log('soket id :', socket.id)
-  socketController(io, socket)
-});
+
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -57,4 +52,7 @@ app.listen(port, () => console.log(`App listening on port ${port}!`))
 server.listen(socketPort, () => console.log(`Socket listening on port ${socketPort}!`))
 
 require('./routes')(app)
+// socket
+require('./sockets')(io)
+
 module.exports = app

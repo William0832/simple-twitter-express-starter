@@ -27,6 +27,7 @@ export default {
     connect() {
       // Fired when the socket connects.
       console.log("connected");
+      this.$socket.emit("login", "userVue");
     },
     chat(msg) {
       console.log("sockets", msg);
