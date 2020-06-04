@@ -1,14 +1,3 @@
-function ensureAuthenticated(req) {
-  return req.isAuthenticated()
-}
-
-function getUser(req) {
-  if (req.user) {
-    let user = req.user.dataValues ? req.user.toJSON() : req.user
-    return user
-  }
-}
-
 // add time function
 Date.prototype.addSeconds = function (s) {
   let ms = s * 1000
@@ -95,7 +84,5 @@ function generateChat(usersNum, megNum) {
 }
 
 module.exports = {
-  generateChat,
-  ensureAuthenticated,
-  getUser
+  generateChat
 }

@@ -86,6 +86,11 @@ const routes = [
     component: () => import('../views/Reply')
   },
   {
+    path: '/chat/:id',
+    name: 'chat',
+    component: () => import('../views/ChatRoom')
+  },
+  {
     path: '*',
     name: 'not-found',
     component: NotFound
