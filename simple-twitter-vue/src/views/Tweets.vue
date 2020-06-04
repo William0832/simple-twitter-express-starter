@@ -22,22 +22,11 @@ import TweetNew from "../components/TweetNew";
 import TweetIndex from "../components/TweetIndex";
 import UserTop from "../components/UserTop";
 import { Toast } from "../utils/helpers";
+import { mapState } from "vuex";
 
 //api
 import tweetsAPI from "../apis/tweet";
 import followshipAPI from "../apis/followship";
-
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: "root",
-    email: "root@example.com",
-    avatar:
-      "https://loremflickr.com/240/240/man,women/?random=76.38409798671886",
-    role: "admin"
-  },
-  isAuthenticated: true
-};
 
 export default {
   components: {
@@ -48,19 +37,22 @@ export default {
   data() {
     return {
       tweets: [],
-      topUsers: [],
-      currentUser: dummyUser.currentUser
+      topUsers: []
     };
   },
   created() {
     this.fetchTweets();
     // this.fetchTopUsers();
   },
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"])
+  },
   methods: {
     async fetchTweets() {
       try {
         const response = await tweetsAPI.getTweets();
 
+        console.log(response.data);
         const { data } = response;
 
         this.tweets = data.tweets;
