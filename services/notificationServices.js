@@ -9,9 +9,30 @@ const helpers = require('../_helpers');
 const notificationService = {
   postNotification: async (userId, tweetId, type) => {
     try {
-      const usersLikedTweet = await Like.findAll({
+      let usersLikedTweet = await Like.findAll({
         where: { TweetId: tweetId },
-        attributes: ['UserId']
+        attributes: ['UserId'],
+        include: [{ model: User, attributes: ['id', 'name'] }]
+      })
+
+      console.log(usersLikedTweet[0].User.dataValues)
+
+      usersLikedTweet = usersLikedTweet.map(like => { return like.User.dataValues })
+
+
+
+      usersLikedTweet.forEach(async function addNotification(user) {
+
+        // console.log(userId, id, tweetId, type)
+        await Notification.create({
+          postUserId: userId,
+          notifyUserId: user.id,
+          tweetId: tweetId,
+          message: `${user.name} had replied to tweet you liked!`,
+          checked: false,
+          type: type
+        }
+        )
       })
 
       console.log(usersLikedTweet)

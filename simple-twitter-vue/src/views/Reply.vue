@@ -122,7 +122,7 @@ export default {
         this.fetchReplies(tweetId);
         console.log("reply notify");
         this.$socket.emit("reply", {
-          userId: this.currentUser,
+          userId: this.currentUser.id,
           tweetId: tweetId,
           type: "reply"
         });

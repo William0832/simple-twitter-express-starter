@@ -1,7 +1,8 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Notification = sequelize.define('Notification', {
-    userId: DataTypes.INTEGER,
+    postUserId: DataTypes.INTEGER,
+    notifyUserId: DataTypes.INTEGER,
     tweetId: DataTypes.INTEGER,
     message: DataTypes.STRING,
     checked: DataTypes.BOOLEAN,
