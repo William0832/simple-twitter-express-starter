@@ -10,7 +10,13 @@
         router-link.text-white.mr-3(:to="{name:'admin-tweets'}" v-if="currentUser.role==roles.admin")
           | 管理員後台
         // is user is login
-        <button type="button" class="btn btn-lg btn-danger" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover</button>
+        .dropdown
+          button#dropdownMenuButton.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+            | Notifys
+          .dropdown-menu(aria-labelledby='dropdownMenuButton')
+            a.dropdown-item(href='#') Action
+            a.dropdown-item(href='#') Another action
+            a.dropdown-item(href='#') Something else here
         router-link.text-white.mr-3(:to="{name: 'user', params: { id: currentUser.id }}" v-if='isAuthenticated')
           | 使用者 您好
         button.btn.btn-sm.btn-outline-success.my-2.my-sm-0(type='button'  @click="logout" v-if='isAuthenticated')
@@ -44,7 +50,8 @@ export default {
     logout() {
       this.$store.commit("revokeAuthentication");
       this.$router.push("/signin");
-    }
+    },
+    fetchNotifications() {}
   }
 };
 </script>
