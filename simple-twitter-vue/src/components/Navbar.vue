@@ -11,12 +11,10 @@
           | 管理員後台
         // is user is login
         .dropdown
-          button#dropdownMenuButton.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false'  @click.stop.prevent='fetchNotifications')
+          button#dropdownMenuButton.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false'  @click='fetchNotifications')
             | Notifys
           .dropdown-menu(aria-labelledby='dropdownMenuButton')
-            a.dropdown-item(href='#') Action
-            a.dropdown-item(href='#') Another action
-            a.dropdown-item(href='#') Something else here
+            a.dropdown-item(href='#' v-for='notification in notifications') {{notification.message}}
         router-link.text-white.mr-3(:to="{name: 'user', params: { id: currentUser.id }}" v-if='isAuthenticated')
           | 使用者 您好
         button.btn.btn-sm.btn-outline-success.my-2.my-sm-0(type='button'  @click="logout" v-if='isAuthenticated')
