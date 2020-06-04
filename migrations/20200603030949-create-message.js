@@ -12,20 +12,10 @@ module.exports = {
         type: Sequelize.TEXT
       },
       UserId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        reference: {
-          model: 'Users',
-          key: 'id'
-        }
+        type: Sequelize.INTEGER
       },
       ChatId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        reference: {
-          model: 'Chat',
-          key: 'id'
-        }
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
