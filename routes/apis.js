@@ -121,9 +121,9 @@ router.post('/tweets/:id/unlike', authenticated, likeController.unlike)
 
 // chat
 router.post('/chats', authenticated, chatController.postChat)
-router.get('/chats/', authenticated, chatController.getChats)
-router.get('/chats/:id', authenticated, chatController.getChat)
-router.post('/Message', authenticated, chatController.postMessage)
-router.get('/Messages', authenticated, chatController.postMessage)
+// router.get('/chats/', authenticated, chatController.getChats)
+// router.get('/chats/:id', authenticated, chatController.getChat)
+// router.post('/Message', authenticated, chatController.postMessage)
+// router.get('/Messages', authenticated, chatController.postMessage)
 
 module.exports = router

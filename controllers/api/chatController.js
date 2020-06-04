@@ -1,6 +1,8 @@
 const chatService = require('../../services/chatServices')
 
 const chatController = {
+  postChat: (req, res) =>
+    chatService.postChat(req, res, (data) => res.json(data)),
   // 取得(上線)使用者狀態, 共用 userCtrler?
   getUsers: (res, req) => {},
 
