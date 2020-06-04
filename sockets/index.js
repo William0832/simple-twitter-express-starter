@@ -1,5 +1,6 @@
 const chatController = require('./chat')
 const chatService = require('../services/chatServices')
+const notificationService = require('../services/notificationServices')
 
 
 module.exports = (io) => {
@@ -121,7 +122,12 @@ module.exports = (io) => {
 
     });
 
+    socket.on('reply', (payload) => {
+      const { userId, tweetId, type } = payload
+      console.log('reply notification')
+      notificationService.postNotification(userId, tweetId, type)
+    })
+
     // chatController(io, socket)
   });
-
 }

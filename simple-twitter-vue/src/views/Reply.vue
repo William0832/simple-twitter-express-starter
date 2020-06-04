@@ -15,6 +15,7 @@ import Replies from "../components/Replies";
 import ReplyNew from "../components/ReplyNew";
 import UserProfileCard from "../components/UserProfileCard";
 import { Toast } from "../utils/helpers";
+import { mapState } from "vuex";
 
 //api
 import replyAPI from "../apis/reply";
@@ -51,6 +52,9 @@ export default {
     const { tweet_id: tweetId } = this.$route.params;
     this.fetchTweet(tweetId);
     this.fetchReplies(tweetId);
+  },
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"])
   },
   methods: {
     async fetchTweet(tweetId) {
@@ -116,6 +120,12 @@ export default {
         }
 
         this.fetchReplies(tweetId);
+        console.log("reply notify");
+        this.$socket.emit("reply", {
+          userId: this.currentUser,
+          tweetId: tweetId,
+          type: "reply"
+        });
       } catch (error) {
         console.log(error);
         Toast.fire({
