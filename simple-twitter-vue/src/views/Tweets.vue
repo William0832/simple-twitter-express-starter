@@ -1,26 +1,47 @@
 <template lang="pug">
   .container.py-5
-      .row
-        .col-md-8
-          TweetNew(
-            :user-id='currentUser.id' 
-            @after-create-tweet='afterCreateTweet')
-          TweetIndex( :tweets='tweets'
-            @after-add-like='afterAddLike'
-            @after-delete-like='afterDeleteLike')
-        .col-md-4
-          UserTop( 
-            :top-users='topUsers'
-            :current-user='currentUser'
-            @after-add-follow='afterAddFollow'
-            @after-delete-follow='afterDeleteFollow'
-            )
+    .row
+      .col-md-8
+        TweetNew(
+          :user-id='currentUser.id' 
+          @after-create-tweet='afterCreateTweet')
+        TweetIndex( :tweets='tweets'
+          @after-add-like='afterAddLike'
+          @after-delete-like='afterDeleteLike')
+
+      .col-md-4
+        ul.nav.nav-tabs
+          li.nav-item
+            a.nav-link.active(href='#') Popular
+          li.nav-item
+            a.nav-link(href='#') Chat
+
+          //- UserTop( 
+          //-   :top-users='topUsers'
+          //-   :current-user='currentUser'
+          //-   @after-add-follow='afterAddFollow'
+          //-   @after-delete-follow='afterDeleteFollow'
+          //-   )
+          
+        OnlineUser( 
+          :top-users='topUsers'
+          :current-user='currentUser'
+          @after-add-follow='afterAddFollow'
+          @after-delete-follow='afterDeleteFollow'
+        )    
+        //- style="background-color: red;"
+    div.row.no-gutters.d-flex.fixed-bottom
+      ChatWindow(@after-close="closeWindow" )
+      ChatWindow(@after-close="closeWindow" )
+      ChatWindow(@after-close="closeWindow" )
 </template>
 
 <script>
 import TweetNew from "../components/TweetNew";
 import TweetIndex from "../components/TweetIndex";
 import UserTop from "../components/UserTop";
+import OnlineUser from "../components/OnlineUser";
+import ChatWindow from "../components/ChatWindow";
 import { Toast } from "../utils/helpers";
 
 //api
@@ -43,13 +64,16 @@ export default {
   components: {
     TweetNew,
     TweetIndex,
-    UserTop
+    UserTop,
+    OnlineUser,
+    ChatWindow
   },
   data() {
     return {
       tweets: [],
       topUsers: [],
-      currentUser: dummyUser.currentUser
+      currentUser: dummyUser.currentUser,
+      windows: []
     };
   },
   created() {
@@ -182,6 +206,10 @@ export default {
           title: error
         });
       }
+    },
+    closeWindow(){
+      console.log('close window')
+      this.openWindow = false
     }
   }
 };

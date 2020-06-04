@@ -8,8 +8,7 @@ const followshipService = {
   postFollowship: async (req, res, callback) => {
     try {
       const followerId = String(helpers.getUser(req).id)
-      const followingId = req.body.id
-      console.log(followingId)
+      const followingId = String(req.body.id)
 
       if (followerId === followingId) {
         return callback({ status: 'error', message: "users can't follow themselves" })
@@ -65,15 +64,12 @@ const followshipService = {
           }
         }
       )
-
       if (followship) {
-
         return callback({ status: "success", message: "", followship: followship })
       }
       else {
         return callback({ status: "error", message: "target followship didn't exist" })
       }
-
     } catch (error) {
       console.error(error)
     }

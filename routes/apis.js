@@ -37,7 +37,8 @@ const authenticatedAdmin = (req, res, next) => {
 }
 const isOwner = (req, res, next) => {
   let user = helpers.getUser(req)
-  if (String(user.id) === req.params.id) return next()
+  if (String(user.id) === req.params.id) { return next() }
+  console.log('userIdoo:', user.id, 'req.params: ', req.params.id)
   return res.status(302).json({ status: 'error', message: '沒有修改權限' })
 }
 
@@ -73,6 +74,10 @@ router.post(
   upload.single('avatar'),
   userController.putUser
 )
+
+//Followship routes
+router.post('/followships/', authenticated, followshipController.postFollowship)
+router.delete('/followships/:followingId', authenticated, followshipController.deleteFollowship)
 
 //Admin routes
 router.get(
@@ -117,5 +122,17 @@ router.delete(
 // like routes
 router.post('/tweets/:id/like', authenticated, likeController.like)
 router.post('/tweets/:id/unlike', authenticated, likeController.unlike)
+//Root
+router.get('/', authenticated, (req, res) => res.redirect('/tweets'))
+
+//Reply routes
+router.get('/tweets/:tweet_id/replies', authenticated, replyController.getReplies)
+router.post('/tweets/:tweet_id/replies', authenticated, replyController.postReply)
+//Vuex get current user
+router.get(
+  '/current-user',
+  authenticated,
+  userController.getCurrentUser
+)
 
 module.exports = router

@@ -84,7 +84,11 @@ let userController = {
   getLikes: (req, res) =>
     userService.getLikes(req, res, (data) => res.json(data)),
   putUser: (req, res) =>
-    userService.putUser(req, res, (data) => res.status(302).json(data))
+    userService.putUser(req, res, (data) => res.status(302).json(data)),
+  getCurrentUser: (req, res) => {
+    console.log('here! controller')
+    userService.getCurrentUser(req, res, (data) => res.json(data))
+  }
 }
 
 module.exports = userController
