@@ -2,6 +2,7 @@ const { Op } = require('sequelize')
 const db = require('../models')
 const { User, Chat, Message } = db
 const helpers = require('../_helpers')
+const { print } = require('../__helper')
 
 const chatService = {
   // db 開新的聊天室
@@ -22,7 +23,7 @@ const chatService = {
       let currentUser = helpers.getUser(req)
       let userId = req.body.userId
       //檢查 chat 是否存在
-      let chats = await Chat.findAll({
+      let chat = await Chat.findOne({
         //
         where: {
           [Op.or]: [
@@ -31,16 +32,18 @@ const chatService = {
           ]
         }
       })
-      if (chats) {
+      if (chat) {
+        chat = chat.dataValues
         return callback({
           status: 'error',
-          message: `chat:${chat.id} is already exists`
+          message: `chats:${chat.id} is already exists`
         })
       }
-      await Chat.create({
+      chat = await Chat.create({
         CreatedUserId: currentUser.id,
         InvitedUserId: userId
       })
+      chat = chat.dataValues
       return callback({
         status: 'success',
         message: `chat:${chat.id} was successfully created`
@@ -89,7 +92,6 @@ const chatService = {
       })
       // each user add chatId
       chats.forEach((c, index) => {
-        console.log(c)
         users[index].dataValues.chatId = c.id
       })
 
@@ -102,7 +104,6 @@ const chatService = {
     }
   },
   // db 抓取單一聊天室，要拿到聊天對象的userId
-  // TODO: 快寫!
   getChat: async (req, res, callback) => {
     try {
       /*
@@ -110,14 +111,37 @@ const chatService = {
       檢查特例
       db 找 chat 
       */
-      if (!req.body.id) {
+      if (!req.params.id) {
         return callback({
           status: 'error',
           message: 'chatId did not exist'
         })
       }
-      let chat = await Chat.findByPk(req.body.id)
-      callback({ chat: chat.toJSON() })
+      let chatId = req.params.id
+      let chat = await Chat.findByPk(chatId)
+      if (!chat) {
+        return callback({
+          status: 'error',
+          message: 'chat did not exist'
+        })
+      }
+      chat = chat.dataValues
+      // 檢查身分
+      let currentUser = helpers.getUser(req)
+      let userId = ''
+      if (chat.CreatedUserId === currentUser.id) {
+        userId = chat.InvitedUserId
+      } else if (currentUser.id === chat.InvitedUserId) {
+        userId = chat.CreatedUserId
+      } else {
+        callback({ status: 'error', message: 'U do not belong to this chat' })
+      }
+      let user = await User.findByPk(userId, {
+        attributes: ['id', 'name', 'avatar', 'isOnline']
+      })
+      user = user.dataValues
+      user.chatId = chatId
+      callback({ user })
     } catch (err) {
       callback({ status: 'error', message: err.toString() })
     }
@@ -125,6 +149,21 @@ const chatService = {
   // db 將發出的新訊息存入
   postMsg: async (req, res, callback) => {
     try {
+      if (isNaN(req.params.id)) {
+        callback({ status: 'error', message: 'chatId need to be a number!' })
+      }
+      let chatId = req.params.id
+      let currentUser = helpers.getUser(req)
+      let message = req.body.message
+      let msg = await Message.create({
+        ChatId: chatId,
+        UserId: currentUser.id,
+        message: message
+      })
+      callback({
+        status: 'success',
+        message: 'message was successfully created'
+      })
     } catch (err) {
       callback({ status: 'error', message: err.toString() })
     }
@@ -132,17 +171,26 @@ const chatService = {
   //db 取得聊天室的全部訊息
   getMsgs: async (req, res, callback) => {
     try {
+      if (isNaN(req.params.id)) {
+        callback({ status: 'error', message: 'chatId need to be a number!' })
+      }
+      let chatId = req.params.id
+      console.log(chatId)
+
+      let msgs = await Message.findAll({
+        where: { ChatId: chatId },
+        include: [
+          { model: User, attributes: ['id', 'name', 'avatar', 'isOnline'] }
+        ],
+        attributes: ['id', 'message', 'createdAt'],
+        // 按時間遞減
+        order: [['createdAt', 'DESC']]
+      })
+      callback({ msgs })
     } catch (err) {
       callback({ status: 'error', message: err.toString() })
     }
   }
-
-  // doSomething: async (req, res, callback) => {
-  //   try {
-  //   } catch (err) {
-  //     callback({ status: 'error', message: err.toString() })
-  //   }
-  // }
 
   // // 取得(上線)使用者狀態, 共用 userService ?
   // getUsers: async (req, res, callback) => {},

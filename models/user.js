@@ -27,16 +27,16 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'followingId',
       as: 'Followers'
     })
-    User.belongsToMany(User, {
-      through: models.Chat,
-      foreignKey: 'CreatedUserId',
-      as: 'Invitees'
-    })
-    User.belongsToMany(User, {
-      through: models.Chat,
-      foreignKey: 'InvitedUserId',
-      as: 'Creators'
-    })
+    // User.belongsToMany(User, {
+    //   through: models.Chat,
+    //   foreignKey: 'CreatedUserId',
+    //   as: 'Invitees'
+    // })
+    // User.belongsToMany(User, {
+    //   through: models.Chat,
+    //   foreignKey: 'InvitedUserId',
+    //   as: 'Creators'
+    // })
     User.hasMany(models.Message)
   }
   return User

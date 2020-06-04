@@ -38,7 +38,9 @@ const authenticatedAdmin = (req, res, next) => {
 }
 const isOwner = (req, res, next) => {
   let user = helpers.getUser(req)
-  if (String(user.id) === req.params.id) { return next() }
+  if (String(user.id) === req.params.id) {
+    return next()
+  }
   console.log('userIdoo:', user.id, 'req.params: ', req.params.id)
   return res.status(302).json({ status: 'error', message: '沒有修改權限' })
 }
@@ -78,7 +80,11 @@ router.post(
 
 //Followship routes
 router.post('/followships/', authenticated, followshipController.postFollowship)
-router.delete('/followships/:followingId', authenticated, followshipController.deleteFollowship)
+router.delete(
+  '/followships/:followingId',
+  authenticated,
+  followshipController.deleteFollowship
+)
 
 //Admin routes
 router.get(
@@ -126,14 +132,18 @@ router.post('/tweets/:id/unlike', authenticated, likeController.unlike)
 router.get('/', authenticated, (req, res) => res.redirect('/tweets'))
 
 //Reply routes
-router.get('/tweets/:tweet_id/replies', authenticated, replyController.getReplies)
-router.post('/tweets/:tweet_id/replies', authenticated, replyController.postReply)
-//Vuex get current user
 router.get(
-  '/current-user',
+  '/tweets/:tweet_id/replies',
   authenticated,
-  userController.getCurrentUser
+  replyController.getReplies
 )
+router.post(
+  '/tweets/:tweet_id/replies',
+  authenticated,
+  replyController.postReply
+)
+//Vuex get current user
+router.get('/current-user', authenticated, userController.getCurrentUser)
 
 // chat
 // db 開新的聊天室
@@ -143,8 +153,8 @@ router.get('/chats', authenticated, chatController.getChats)
 // db 抓取單一聊天室，要拿到聊天對象的userId
 router.get('/chats/:id', authenticated, chatController.getChat)
 // db 將發出的新訊息存入
-router.post('/chats/msg', authenticated, chatController.postMsg)
+router.post('/chats/:id/msgs', authenticated, chatController.postMsg)
 //db 取得聊天室的全部訊息
-router.get('/chats/msg', authenticated, chatController.getMsgs)
+router.get('/chats/:id/msgs', authenticated, chatController.getMsgs)
 
 module.exports = router
