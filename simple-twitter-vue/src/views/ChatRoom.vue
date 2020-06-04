@@ -1,11 +1,5 @@
 <template lang='pug'>
   div.container
-    ul#messages
-      li(v-for='chat in chats', :key='chat.message') {{chat.message}}
-    div.row
-      form.col-9.chat(action='', @submit.stop.prevent='afterSubmitMessage')
-        input#m(autocomplete='off', v-model='message')
-        button(type='submit') Send
     div.row
       form.col.invite(action='', @submit.stop.prevent='afterChangeName')
         input#m(autocomplete='off', v-model='user') 
@@ -13,6 +7,13 @@
       form.col.invite(action='', @submit.stop.prevent='afterInvite')
         input#m(autocomplete='off', v-model='invite')
         button(type='submit') Invite
+    ul#messages
+      li(v-for='chat in chats', :key='chat.message') {{chat.message}}
+    div.row
+      form.col-9.chat(action='', @submit.stop.prevent='afterSubmitMessage')
+        input#m(autocomplete='off', v-model='message')
+        button(type='submit') Send
+
 </template>
 
 <script>
@@ -23,9 +24,8 @@ export default {
     return {
       message: "",
       chats: [],
-      invite: "",
       user: `vue${this.$route.params.id}`,
-      room: ""
+      invite: ""
     };
   },
   components: {
@@ -44,24 +44,25 @@ export default {
     chat(msg) {
       console.log("sockets", msg);
       this.chats.push({ message: msg });
-    },
-    invited(room) {
-      this.room = room;
     }
   },
   methods: {
     afterSubmitMessage() {
-      this.$socket.emit("chat", { msg: this.message, room: this.room });
+      this.$socket.emit("chat", {
+        msg: this.message,
+        user: this.user,
+        invitedUser: this.invite
+      });
       this.message = "";
+    },
+    afterChangeName() {
+      this.$socket.emit("login", this.user);
     },
     afterInvite() {
       this.$socket.emit("invite", {
         user: this.user,
         invitedUser: this.invite
       });
-    },
-    afterChangeName() {
-      this.$socket.emit("login", this.user);
     }
   }
 };

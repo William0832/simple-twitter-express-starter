@@ -25,6 +25,9 @@ module.exports = (io) => {
     //   rooms.push([user, invitedUser])
     //   return 0
     // }
+    if (!invitedUser) {
+      return null
+    }
 
     const index = rooms.findIndex((room, index) => {
       console.log('user:', user, ', invitedUser:', invitedUser, ', room:', room)
@@ -80,9 +83,19 @@ module.exports = (io) => {
     })
 
     socket.on('chat', (payload) => {
-      const { msg, room } = payload
-      console.log(socket.id, 'chat:', msg)
-      io.to(room).emit('chat', msg);
+      const { msg, user, invitedUser } = payload
+
+      const room = checkRooms(user, invitedUser)
+      console.log(socket.id, 'chat:', msg, 'room:', room)
+      // io.to(room).emit('chat', msg);
+
+      if (msg && room) {
+        console.log('chat ok')
+        io.to(room).emit('chat', msg)
+      } else {
+        console.log('chat NG')
+      }
+
     });
 
     socket.on('invite', (invitation) => {
