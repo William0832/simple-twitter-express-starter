@@ -11,7 +11,7 @@
           | 管理員後台
         // is user is login
         .dropdown
-          button#dropdownMenuButton.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+          button#dropdownMenuButton.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false'  @click.stop.prevent='fetchNotifications')
             | Notifys
           .dropdown-menu(aria-labelledby='dropdownMenuButton')
             a.dropdown-item(href='#') Action
@@ -39,19 +39,26 @@ export default {
       roles: {
         admin: "admin",
         user: "user"
-      }
+      },
+      notifications: []
     };
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"])
   },
-  created() {},
+  sockets: {
+    returnNotifications(notifications) {
+      this.notifications = notifications;
+    }
+  },
   methods: {
     logout() {
       this.$store.commit("revokeAuthentication");
       this.$router.push("/signin");
     },
-    fetchNotifications() {}
+    fetchNotifications() {
+      this.$socket.emit("getNotifiations", this.currentUser.id);
+    }
   }
 };
 </script>

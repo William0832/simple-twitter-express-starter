@@ -128,6 +128,14 @@ module.exports = (io) => {
       notificationService.postNotification(userId, tweetId, type)
     })
 
+    socket.on('getNotifiations', async (userId) => {
+      console.log('fetch notification')
+      const notifications = await notificationService.getNotifications(userId)
+
+      socket.emit('returnNotifications', notifications)
+    })
+
+
     // chatController(io, socket)
   });
 }

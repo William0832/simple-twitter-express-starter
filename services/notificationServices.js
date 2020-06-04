@@ -7,6 +7,25 @@ const Like = db.Like
 const helpers = require('../_helpers');
 
 const notificationService = {
+
+  getNotificationCounts: async (userId, tweetId, type) => {
+  },
+
+  getNotifications: async (userId) => {
+    try {
+      let notifications = await Notification.findAll({
+        where: { notifyUserId: userId }
+      })
+
+      notifications = notifications.map(notification => notification.dataValues)
+
+      console.log(notifications)
+      return notifications
+    } catch (error) {
+      console.error(error)
+    }
+  },
+
   postNotification: async (userId, tweetId, type) => {
     try {
       let usersLikedTweet = await Like.findAll({

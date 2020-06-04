@@ -38,7 +38,14 @@ module.exports = (sequelize, DataTypes) => {
       as: 'Invitees'
     })
     User.hasMany(models.Message)
-    User.hasMany(models.Notification)
+    User.hasMany(models.Notification, {
+      foreignKey: 'id',
+      as: 'posted'
+    })
+    User.hasMany(models.Notification, {
+      foreignKey: 'id',
+      as: 'notified'
+    })
   }
   return User
 }
