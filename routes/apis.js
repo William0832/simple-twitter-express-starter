@@ -11,6 +11,7 @@ const tweetController = require('../controllers/api/tweetController.js')
 const replyController = require('../controllers/api/replyController.js')
 const followshipController = require('../controllers/api/followshipController.js')
 const likeController = require('../controllers/api/likeController')
+const chatController = require('../controllers/api/chatController')
 
 const authenticated = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
@@ -118,7 +119,6 @@ router.delete(
   authenticated,
   followshipController.deleteFollowship
 )
-
 // like routes
 router.post('/tweets/:id/like', authenticated, likeController.like)
 router.post('/tweets/:id/unlike', authenticated, likeController.unlike)
@@ -134,5 +134,17 @@ router.get(
   authenticated,
   userController.getCurrentUser
 )
+
+// chat
+// db 開新的聊天室
+router.post('/chats', authenticated, chatController.postChat)
+//db 抓取開過的聊天室清單
+router.get('/chats', authenticated, chatController.getChats)
+// db 抓取單一聊天室，要拿到聊天對象的userId
+router.get('/chats/:id', authenticated, chatController.getChat)
+// db 將發出的新訊息存入
+router.post('/chats/msg', authenticated, chatController.postMsg)
+//db 取得聊天室的全部訊息
+router.get('/chats/msg', authenticated, chatController.getMsgs)
 
 module.exports = router
