@@ -11,6 +11,7 @@ const tweetController = require('../controllers/api/tweetController.js')
 const replyController = require('../controllers/api/replyController.js')
 const followshipController = require('../controllers/api/followshipController.js')
 const likeController = require('../controllers/api/likeController')
+const chatController = require('../controllers/api/chatController')
 
 const authenticated = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
@@ -117,5 +118,12 @@ router.delete(
 // like routes
 router.post('/tweets/:id/like', authenticated, likeController.like)
 router.post('/tweets/:id/unlike', authenticated, likeController.unlike)
+
+// chat
+router.post('/chats', authenticated, chatController.postChat)
+router.get('/chats/', authenticated, chatController.getChats)
+router.get('/chats/:id', authenticated, chatController.getChat)
+router.post('/Message', authenticated, chatController.postMessage)
+router.get('/Messages', authenticated, chatController.postMessage)
 
 module.exports = router
