@@ -1,4 +1,5 @@
 const chatController = require('./chat')
+const chatService = require('../services/chatServices')
 
 
 module.exports = (io) => {
@@ -57,7 +58,7 @@ module.exports = (io) => {
 
     socket.on('invite', (payload) => {
       const { user, room } = payload
-      console.log('id', connectedUser[user])
+      console.log('id', socket.id, 'invite', user)
       socket.join(room)
       if (connectedUser[user]) {
         connectedUser[user].forEach((id, index, object) => {

@@ -1,14 +1,18 @@
-<template>
-  <div>
-    <ul id="messages">
-      <li v-for="chat in chats" :key="chat.message">{{chat.message}}</li>
-    </ul>
-    <form action @submit.stop.prevent="afterSubmit">
-      <input id="m" autocomplete="off" v-model="message" />
-      <button type="submit">Send</button>
-      <button @click.stop.prevent="afterInvite">Invite</button>
-    </form>
-  </div>
+<template lang='pug'>
+  div.container
+    ul#messages
+      li(v-for='chat in chats', :key='chat.message') {{chat.message}}
+    div.row
+      form.col-9.chat(action='', @submit.stop.prevent='afterSubmitMessage')
+        input#m(autocomplete='off', v-model='message')
+        button(type='submit') Send
+    div.row
+      form.col.invite(action='', @submit.stop.prevent='afterChangeName')
+        input#m(autocomplete='off', v-model='user') 
+        button(type='submit') Me
+      form.col.invite(action='', @submit.stop.prevent='afterInvite')
+        input#m(autocomplete='off', v-model='invite')
+        button(type='submit') Invite
 </template>
 
 <script>
@@ -18,7 +22,9 @@ export default {
   data() {
     return {
       message: "",
-      chats: []
+      chats: [],
+      invite: "",
+      user: `vue${this.$route.params.id}`
     };
   },
   components: {
@@ -28,7 +34,7 @@ export default {
     connect() {
       // Fired when the socket connects.
       console.log("connected");
-      this.$socket.emit("login", "userVue");
+      this.$socket.emit("login", this.user);
     },
     disconnect() {
       console.log("disconnected");
@@ -40,12 +46,15 @@ export default {
     }
   },
   methods: {
-    afterSubmit() {
+    afterSubmitMessage() {
       this.$socket.emit("chat", { msg: this.message, room: "room1" });
       this.message = "";
     },
     afterInvite() {
-      this.$socket.emit("invite", { user: "userHtml", room: "room1" });
+      this.$socket.emit("invite", { user: this.invite, room: "room1" });
+    },
+    afterChangeName() {
+      this.$socket.emit("login", this.user);
     }
   }
 };
@@ -62,10 +71,17 @@ body {
   font: 13px Helvetica, Arial;
 }
 
-form {
+form.chat {
   background: #000;
   padding: 3px;
   position: fixed;
+  bottom: 0;
+}
+
+form.invite {
+  background: #000;
+  padding: 3px;
+  /* position: fixed; */
   bottom: 0;
   width: 100%;
 }

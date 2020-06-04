@@ -47,14 +47,9 @@ const routes = [
     component: () => import('../views/Reply')
   },
   {
-    path: '/chat',
+    path: '/chat/:id',
     name: 'chat',
     component: () => import('../views/ChatRoom')
-  },
-  {
-    path: '/chat2',
-    name: 'chat2',
-    component: () => import('../views/ChatRoom2')
   },
   {
     path: '*',
