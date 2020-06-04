@@ -80,21 +80,20 @@ const chatService = {
           userIds.push(c.CreatedUserId)
         }
       })
+      // find users information
       let users = await User.findAll({
         where: {
           id: userIds
         },
         attributes: ['id', 'name', 'avatar', 'isOnline']
       })
+      // each user add chatId
       chats.forEach((c, index) => {
         console.log(c)
         users[index].dataValues.chatId = c.id
       })
 
-      callback({
-        status: 'success',
-        message: users
-      })
+      callback({ users })
     } catch (err) {
       callback({
         status: 'error',
@@ -106,6 +105,19 @@ const chatService = {
   // TODO: 快寫!
   getChat: async (req, res, callback) => {
     try {
+      /*
+      帶入chatId，
+      檢查特例
+      db 找 chat 
+      */
+      if (!req.body.id) {
+        return callback({
+          status: 'error',
+          message: 'chatId did not exist'
+        })
+      }
+      let chat = await Chat.findByPk(req.body.id)
+      callback({ chat: chat.toJSON() })
     } catch (err) {
       callback({ status: 'error', message: err.toString() })
     }
