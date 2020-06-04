@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.INTEGER,
     tweetId: DataTypes.INTEGER,
     message: DataTypes.STRING,
+    checked: DataTypes.BOOLEAN,
     type: DataTypes.STRING
   }, {});
   Notification.associate = function (models) {
