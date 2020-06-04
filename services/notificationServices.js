@@ -34,11 +34,15 @@ const notificationService = {
         include: [{ model: User, attributes: ['id', 'name'] }]
       })
 
-      console.log(usersLikedTweet[0].User.dataValues)
+      const postUser = await User.findByPk(userId, {
+        attributes: ['name']
+      })
+
+      console.log(postUser.dataValues)
+
+      // console.log(usersLikedTweet[0].User.dataValues)
 
       usersLikedTweet = usersLikedTweet.map(like => { return like.User.dataValues })
-
-
 
       usersLikedTweet.forEach(async function addNotification(user) {
 
@@ -47,7 +51,7 @@ const notificationService = {
           postUserId: userId,
           notifyUserId: user.id,
           tweetId: tweetId,
-          message: `${user.name} had replied to tweet you liked!`,
+          message: `${postUser.dataValues.name} had replied to tweet you liked!`,
           checked: false,
           type: type
         }
