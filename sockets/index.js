@@ -1,12 +1,8 @@
 const chatController = require('./chat')
-const chatService = require('../services/chatServices')
-
+// const chatService = require('../services/chatService')
 
 module.exports = (io) => {
-
-  let connectedUser = {
-
-  }
+  let connectedUser = {}
 
   let rooms = []
 
@@ -19,7 +15,6 @@ module.exports = (io) => {
   }
 
   const checkRooms = function (user, invitedUser) {
-
     // if (!rooms.length) {
     //   console.log('no room exist')
     //   rooms.push([user, invitedUser])
@@ -34,14 +29,13 @@ module.exports = (io) => {
       console.log(room.includes(user))
       console.log(room.includes(invitedUser))
 
-      return (room.includes(user) && room.includes(invitedUser))
-
+      return room.includes(user) && room.includes(invitedUser)
     })
 
     console.log('index', index)
 
     if (index === -1) {
-      ('fisrt!')
+      ;('fisrt!')
       rooms.push([user, invitedUser])
       return rooms.length - 1
     }
@@ -54,16 +48,15 @@ module.exports = (io) => {
     // console.log('session:', socket.request.session)
 
     io.clients((error, clients) => {
-      if (error) throw error;
-      console.log(clients);
+      if (error) throw error
+      console.log(clients)
     })
 
     socket.on('login', (userId) => {
       console.log('login', userId)
       if (!connectedUser[userId]) {
         connectedUser[userId] = [socket.id]
-      }
-      else {
+      } else {
         connectedUser[userId].push(socket.id)
       }
 
@@ -75,9 +68,10 @@ module.exports = (io) => {
       console.log('logout', userId)
       if (!connectedUser[userId]) {
         return
-      }
-      else {
-        connectedUser[userId] = connectedUser[userId].filter(id => id !== socket.id)
+      } else {
+        connectedUser[userId] = connectedUser[userId].filter(
+          (id) => id !== socket.id
+        )
       }
       console.log(connectedUser)
     })
@@ -95,8 +89,7 @@ module.exports = (io) => {
       } else {
         console.log('chat NG')
       }
-
-    });
+    })
 
     socket.on('invite', (invitation) => {
       const { user, invitedUser } = invitation
@@ -117,11 +110,8 @@ module.exports = (io) => {
           console.log('id', connectedUser[invitedUser])
         })
       }
-
-
-    });
+    })
 
     // chatController(io, socket)
-  });
-
+  })
 }
