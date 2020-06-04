@@ -114,16 +114,20 @@ router.delete(
   authenticated,
   followshipController.deleteFollowship
 )
-
 // like routes
 router.post('/tweets/:id/like', authenticated, likeController.like)
 router.post('/tweets/:id/unlike', authenticated, likeController.unlike)
 
 // chat
+// db 開新的聊天室
 router.post('/chats', authenticated, chatController.postChat)
-// router.get('/chats/', authenticated, chatController.getChats)
-// router.get('/chats/:id', authenticated, chatController.getChat)
-// router.post('/Message', authenticated, chatController.postMessage)
-// router.get('/Messages', authenticated, chatController.postMessage)
+//db 抓取開過的聊天室清單
+router.get('/chats', authenticated, chatController.getChats)
+// db 抓取單一聊天室，要拿到聊天對象的userId
+router.get('/chats/:id', authenticated, chatController.getChat)
+// db 將發出的新訊息存入
+router.post('/chats/msg', authenticated, chatController.postMsg)
+//db 取得聊天室的全部訊息
+router.get('/chats/msg', authenticated, chatController.getMsgs)
 
 module.exports = router
