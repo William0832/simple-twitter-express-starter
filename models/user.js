@@ -33,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       as: 'Invitees'
     })
     User.hasMany(models.Message)
+    User.hasMany(models.Notification)
   }
   return User
 }
