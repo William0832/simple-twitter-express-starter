@@ -21,3 +21,5 @@ module.exports = {
     return queryInterface.bulkDelete('Tweets', null, { truncate: true });
   }
 };
+
+//light up in git
