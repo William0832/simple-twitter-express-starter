@@ -1,6 +1,6 @@
 'use strict'
-const helper = require('../_helpers.js')
-const { generateChat } = helper
+const utils = require('./seedUtils/seedUtils.js')
+const { generateChat } = utils
 let { chats, messages } = generateChat()
 
 module.exports = {
