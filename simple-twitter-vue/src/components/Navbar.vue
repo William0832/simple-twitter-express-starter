@@ -10,6 +10,7 @@
         router-link.text-white.mr-3(:to="{name:'admin-tweets'}" v-if="currentUser.role==roles.admin")
           | 管理員後台
         // is user is login
+        <button type="button" class="btn btn-lg btn-danger" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover</button>
         router-link.text-white.mr-3(:to="{name: 'user', params: { id: currentUser.id }}" v-if='isAuthenticated')
           | 使用者 您好
         button.btn.btn-sm.btn-outline-success.my-2.my-sm-0(type='button'  @click="logout" v-if='isAuthenticated')
@@ -19,6 +20,11 @@
 
 <script>
 import { mapState } from "vuex";
+import $ from "jquery";
+
+$(function() {
+  $('[data-toggle="popover"]').popover();
+});
 
 export default {
   name: "Navbar",
@@ -33,6 +39,7 @@ export default {
   computed: {
     ...mapState(["currentUser", "isAuthenticated"])
   },
+  created() {},
   methods: {
     logout() {
       this.$store.commit("revokeAuthentication");

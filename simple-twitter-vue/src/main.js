@@ -3,8 +3,15 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import VueSocketIO from 'vue-socket.io'
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 Vue.config.productionTip = false
+
+window.$ = window.jQuery = require('jquery');
+// console.log(window.$)
+
+
 
 Vue.use(new VueSocketIO({
   debug: true,
