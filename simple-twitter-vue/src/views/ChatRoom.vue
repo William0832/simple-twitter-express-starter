@@ -24,7 +24,8 @@ export default {
       message: "",
       chats: [],
       invite: "",
-      user: `vue${this.$route.params.id}`
+      user: `vue${this.$route.params.id}`,
+      room: ""
     };
   },
   components: {
@@ -43,15 +44,21 @@ export default {
     chat(msg) {
       console.log("sockets", msg);
       this.chats.push({ message: msg });
+    },
+    invited(room) {
+      this.room = room;
     }
   },
   methods: {
     afterSubmitMessage() {
-      this.$socket.emit("chat", { msg: this.message, room: "room1" });
+      this.$socket.emit("chat", { msg: this.message, room: this.room });
       this.message = "";
     },
     afterInvite() {
-      this.$socket.emit("invite", { user: this.invite, room: "room1" });
+      this.$socket.emit("invite", {
+        user: this.user,
+        invitedUser: this.invite
+      });
     },
     afterChangeName() {
       this.$socket.emit("login", this.user);

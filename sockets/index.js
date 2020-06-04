@@ -8,12 +8,42 @@ module.exports = (io) => {
 
   }
 
+  let rooms = []
+
   const cleanUnconnectedSokcetId = function (username) {
     connectedUser[username].forEach((id, index, object) => {
       if (!io.sockets.connected[id]) {
         object.splice(index, 1) //remove unconnected socketId
       }
     })
+  }
+
+  const checkRooms = function (user, invitedUser) {
+
+    // if (!rooms.length) {
+    //   console.log('no room exist')
+    //   rooms.push([user, invitedUser])
+    //   return 0
+    // }
+
+    const index = rooms.findIndex((room, index) => {
+      console.log('user:', user, ', invitedUser:', invitedUser, ', room:', room)
+      console.log(room.includes(user))
+      console.log(room.includes(invitedUser))
+
+      return (room.includes(user) && room.includes(invitedUser))
+
+    })
+
+    console.log('index', index)
+
+    if (index === -1) {
+      ('fisrt!')
+      rooms.push([user, invitedUser])
+      return rooms.length - 1
+    }
+
+    return index
   }
 
   io.on('connection', (socket) => {
@@ -49,27 +79,33 @@ module.exports = (io) => {
       console.log(connectedUser)
     })
 
-
     socket.on('chat', (payload) => {
       const { msg, room } = payload
       console.log(socket.id, 'chat:', msg)
       io.to(room).emit('chat', msg);
     });
 
-    socket.on('invite', (payload) => {
-      const { user, room } = payload
-      console.log('id', socket.id, 'invite', user)
-      socket.join(room)
-      if (connectedUser[user]) {
-        connectedUser[user].forEach((id, index, object) => {
+    socket.on('invite', (invitation) => {
+      const { user, invitedUser } = invitation
+      console.log('id', socket.id, 'invite', invitedUser)
+      let roomId = checkRooms(user, invitedUser)
+
+      console.log(rooms, 'id', roomId)
+
+      socket.join(roomId)
+
+      if (connectedUser[invitedUser]) {
+        connectedUser[invitedUser].forEach((id, index, object) => {
           if (io.sockets.connected[id]) {
-            io.sockets.connected[id].join(room)
+            io.sockets.connected[id].join(roomId)
           } else {
             object.splice(index, 1) //remove unconnected socketId
           }
-          console.log('id', connectedUser[user])
+          console.log('id', connectedUser[invitedUser])
         })
       }
+
+
     });
 
     // chatController(io, socket)
