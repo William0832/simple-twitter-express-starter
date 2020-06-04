@@ -8,7 +8,22 @@ const helpers = require('../_helpers');
 
 const notificationService = {
 
-  getNotificationCounts: async (userId, tweetId, type) => {
+  getNotificationCounts: async (userId) => {
+    try {
+      console.log('id', userId)
+      let notifications = await Notification.findAll({
+        where: { notifyUserId: userId },
+        attributes: ['id']
+      })
+
+
+      const count = notifications.length
+
+      console.log('count', count)
+      return count
+    } catch (error) {
+      console.error(error)
+    }
   },
 
   getNotifications: async (userId) => {

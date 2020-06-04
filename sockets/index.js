@@ -126,6 +126,8 @@ module.exports = (io) => {
       const { userId, tweetId, type } = payload
       console.log('reply notification')
       notificationService.postNotification(userId, tweetId, type)
+
+      io.emit('newReply')
     })
 
     socket.on('getNotifiations', async (userId) => {
@@ -133,6 +135,13 @@ module.exports = (io) => {
       const notifications = await notificationService.getNotifications(userId)
 
       socket.emit('returnNotifications', notifications)
+    })
+
+    socket.on('getNotifiationCounts', async (userId) => {
+      console.log('fetch notification counts')
+      const counts = await notificationService.getNotificationCounts(userId)
+
+      socket.emit('returnNotificationCounts', counts)
     })
 
 

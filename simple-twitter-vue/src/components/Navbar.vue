@@ -13,7 +13,8 @@
         .dropdown
           button#dropdownMenuButton.btn.btn-secondary(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false'  @click='fetchNotifications')
             font-awesome-icon(icon="bell")
-          .dropdown-menu(aria-labelledby='dropdownMenuButton')
+            span.badge.badge-light(v-if='notificationCounts') {{notificationCounts}}
+          .dropdown-menu.dropdown-menu-right(aria-labelledby='dropdownMenuButton')
             a.dropdown-item(href='#' v-for='notification in notifications') {{notification.message}}
         router-link.text-white.mr-3(:to="{name: 'user', params: { id: currentUser.id }}" v-if='isAuthenticated')
           | 使用者 您好
@@ -38,7 +39,8 @@ export default {
         admin: "admin",
         user: "user"
       },
-      notifications: []
+      notifications: [],
+      notificationCounts: -1
     };
   },
   computed: {
@@ -47,7 +49,16 @@ export default {
   sockets: {
     returnNotifications(notifications) {
       this.notifications = notifications;
+    },
+    returnNotificationCounts(counts) {
+      this.notificationCounts = counts;
+    },
+    newReply() {
+      this.fetchNotificationCounts();
     }
+  },
+  mounted() {
+    this.fetchNotificationCounts();
   },
   methods: {
     logout() {
@@ -56,6 +67,9 @@ export default {
     },
     fetchNotifications() {
       this.$socket.emit("getNotifiations", this.currentUser.id);
+    },
+    fetchNotificationCounts() {
+      this.$socket.emit("getNotifiationCounts", this.currentUser.id);
     }
   }
 };
