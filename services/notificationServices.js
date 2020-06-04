@@ -10,16 +10,13 @@ const notificationService = {
 
   getNotificationCounts: async (userId) => {
     try {
-      console.log('id', userId)
       let notifications = await Notification.findAll({
-        where: { notifyUserId: userId },
+        where: { notifyUserId: userId, checked: false },
         attributes: ['id']
       })
 
 
       const count = notifications.length
-
-      console.log('count', count)
       return count
     } catch (error) {
       console.error(error)
@@ -32,9 +29,13 @@ const notificationService = {
         where: { notifyUserId: userId }
       })
 
-      notifications = notifications.map(notification => notification.dataValues)
+      notifications = notifications.map(notification => {
+        notification.update(
+          { checked: true }
+        )
+        return notification.dataValues
+      })
 
-      console.log(notifications)
       return notifications
     } catch (error) {
       console.error(error)
@@ -53,15 +54,9 @@ const notificationService = {
         attributes: ['name']
       })
 
-      console.log(postUser.dataValues)
-
-      // console.log(usersLikedTweet[0].User.dataValues)
-
       usersLikedTweet = usersLikedTweet.map(like => { return like.User.dataValues })
 
       usersLikedTweet.forEach(async function addNotification(user) {
-
-        // console.log(userId, id, tweetId, type)
         await Notification.create({
           postUserId: userId,
           notifyUserId: user.id,
@@ -72,8 +67,6 @@ const notificationService = {
         }
         )
       })
-
-      console.log(usersLikedTweet)
     } catch (error) {
       console.error(error)
     }

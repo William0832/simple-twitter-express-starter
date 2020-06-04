@@ -65,8 +65,9 @@ export default {
       this.$store.commit("revokeAuthentication");
       this.$router.push("/signin");
     },
-    fetchNotifications() {
-      this.$socket.emit("getNotifiations", this.currentUser.id);
+    async fetchNotifications() {
+      await this.$socket.emit("getNotifiations", this.currentUser.id);
+      this.fetchNotificationCounts();
     },
     fetchNotificationCounts() {
       this.$socket.emit("getNotifiationCounts", this.currentUser.id);

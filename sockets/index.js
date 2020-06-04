@@ -122,10 +122,10 @@ module.exports = (io) => {
 
     });
 
-    socket.on('reply', (payload) => {
+    socket.on('reply', async (payload) => {
       const { userId, tweetId, type } = payload
       console.log('reply notification')
-      notificationService.postNotification(userId, tweetId, type)
+      await notificationService.postNotification(userId, tweetId, type)
 
       io.emit('newReply')
     })
