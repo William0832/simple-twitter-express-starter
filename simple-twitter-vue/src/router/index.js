@@ -80,6 +80,11 @@ const routes = [
     component: () => import('../views/Reply')
   },
   {
+    path: '/map',
+    name: 'map',
+    component: () => import('../views/Map')
+  },
+  {
     path: '*',
     name: 'not-found',
     component: NotFound
@@ -108,7 +113,6 @@ router.beforeEach((async (to, from, next) => {
     return
   }
 
-  console.log(isAuthenticated)
   // 如果 token 有效則轉址到餐聽首頁
   if (isAuthenticated && to.name === 'sign-in') {
     next('/tweets')
