@@ -1,15 +1,15 @@
 <template lang="pug">
-  .container.py-5
+  .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-5
     AdminNavs
-    AdminUsersIndex(:users='users')
+    AdminUsersIndex.mh-100.overflow-auto(:users='users')
 </template>
 
 <script>
-import AdminNavs from '../components/AdminNavs'
-import AdminUsersIndex from '../components/AdminUsersIndex'
+import AdminNavs from "../components/AdminNavs";
+import AdminUsersIndex from "../components/AdminUsersIndex";
 
 // api
-import adminAPI from '../apis/admin'
+import adminAPI from "../apis/admin";
 
 export default {
   components: {
@@ -19,21 +19,21 @@ export default {
   data() {
     return {
       users: []
-    }
+    };
   },
   created() {
-    this.fetchUsers()
+    this.fetchUsers();
   },
   methods: {
     async fetchUsers() {
       try {
-        const res = await adminAPI.getUsers()
-        const { users } = res.data
-        this.users = users
+        const res = await adminAPI.getUsers();
+        const { users } = res.data;
+        this.users = users;
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   }
-}
+};
 </script>
