@@ -6,7 +6,7 @@
     <ul class="list-unstyled">
       <div class="row no-gutters">
         <li v-for="follower in followList" :key="follower.id" class="col-6">
-          <div class="card mb-1" style="width: 98%; min-height: 300px;">
+          <div class="card m-1 p-3">
             <div id="card-contents" class="row no-gutters mt-2">
               <!-- image -->
               <div class="col-4">
@@ -15,7 +15,9 @@
 
               <!-- user info -->
               <div class="col-8 d-flex flex-column align-items-start">
-                <h5 class>{{follower.name}}</h5>
+                <router-link :to="{ name: 'user', params: { id: follower.id }}">
+                  <h5 class>{{follower.name}}</h5>
+                </router-link>
                 <p style="text-align: left; width: 90%;">{{follower.introduction | peek}}</p>
 
                 <!-- follow-BTN  -->

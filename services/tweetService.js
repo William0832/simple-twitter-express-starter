@@ -141,7 +141,7 @@ const tweetService = {
       })
 
       likedUsers = likedUsers.map((like) => like.UserId)
-      console.log(tweet)
+
       tweet.dataValues.isLiked = likedUsers.includes(helpers.getUser(req).id)
 
       if (tweet) {
