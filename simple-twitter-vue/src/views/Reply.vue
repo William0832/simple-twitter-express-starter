@@ -1,9 +1,9 @@
 <template lang="pug">
-  .container.py-5
-      .row
-        .col-md-4
+  .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-5
+      .row.flex-grow-1.overflow-hidden
+        .col-md-4.mh-100.overflow-auto
           UserProfileCard(:user ='user')
-        .col-md-8
+        .col-md-8.mh-100.overflow-auto
           ReplyTweet(:tweet ='tweet' :user='user')
           Replies(:replies ='replies')
           ReplyNew(@after-create-reply='afterCreateReply')
