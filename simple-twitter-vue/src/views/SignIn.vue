@@ -6,7 +6,6 @@
       </div>
 
       <div class="form-label-group mb-2">
-        <label for="email">email</label>
         <input
           v-model="email"
           id="email"
@@ -21,7 +20,6 @@
       </div>
 
       <div class="form-label-group mb-3">
-        <label for="password">Password</label>
         <input
           v-model="password"
           id="password"
@@ -53,7 +51,8 @@
 
 <script>
 import authorizationAPI from "../apis/authorization";
-import { Toast } from "../utils/helpers";
+import { Toast } from '../utils/helpers'
+
 export default {
   data() {
     return {
@@ -88,7 +87,11 @@ export default {
         }
 
         localStorage.setItem("token", data.token);
-        this.$router.push("/tweets");
+
+        //store user in vuex
+        this.$store.commit("setCurrentUser", data.user);
+
+        this.$router.push("/");
       } catch (error) {
         this.password = "";
         Toast.fire({

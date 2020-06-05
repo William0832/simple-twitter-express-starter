@@ -1,14 +1,15 @@
 <template lang="pug">
-  .container.py-5
-      .row
-        .col-md-8
+  .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-5
+      .row.flex-grow-1.overflow-hidden
+        .col-md-8.mh-100.overflow-auto
           TweetNew(
             :user-id='currentUser.id' 
             @after-create-tweet='afterCreateTweet')
           TweetIndex( :tweets='tweets'
             @after-add-like='afterAddLike'
             @after-delete-like='afterDeleteLike')
-        .col-md-4
+        .col-md-4.mh-100.overflow-auto 
+          h4 Popular users
           UserTop( 
             :top-users='topUsers'
             :current-user='currentUser'
@@ -22,22 +23,11 @@ import TweetNew from "../components/TweetNew";
 import TweetIndex from "../components/TweetIndex";
 import UserTop from "../components/UserTop";
 import { Toast } from "../utils/helpers";
+import { mapState } from "vuex";
 
 //api
 import tweetsAPI from "../apis/tweet";
 import followshipAPI from "../apis/followship";
-
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: "root",
-    email: "root@example.com",
-    avatar:
-      "https://loremflickr.com/240/240/man,women/?random=76.38409798671886",
-    role: "admin"
-  },
-  isAuthenticated: true
-};
 
 export default {
   components: {
@@ -48,13 +38,15 @@ export default {
   data() {
     return {
       tweets: [],
-      topUsers: [],
-      currentUser: dummyUser.currentUser
+      topUsers: []
     };
   },
   created() {
     this.fetchTweets();
     // this.fetchTopUsers();
+  },
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"])
   },
   methods: {
     async fetchTweets() {
@@ -146,9 +138,7 @@ export default {
     },
     async afterAddLike(tweetId) {
       try {
-        console.log("afterAddLike", tweetId);
         const response = await tweetsAPI.tweets.like(tweetId);
-        console.log("afterAddLike2");
         const { data } = response;
 
         //add statusText

@@ -8,53 +8,61 @@
 
       <!-- description -->
       <p style="width: 300px; text-align: left; word-break: break-all;">{{ user.introduction }}</p>
-      <!-- ul -->
 
       <ul class="list-inline list-unstyled">
         <li style="text-align:left;">
-          <strong>{{user.tweetsCount}}</strong>Tweets
+          <router-link :to="{ name: 'user', params: { id: user.id }}">
+            <strong>{{user.tweetsCount}} </strong>Tweets
+          </router-link>
         </li>
 
         <li style="text-align:left;">
-          <strong>{{user.followingCount}}</strong> followings (追蹤者)
+          <router-link :to="{ name: 'users-followings', params: { id: user.id }}">
+            <strong>{{user.followingCount}}</strong> followings (追蹤者)
+          </router-link>
         </li>
 
         <li style="text-align:left;">
-          <strong>{{user.followerCount}}</strong> followers (追隨者)
+          <router-link :to="{ name: 'users-followers', params: { id: user.id }}">
+            <strong>{{user.followerCount}}</strong> followers (追隨者)
+          </router-link>
         </li>
 
         <li style="text-align:left;">
-          <strong>{{user.likeCount}}</strong> Likes
+          <router-link :to="{ name: 'users-likes', params: { id: user.id }}">
+            <strong>{{user.likeCount}}</strong> Likes
+          </router-link>
         </li>
       </ul>
 
       <div id="follow-btns">
         <button
-          v-if="!isFollowed && !isCurrentUser"
-          @click.prevent.stop="follow"
-          type="submit"
+          :disabled="isProcessing"
+          v-if="!user.isFollowed && !user.isCurrentUser"
+          @click.prevent.stop="follow(user.id)"
+          type="button"
           class="btn btn-primary"
         >追蹤</button>
 
-        <!-- v-else -->
-        <form
-          v-else-if="!isFollowed && !isCurrentUser"
-          @submit.prevent.stop="unfollow"
-          action="/following/72?_method=DELETE"
-          method="POST"
-          style="display: contents;"
-        >
-          <button type="submit" class="btn btn-danger">取消追蹤</button>
-        </form>
+        <button
+          :disabled="isProcessing"
+          v-else-if="user.isFollowed && !user.isCurrentUser"
+          @click.prevent.stop="unfollow(user.id)"
+          type="button"
+          class="btn btn-danger"
+        >取消追蹤</button>
 
-        <!-- v-if current user  -->
-        <router-link v-else to="/users/1/edit" class="btn btn-primary ml-2">edit profile</router-link>
+        <router-link v-else :to="{ name: 'users-profile-edit', query: { id: user.id } }" class="btn btn-primary ml-2">edit profile</router-link>
+
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import UsersAPI from "../apis/users";
+import { Toast } from "../utils/helpers";
+
 export default {
   props: {
     user: {
@@ -62,12 +70,49 @@ export default {
       required: true
     }
   },
+  data(){
+    return {
+      isProcessing: false
+    }
+  },
   methods: {
-    follow() {
-      // this.isFollowed = true;
+    async follow(userId) {
+      try {
+        this.isProcessing = true
+        const { data } = await UsersAPI.follow(userId);
+        console.log("data", data);
+
+        // 通知父層
+        this.$emit("after-follow-user", userId);
+        this.isProcessing = false
+      } catch (error) {
+        this.isProcessing = false
+        Toast.fire({
+          icon: "error",
+          title: "無法加入追蹤，請稍後再試"
+        });
+      }
     },
-    unfollow() {
-      // this.isFollowed = false;
+    async unfollow(userId) {
+      try {
+        this.isProcessing = true
+        const { data } = await UsersAPI.unfollow(userId);
+        console.log("data", data);
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        // 通知父層
+        this.$emit("after-unfollow-user", userId);
+        this.isProcessing = false
+      } catch (error) {
+        this.isProcessing = false
+        Toast.fire({
+          icon: "error",
+          title: "無法取消追蹤，請稍後再試"
+        });
+      }
     }
   }
 };

@@ -1,124 +1,27 @@
 <template>
-  <div class="container-fluid">
-    <div class="row px-5 mx-auto" style="width: 85%;">
-      <UserProfileCard :is-current-user="isCurrentUser" :initial-user="user" :initial-following-list="currentUserFollowingList" class="col-md-4 mr-auto" />
-      <UserFollowerCard :initial-user="user" :initial-following-list="currentUserFollowingList"  class="col-md-8" />
+  <div class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden py-5">
+    <div class="row px-5 mx-auto flex-grow-1 overflow-hidden" style="width: 85%;">
+      <UserProfileCard
+        :user="user"
+        class="col-md-4 mr-auto mh-100 overflow-auto"
+        @after-follow-user="afterFollowUser"
+        @after-unfollow-user="afterUnfollowUser"
+      />
+      <UserFollowerCard
+        :follow-list="followerList"
+        @after-follow="afterFollow"
+        @after-unfollow="afterUnfollow"
+        class="col-md-8 mh-100 overflow-auto"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import UserProfileCard from "../components/UserProfileCard";
-import UserFollowerCard from "../components/UserFollowerCard";
-
-const dummyData = {
-  user: {
-    id: 2,
-    email: "user1@example.com",
-    password: "$2a$10$YXb3dTWixmuZszxs8OigreIbBSgpCHwTZG.A6zIPceuckIws7Gi1S",
-    name: "user1",
-    avatar:
-      "https://loremflickr.com/240/240/man,women/?random=59.78751611010069",
-    introduction: "totam hic dolor",
-    role: "user",
-    createdAt: "2020-05-29T00:33:17.000Z",
-    updatedAt: "2020-05-29T00:33:17.000Z",
-    Followers: [
-      {
-        id: 1,
-        email: "root@example.com",
-        password:
-          "$2a$10$7Uj1HYTMVXcjHZFDCkYhyeJ4eS9DRz9JooBeEAdMIJ0E6CXzxfFni",
-        name: "root",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=10.503503288738237",
-        introduction: "hic",
-        role: "admin",
-        createdAt: "2020-05-29T00:33:16.000Z",
-        updatedAt: "2020-05-29T00:33:16.000Z",
-        Followship: {
-          followerId: 1,
-          followingId: 2,
-          createdAt: "2020-05-29T00:33:17.000Z",
-          updatedAt: "2020-05-29T00:33:17.000Z"
-        }
-      },
-      {
-        id: 2,
-        email: "user1@example.com",
-        password:
-          "$2a$10$YXb3dTWixmuZszxs8OigreIbBSgpCHwTZG.A6zIPceuckIws7Gi1S",
-        name: "user1",
-        avatar:
-          "https://loremflickr.com/240/240/man,women/?random=59.78751611010069",
-        introduction: "totam hic dolor",
-        role: "user",
-        createdAt: "2020-05-29T00:33:17.000Z",
-        updatedAt: "2020-05-29T00:33:17.000Z",
-        Followship: {
-          followerId: 2,
-          followingId: 2,
-          createdAt: "2020-05-29T00:33:17.000Z",
-          updatedAt: "2020-05-29T00:33:17.000Z"
-        }
-      }
-    ],
-    Followings: [],
-    Tweets: [],
-    Likes: []
-  }
-};
-const dummyCurrentUser = {
-  id: 2,
-  email: "root@example.com",
-  password: "$2a$10$7Uj1HYTMVXcjHZFDCkYhyeJ4eS9DRz9JooBeEAdMIJ0E6CXzxfFni",
-  name: "root",
-  avatar:
-    "https://loremflickr.com/240/240/man,women/?random=10.503503288738237",
-  introduction: "hic",
-  role: "admin",
-  createdAt: "2020-05-29T00:33:16.000Z",
-  updatedAt: "2020-05-29T00:33:16.000Z",
-  Followings: [
-    {
-      id: 2,
-      email: "user1@example.com",
-      password: "$2a$10$YXb3dTWixmuZszxs8OigreIbBSgpCHwTZG.A6zIPceuckIws7Gi1S",
-      name: "user1",
-      avatar:
-        "https://loremflickr.com/240/240/man,women/?random=59.78751611010069",
-      introduction: "totam hic dolor",
-      role: "user",
-      createdAt: "2020-05-29T00:33:17.000Z",
-      updatedAt: "2020-05-29T00:33:17.000Z",
-      Followship: {
-        followerId: 1,
-        followingId: 2,
-        createdAt: "2020-05-29T00:33:17.000Z",
-        updatedAt: "2020-05-29T00:33:17.000Z"
-      }
-    },
-    {
-      id: 3,
-      email: "user2@example.com",
-      password: "$2a$10$Y0zEGUzv49/INbNAicXRbuGAMAz1s7eNuwUTDeXCTsLtVdoaB29JW",
-      name: "user2",
-      avatar:
-        "https://loremflickr.com/240/240/man,women/?random=74.56657016049095",
-      introduction:
-        "Voluptas sequi sint omnis rerum vero sunt minus sint magnam. Veritatis magni et in omnis sed. Autem culpa eos consequatur voluptatem. Aut velit voluptatibus ipsa rerum magnam temporibus reprehenderit nemo omnis.",
-      role: "user",
-      createdAt: "2020-05-29T00:33:17.000Z",
-      updatedAt: "2020-05-29T00:33:17.000Z",
-      Followship: {
-        followerId: 1,
-        followingId: 3,
-        createdAt: "2020-05-29T00:33:17.000Z",
-        updatedAt: "2020-05-29T00:33:17.000Z"
-      }
-    }
-  ]
-};
+import UserFollowerCard from "../components/UserFollowCard";
+import UsersAPI from "../apis/users";
+import { Toast } from "../utils/helpers";
 
 export default {
   components: {
@@ -134,71 +37,127 @@ export default {
         avatar: "",
         introduction: "",
         role: "",
-        Followings: [],
-
-        // 以下應該要分開
-        Followers: [],
-        Tweets: [],
-        Likes: []
+        isCurrentUser: null,
+        isFollowed: null,
+        tweetsCount: -1,
+        followingCount: -1,
+        followerCount: -1,
+        likeCount: -1
       },
-      currentUser: {},
-      currentUserFollowingList: [],
-      isCurrentUser: null
+      // user的followers清單
+      followerList: []
     };
   },
   created() {
     const { id: userId } = this.$route.params;
-    this.fetchUserData(userId);
-    this.getCurrentUserFollowingList();
+    this.fetchProfileData(userId);
+    this.fetchFollowersData(userId);
   },
   methods: {
-    fetchUserData(userId) {
-      // 串API 拿 userId 的 follower 資料
-      console.log(userId);
-      const { user } = dummyData;
-      const {
-        id,
-        email,
-        name,
-        avatar,
-        introduction,
-        role,
-        Followings,
-        Tweets,
-        Likes,
-        Followers
-      } = user;
+    async fetchProfileData(userId) {
+      try {
+        const response = await UsersAPI.getUserProfile(userId);
+        const { data, statusText } = response;
+        if (statusText !== "OK") throw new Error();
 
-      this.user = {
-        ...this.user,
-        id,
-        email,
-        name,
-        avatar,
-        introduction,
-        role,
-        Followings,
+        const {
+          id,
+          email,
+          name,
+          avatar,
+          introduction,
+          role,
+          isCurrentUser,
+          isFollowed,
+          tweetsCount,
+          followingCount,
+          followerCount,
+          likeCount
+        } = data.user;
 
-        Followers,
-        Tweets,
-        Likes
-      };
-      this.currentUser = dummyCurrentUser;
-
-      // 判斷currentUser是否在查看自己的profile
-      if(this.currentUser.id === Number(userId)){
-        this.isCurrentUser = true
-      } else {
-        this.isCurrentUser = false
+        this.user = {
+          ...this.user,
+          id,
+          email,
+          name,
+          avatar,
+          introduction,
+          role,
+          isCurrentUser,
+          isFollowed,
+          tweetsCount,
+          followingCount,
+          followerCount,
+          likeCount
+        };
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料"
+        });
       }
     },
-    getCurrentUserFollowingList() {
-      // 把currentUser follow 的 id們 做成array
-      let currentUserFollowingList = this.currentUser.Followings.map(
-        user => user.id
-      );
-      console.log(currentUserFollowingList)
-      this.currentUserFollowingList = currentUserFollowingList
+    async fetchFollowersData(userId) {
+      try {
+        const response = await UsersAPI.getFollowers(userId);
+        const { data, statusText } = response;
+        if (statusText !== "OK") throw new Error();
+        this.followerList = data.followers;
+      } catch {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得Followings資料"
+        });
+      }
+    },
+    afterFollow(followerId) {
+      console.log("following:", followerId);
+
+      this.followerList = this.followerList.map(follower => {
+        if (follower.id !== followerId) {
+          return follower;
+        } else {
+          return {
+            ...follower,
+            followerCount: follower.followerCount + 1,
+            isFollowed: true
+          };
+        }
+      });
+    },
+    afterUnfollow(followerId) {
+      console.log("unfollowed");
+      console.log("unfollowed: ", followerId);
+
+      this.followerList = this.followerList.map(follower => {
+        if (follower.id !== followerId) {
+          return follower;
+        } else {
+          return {
+            ...follower,
+            followerCount: follower.followerCount - 1,
+            isFollowed: false
+          };
+        }
+      });
+    },
+    afterFollowUser(userId) {
+      if (userId === this.user.id) {
+        this.user = {
+          ...this.user,
+          followerCount: this.user.followerCount + 1,
+          isFollowed: true
+        };
+      }
+    },
+    afterUnfollowUser(userId) {
+      if (userId === this.user.id) {
+        this.user = {
+          ...this.user,
+          followerCount: this.user.followerCount - 1,
+          isFollowed: false
+        };
+      }
     }
   }
 };

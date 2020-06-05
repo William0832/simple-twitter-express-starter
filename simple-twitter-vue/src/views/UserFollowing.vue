@@ -1,17 +1,28 @@
 <template>
-  <div class="container-fluid">
-    <div class="row px-5 mx-auto" style="width: 85%;">
-      <UserProfileCard :initial-following-list="currentUserFollowingList" :is-current-user="isCurrentUser" :initial-user="user" class="col-md-4 mr-auto" />
-      <UserFollowingCard :initial-user="user" :initial-following-list="currentUserFollowingList" class="col-md-8" />
+  <div class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden py-5">
+    <div class="row px-5 mx-auto flex-grow-1 overflow-hidden" style="width: 85%;">
+      <UserProfileCard
+        :user="user"
+        class="col-md-4 mr-auto mh-100 overflow-auto"
+        @after-follow-user="afterFollowUser"
+        @after-unfollow-user="afterUnfollowUser"
+      />
+      <UserFollowingCard
+        :follow-list="followingList"
+        @after-follow="afterFollow"
+        @after-unfollow="afterUnfollow"
+        class="col-md-8 mh-100 overflow-auto"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import UserProfileCard from "../components/UserProfileCard";
-import UserFollowingCard from "../components/UserFollowingCard";
-import UsersAPI from '../apis/users'
-import { Toast } from '../utils/helpers'
+import UserFollowingCard from "../components/UserFollowCard";
+
+import UsersAPI from "../apis/users";
+import { Toast } from "../utils/helpers";
 
 export default {
   components: {
@@ -27,57 +38,127 @@ export default {
         avatar: "",
         introduction: "",
         role: "",
-        Followings: [],
-
-        // 以下應該要分開
-        Followers: [],
-        Tweets: [],
-        Likes:[]
+        isCurrentUser: null,
+        isFollowed: null,
+        tweetsCount: -1,
+        followingCount: -1,
+        followerCount: -1,
+        likeCount: -1
       },
-      // currentUser: {},
-      currentUserFollowingList: [],
-      isCurrentUser: false
+      // user的following清單
+      followingList: []
     };
   },
   created() {
     const { id: userId } = this.$route.params;
     this.fetchProfileData(userId);
-    this.getCurrentUserFollowingList();
+    this.fetchFollowingsData(userId);
   },
   methods: {
     async fetchProfileData(userId) {
       try {
-        const response = await UsersAPI.getFollowers(userId)
+        const response = await UsersAPI.getUserProfile(userId);
+        const { data, statusText } = response;
+        if (statusText !== "OK") throw new Error();
 
-        // if(statusText !== 'ok') throw new Error
+        const {
+          id,
+          email,
+          name,
+          avatar,
+          introduction,
+          role,
+          isCurrentUser,
+          isFollowed,
+          tweetsCount,
+          followingCount,
+          followerCount,
+          likeCount
+        } = data.user;
 
-        this.user = response.data.user
-        
-        // 判斷currentUser是否在查看自己的profile        
-        // this.currentUser = dummydata
-        // if(this.currentUser.id === Number(userId)){
-        //   this.isCurrentUser = true
-        // } else {
-        //   this.isCurrentUser = false
-        // }
-
-        this.isCurrentUser = false
-      } catch(error){
+        this.user = {
+          ...this.user,
+          id,
+          email,
+          name,
+          avatar,
+          introduction,
+          role,
+          isCurrentUser,
+          isFollowed,
+          tweetsCount,
+          followingCount,
+          followerCount,
+          likeCount
+        };
+      } catch (error) {
         Toast.fire({
-          icon: 'error',
-          title: '無法取得資料'
-        })
-      }      
+          icon: "error",
+          title: "無法取得proile資料"
+        });
+      }
     },
-    getCurrentUserFollowingList() {
-      // // 把currentUser follow 的 id們 做成array
-      // let currentUserFollowingList = this.currentUser.Followings.map(
-      //   user => user.id
-      // );
-      // console.log(currentUserFollowingList)
-      // this.currentUserFollowingList = currentUserFollowingList
-      
-      this.currentUserFollowingList = [2, 3] // 暫時
+    async fetchFollowingsData(userId) {
+      try {
+        const response = await UsersAPI.getFollowings(userId);
+        const { data, statusText } = response;
+        if (statusText !== "OK") throw new Error();
+        this.followingList = data.followings;
+      } catch {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得Followings資料"
+        });
+      }
+    },
+    afterFollow(followingId) {
+      console.log("following:", followingId);
+
+      this.followingList = this.followingList.map(following => {
+        if (following.id !== followingId) {
+          return following;
+        } else {
+          return {
+            ...following,
+            followerCount: following.followerCount + 1,
+            isFollowed: true
+          };
+        }
+      });
+    },
+    afterUnfollow(followingId) {
+      console.log("unfollowed");
+      console.log("unfollowed: ", followingId);
+
+      this.followingList = this.followingList.map(following => {
+        if (following.id !== followingId) {
+          return following;
+        } else {
+          return {
+            ...following,
+            followerCount: following.followerCount - 1,
+            isFollowed: false
+          };
+        }
+      });
+    },
+    afterFollowUser(userId) {
+      if (userId === this.user.id) {
+        this.user = {
+          ...this.user,
+          followerCount: this.user.followerCount + 1,
+          isFollowed: true
+        };
+      }
+    },
+    afterUnfollowUser(userId) {
+      if (userId === this.user.id) {
+        this.user = {
+          ...this.user,
+          followerCount: this.user.followerCount - 1,
+          isFollowed: false
+        };
+      }
     }
   }
 };
