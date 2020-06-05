@@ -11,7 +11,7 @@
           | 管理員後台
         // is user is login
         router-link.text-white.mr-3(:to="{name: 'user', params: { id: currentUser.id }}" v-if='isAuthenticated')
-          | 使用者 您好
+          | 使用者 {{currentUser.name}} ,您好
         button.btn.btn-sm.btn-outline-success.my-2.my-sm-0(type='button'  @click="logout" v-if='isAuthenticated')
           | 登出
 </template>
