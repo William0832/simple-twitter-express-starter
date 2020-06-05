@@ -9,6 +9,7 @@
             @after-add-like='afterAddLike'
             @after-delete-like='afterDeleteLike')
         .col-md-4.mh-100.overflow-auto 
+          h4 Popular users
           UserTop( 
             :top-users='topUsers'
             :current-user='currentUser'
