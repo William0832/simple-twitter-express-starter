@@ -130,10 +130,19 @@ const tweetService = {
   },
   getTweet: async (req, res, callback) => {
     try {
-      const tweet = await Tweet.findByPk(req.params.tweet_id, {
+      let tweet = await Tweet.findByPk(req.params.tweet_id, {
         attributes: ['id', 'description', 'createdAt'],
         include: [{ model: User, attributes: ['id', 'name', 'avatar'] }]
       })
+
+      let likedUsers = await Like.findAll({
+        where: { TweetId: req.params.tweet_id },
+        attributes: ['UserId']
+      })
+
+      likedUsers = likedUsers.map((like) => like.UserId)
+      console.log(tweet)
+      tweet.dataValues.isLiked = likedUsers.includes(helpers.getUser(req).id)
 
       if (tweet) {
         return callback({

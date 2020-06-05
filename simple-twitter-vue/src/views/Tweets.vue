@@ -138,9 +138,7 @@ export default {
     },
     async afterAddLike(tweetId) {
       try {
-        console.log("afterAddLike", tweetId);
         const response = await tweetsAPI.tweets.like(tweetId);
-        console.log("afterAddLike2");
         const { data } = response;
 
         //add statusText
