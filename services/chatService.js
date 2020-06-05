@@ -2,7 +2,7 @@ const { Op } = require('sequelize')
 const db = require('../models')
 const { User, Chat, Message } = db
 const helpers = require('../_helpers')
-const { print } = require('../__helper')
+// const { print } = require('../__helper')
 
 const chatService = {
   // db 開新的聊天室
