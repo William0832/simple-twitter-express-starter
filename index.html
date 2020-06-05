@@ -1,83 +1,116 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+  <head>
+    <title>Socket.IO chat</title>
+    <!-- <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-<head>
-  <title>Socket.IO chat</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+      body {
+        font: 13px Helvetica, Arial;
+      }
 
-    body {
-      font: 13px Helvetica, Arial;
-    }
+      form {
+        background: #000;
+        padding: 3px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
 
-    form {
-      background: #000;
-      padding: 3px;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
+      form input {
+        border: 0;
+        padding: 10px;
+        width: 90%;
+        margin-right: 0.5%;
+      }
 
-    form input {
-      border: 0;
-      padding: 10px;
-      width: 90%;
-      margin-right: 0.5%;
-    }
+      form button {
+        width: 9%;
+        background: rgb(130, 224, 255);
+        border: none;
+        padding: 10px;
+      }
 
-    form button {
-      width: 9%;
-      background: rgb(130, 224, 255);
-      border: none;
-      padding: 10px;
-    }
+      #messages {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
 
-    #messages {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-    }
+      #messages li {
+        padding: 5px 10px;
+      }
 
-    #messages li {
-      padding: 5px 10px;
-    }
+      #messages li:nth-child(odd) {
+        background: #eee;
+      } -->
+    </style>
+  </head>
 
-    #messages li:nth-child(odd) {
-      background: #eee;
-    }
-  </style>
-</head>
+  <body>
+    <div>Room: <snap id="chatValue">1</snap></div>
+    <ul id="msgBoard"></ul>
+    
+    <form action="">
+      <label for="useId">userId</label>
+      <input id="userId" autocomplete="off" />
+      <br>
+      <br>
+      <label for="chatId">chatId</label>
+      <input id="chatId" autocomplete="off" />
+      <br>      <br>
 
-<body>
-  <ul id="messages"></ul>
-  <form action="">
-    <input id="m" autocomplete="off" /><button>Send</button>
-  </form>
+      <label for="inputMsg">msg:</label>
+      <input id="inputMsg" autocomplete="off" />
+      <button>Send</button>
+    </form>
 
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-  <script>
-    $(function () {
-      var socket = io();
-      socket.emit('login', 'userHtml')
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+      // 監聽物件
+      let chatValue = $('#chatValue')
+      let msgBoard =$('#msgBoard')
+      let inputMsg = $('#inputMsg')
+      let userId = $('#userId')
+      let chatId = $('#chatId')
+      let form = $('form')
 
-      $('form').submit(function (e) {
-        e.preventDefault(); // prevents page reloading
-        socket.emit('chat', $('#m').val());
-        $('#m').val('');
-        return false;
-      });
+      // 事件
+      $(function () {
+        var socket = io()
+        // 用戶登入
+        socket.emit('login', '')
+        // 送出表單至server
+        form.submit((e) => {
+          e.preventDefault() // prevents page reloading
+          let data = {
+            userId: userId.val(),
+            socketId: socket.id,
+            chatId: chatId.val(),
+            msg:inputMsg.val(),
+            time: new Date
+          }
+          // socket.emit('changeChat',data)
+          socket.emit('talk', data)
+          // 清空訊息
+          inputMsg.val('')
+          return false
+        })
 
-      socket.on('chat', function (msg) {
-        $('#messages').append($('<li>').text(msg));
-      });
-    });
-  </script>
-</body>
-
+        socket.on('talk', function (data) {
+          console.log('socket.on','talk',data)
+          // 改room
+          chatValue.text(data.chatId)
+          // 顯示訊息 
+          msgBoard.append($('<li>').text(data.msg))
+        })
+      })
+    </script>
+  </body>
 </html>
