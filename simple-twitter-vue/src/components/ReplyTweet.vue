@@ -10,8 +10,7 @@
         p
           | {{tweet.description}}
         .row.justify-content-start
-          button.btn.btn-danger(:disabled="isProcessing" v-if ='tweet.isLiked' @click.stop.prevent="deleteLike(tweet.id)") Dislike 
-          button.btn.btn-light(:disabled="isProcessing" v-else @click.stop.prevent="addLike(tweet.id)") Like 
+          button.btn.btn-light(@click.stop.prevent="addLike") Like 
 </template>
 
 <script>
@@ -28,26 +27,8 @@ export default {
       required: true
     }
   },
-  data() {
-    return {
-      isProcessing: false
-    };
-  },
   methods: {
-    addLike(tweetId) {
-      this.isProcessing = true;
-      this.$emit("after-add-like", tweetId);
-      setTimeout(() => {
-        this.isProcessing = false;
-      }, 500);
-    },
-    deleteLike(tweetId) {
-      this.isProcessing = true;
-      this.$emit("after-delete-like", tweetId);
-      setTimeout(() => {
-        this.isProcessing = false;
-      }, 500);
-    }
+    addLike() {}
   }
 };
 </script>

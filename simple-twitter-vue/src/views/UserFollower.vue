@@ -1,9 +1,9 @@
 <template>
-  <div class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden py-5">
-    <div class="row px-5 mx-auto flex-grow-1 overflow-hidden" style="width: 85%;">
+  <div class="container-fluid">
+    <div class="row px-5 mx-auto" style="width: 85%;">
       <UserProfileCard
         :user="user"
-        class="col-md-4 mr-auto mh-100 overflow-auto"
+        class="col-md-4 mr-auto"
         @after-follow-user="afterFollowUser"
         @after-unfollow-user="afterUnfollowUser"
       />
@@ -11,7 +11,7 @@
         :follow-list="followerList"
         @after-follow="afterFollow"
         @after-unfollow="afterUnfollow"
-        class="col-md-8 mh-100 overflow-auto"
+        class="col-md-8"
       />
     </div>
   </div>
@@ -44,7 +44,7 @@ export default {
         followerCount: -1,
         likeCount: -1
       },
-      // user的followers清單
+       // user的followers清單
       followerList: []
     };
   },
@@ -57,10 +57,10 @@ export default {
     async fetchProfileData(userId) {
       try {
         const response = await UsersAPI.getUserProfile(userId);
-        const { data, statusText } = response;
-        if (statusText !== "OK") throw new Error();
+        const { data, statusText} = response;
+        if(statusText !== 'OK') throw new Error
 
-        const {
+        const { 
           id,
           email,
           name,
@@ -97,12 +97,13 @@ export default {
         });
       }
     },
-    async fetchFollowersData(userId) {
+    async fetchFollowersData(userId){
       try {
         const response = await UsersAPI.getFollowers(userId);
-        const { data, statusText } = response;
-        if (statusText !== "OK") throw new Error();
-        this.followerList = data.followers;
+        const { data, statusText} = response;
+        if(statusText !== 'OK') throw new Error
+        this.followerList = data.followers
+
       } catch {
         Toast.fire({
           icon: "error",
@@ -141,22 +142,22 @@ export default {
         }
       });
     },
-    afterFollowUser(userId) {
-      if (userId === this.user.id) {
+    afterFollowUser(userId){
+      if(userId === this.user.id){
         this.user = {
           ...this.user,
           followerCount: this.user.followerCount + 1,
           isFollowed: true
-        };
+        }
       }
     },
-    afterUnfollowUser(userId) {
-      if (userId === this.user.id) {
+    afterUnfollowUser(userId){
+      if(userId === this.user.id){
         this.user = {
           ...this.user,
           followerCount: this.user.followerCount - 1,
           isFollowed: false
-        };
+        }
       }
     }
   }

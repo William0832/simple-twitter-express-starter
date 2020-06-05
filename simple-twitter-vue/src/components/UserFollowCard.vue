@@ -6,7 +6,7 @@
     <ul class="list-unstyled">
       <div class="row no-gutters">
         <li v-for="follower in followList" :key="follower.id" class="col-6">
-          <div class="card m-1 p-3">
+          <div class="card mb-1" style="width: 98%; min-height: 300px;">
             <div id="card-contents" class="row no-gutters mt-2">
               <!-- image -->
               <div class="col-4">
@@ -15,10 +15,8 @@
 
               <!-- user info -->
               <div class="col-8 d-flex flex-column align-items-start">
-                <router-link :to="{ name: 'user', params: { id: follower.id }}">
-                  <h5 class>{{follower.name}}</h5>
-                </router-link>
-                <p style="text-align: left; width: 90%;">{{follower.introduction | peek}}</p>
+                <h5 class>{{follower.name}}</h5>
+                <p style="text-align: left; width: 90%;">{{follower.introduction}}</p>
 
                 <!-- follow-BTN  -->
                 <button
@@ -36,6 +34,7 @@
                   type="button"
                   class="btn btn-danger"
                 >取消追蹤</button>
+                
               </div>
             </div>
           </div>
@@ -57,23 +56,15 @@ export default {
       required: true
     }
   },
-  data() {
+  data(){
     return {
       isProcessing: false
-    };
-  },
-  filters: {
-    peek(description) {
-      if (description.length > 50) {
-        return `${description.substr(0, 50)} ...`;
-      }
-      return description ? description : "-";
     }
   },
   methods: {
     async follow(followerId) {
       try {
-        this.isProcessing = true;
+        this.isProcessing = true
         const { data } = await UsersAPI.follow(followerId);
         console.log("data", data);
         if (data.status !== "success") {
@@ -81,9 +72,9 @@ export default {
         }
         // 通知父層
         this.$emit("after-follow", followerId);
-        this.isProcessing = false;
+        this.isProcessing = false
       } catch (error) {
-        this.isProcessing = false;
+        this.isProcessing = false
         Toast.fire({
           icon: "error",
           title: "無法加入追蹤，請稍後再試"
@@ -92,7 +83,7 @@ export default {
     },
     async unfollow(followerId) {
       try {
-        this.isProcessing = true;
+        this.isProcessing = true
         const { data } = await UsersAPI.unfollow(followerId);
         console.log("data", data);
 
@@ -102,9 +93,9 @@ export default {
 
         // 通知父層
         this.$emit("after-unfollow", followerId);
-        this.isProcessing = false;
+        this.isProcessing = false
       } catch (error) {
-        this.isProcessing = false;
+        this.isProcessing = false
         Toast.fire({
           icon: "error",
           title: "無法取消追蹤，請稍後再試"

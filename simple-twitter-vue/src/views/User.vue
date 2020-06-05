@@ -1,9 +1,9 @@
 <template>
-  <div class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden py-5">
-    <div class="row px-5 mx-auto flex-grow-1 overflow-hidden" style="width: 75%;">
+  <div class="container-fluid">
+    <div class="row px-5 mx-auto" style="width: 75%;">
       <UserProfileCard
         :user="user"
-        class="col-md-4 mr-auto mh-100 overflow-auto"
+        class="col-md-4 mr-auto"
         @after-follow-user="afterFollowUser"
         @after-unfollow-user="afterUnfollowUser"
       />
@@ -11,7 +11,7 @@
         :tweets="tweets"
         @after-add-like="afterLike"
         @after-delete-like="afterUnlike"
-        class="col-md-7 mr-auto mh-100 overflow-auto"
+        class="col-md-7"
       />
     </div>
   </div>

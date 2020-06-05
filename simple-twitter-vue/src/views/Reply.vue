@@ -1,14 +1,10 @@
 <template lang="pug">
-  .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-5
-      .row.flex-grow-1.overflow-hidden
-        .col-md-4.mh-100.overflow-auto
+  .container.py-5
+      .row
+        .col-md-4
           UserProfileCard(:user ='user')
-        .col-md-8.mh-100.overflow-auto
-          ReplyTweet(
-            :tweet ='tweet' 
-            :user='user'
-            @after-add-like='afterAddLike'
-            @after-delete-like='afterDeleteLike')
+        .col-md-8
+          ReplyTweet(:tweet ='tweet' :user='user')
           Replies(:replies ='replies')
           ReplyNew(@after-create-reply='afterCreateReply')
 </template>
@@ -23,7 +19,6 @@ import { Toast } from "../utils/helpers";
 //api
 import replyAPI from "../apis/reply";
 import userAPI from "../apis/users";
-import tweetsAPI from "../apis/tweet";
 
 export default {
   components: {
@@ -95,6 +90,8 @@ export default {
         const { data } = respond;
 
         this.user = data.user;
+
+        console.log(this.user);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -121,45 +118,6 @@ export default {
         this.fetchReplies(tweetId);
       } catch (error) {
         console.log(error);
-        Toast.fire({
-          icon: "error",
-          title: error
-        });
-      }
-    },
-    async afterAddLike(tweetId) {
-      try {
-        console.log(tweetId);
-        const response = await tweetsAPI.tweets.like(tweetId);
-        const { data } = response;
-
-        //add statusText
-        if (data.status !== "success") {
-          throw new Error(data.message);
-        }
-
-        this.fetchTweet(tweetId);
-      } catch (error) {
-        Toast.fire({
-          icon: "error",
-          title: error
-        });
-      }
-    },
-    async afterDeleteLike(tweetId) {
-      try {
-        console.log(tweetId);
-        const response = await tweetsAPI.tweets.unlike(tweetId);
-
-        const { data } = response;
-
-        //add statusText
-        if (data.status !== "success") {
-          throw new Error(data.message);
-        }
-
-        this.fetchTweet(tweetId);
-      } catch (error) {
         Toast.fire({
           icon: "error",
           title: error

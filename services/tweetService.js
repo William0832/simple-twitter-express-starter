@@ -7,20 +7,6 @@ const Followship = db.Followship
 const Like = db.Like
 const helpers = require('../_helpers')
 
-const removeKeys = (data, keys) => {
-  if (Object.keys(data).includes(...keys)) {
-    keys.forEach((k) => {
-      delete data[k]
-    })
-  } else {
-    data.forEach((d) => {
-      keys.forEach((k) => {
-        delete d[k]
-      })
-    })
-  }
-}
-
 const tweetService = {
   getTweets: async (req, res, callback) => {
     try {
@@ -76,22 +62,32 @@ const tweetService = {
 
       likedTweets = likedTweets.map((like) => like.TweetId)
 
-
       let tweets = await Tweet.findAll({
+        subQuery: false,
+        raw: true,
+        nest: true,
+        order: [['createdAt', 'DESC']],
+        group: ['Tweet.id'],
         include: [
-          { model: User, attributes: ['id', 'email', 'name', 'avatar'] },
-          { model: Reply, attributes: ['id', 'UserId'] },
-          { model: Like, attributes: ['id', 'UserId'] }
+          { model: User, attributes: ['id', 'name', 'avatar'] },
+          { model: Reply, as: 'Replies', attributes: [] },
+          { model: Like, as: 'Likes', attributes: ['UserId'] }
         ],
-        order: [['createdAt', 'DESC']]
+        attributes: {
+          include: [
+            [
+              sequelize.fn('COUNT', sequelize.col('Replies.id')),
+              'Replies_count'
+            ],
+            [sequelize.fn('COUNT', sequelize.col('Likes.id')), 'Likes_count']
+          ]
+        }
       })
+
       tweets = tweets.map((tweet) => ({
-        ...tweet.dataValues,
-        repliesCount: tweet.Replies.length || 0,
-        likesCount: tweet.Likes.length || 0,
+        ...tweet,
         isLiked: likedTweets.includes(tweet.id) ? true : false
       }))
-      removeKeys(tweets, ['Replies', 'Likes'])
 
       return callback({
         tweets,
@@ -130,19 +126,10 @@ const tweetService = {
   },
   getTweet: async (req, res, callback) => {
     try {
-      let tweet = await Tweet.findByPk(req.params.tweet_id, {
+      const tweet = await Tweet.findByPk(req.params.tweet_id, {
         attributes: ['id', 'description', 'createdAt'],
         include: [{ model: User, attributes: ['id', 'name', 'avatar'] }]
       })
-
-      let likedUsers = await Like.findAll({
-        where: { TweetId: req.params.tweet_id },
-        attributes: ['UserId']
-      })
-
-      likedUsers = likedUsers.map((like) => like.UserId)
-
-      tweet.dataValues.isLiked = likedUsers.includes(helpers.getUser(req).id)
 
       if (tweet) {
         return callback({

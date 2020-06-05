@@ -218,10 +218,11 @@ const userService = {
         message: 'user was successfully to update'
       })
     } catch (err) {
-      callback({ status: 'error', message: err.toString() })
+      callback({ status: 'error', message: 'ooo' + err.toString() })
     }
   },
   getCurrentUser: async (req, res, callback) => {
+    console.log('getCurrentUser', helpers.getUser(req))
     callback(helpers.getUser(req))
   }
 }
