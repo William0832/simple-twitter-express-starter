@@ -86,4 +86,11 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
+# temp img
 temp/*
+
+#shell scrip 
+sh
+
+# self helper
+__helper.js
