@@ -53,7 +53,6 @@ export default {
       try {
         const response = await tweetsAPI.getTweets();
 
-        console.log(response.data);
         const { data } = response;
 
         this.tweets = data.tweets;
