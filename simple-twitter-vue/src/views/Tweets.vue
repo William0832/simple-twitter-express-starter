@@ -29,11 +29,9 @@
           @after-add-follow='afterAddFollow'
           @after-delete-follow='afterDeleteFollow'
         )    
-        //- style="background-color: red;"
-    div.row.no-gutters.d-flex.fixed-bottom
-      ChatWindow(@after-close="closeWindow" )
-      ChatWindow(@after-close="closeWindow" )
-      ChatWindow(@after-close="closeWindow" )
+        
+    .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0;")
+      ChatWindow(v-for="window in windows" :key="window" @after-close="closeWindow" style="margin: 0 0.3%")
 </template>
 
 <script>
@@ -73,7 +71,8 @@ export default {
       tweets: [],
       topUsers: [],
       currentUser: dummyUser.currentUser,
-      windows: []
+      // chat room array
+      windows: [1,2]
     };
   },
   created() {
