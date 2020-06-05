@@ -1,14 +1,14 @@
 <template lang="pug">
-  .container.py-5
-      .row
-        .col-md-8
+  .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-5
+      .row.flex-grow-1.overflow-hidden
+        .col-md-8.mh-100.overflow-auto
           TweetNew(
             :user-id='currentUser.id' 
             @after-create-tweet='afterCreateTweet')
           TweetIndex( :tweets='tweets'
             @after-add-like='afterAddLike'
             @after-delete-like='afterDeleteLike')
-        .col-md-4
+        .col-md-4.mh-100.overflow-auto 
           UserTop( 
             :top-users='topUsers'
             :current-user='currentUser'

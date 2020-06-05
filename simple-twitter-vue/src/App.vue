@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <div id="app" class="vh-100 overflow-hidden">
     <Navbar />
-    <main role="main" class="mt-5 bg-white">
+    <main role="main" class="mt-5 bg-white flex-grow-1 overflow-hidden">
       <router-view />
     </main>
   </div>
