@@ -28,8 +28,8 @@
           :current-user='currentUser'
         )    
         //- style="background-color: red;"
-    div.row.no-gutters.d-flex.fixed-top
-      ChatRoom
+    div.row.no-gutters.d-flex.fixed-bottom
+      ChatRoom(@after-close="closeWindow" v-for='chat in chats' :key='chat.id' :chat='chat')
     //-   ChatWindow(@after-close="closeWindow" )
     //-   ChatWindow(@after-close="closeWindow" )
 </template>
@@ -63,7 +63,8 @@ export default {
     return {
       tweets: [],
       topUsers: [],
-      windows: []
+      windows: [],
+      chats: [{ id: 11 }, { id: 12 }, { id: 13 }]
     };
   },
   computed: {
@@ -200,9 +201,9 @@ export default {
         });
       }
     },
-    closeWindow() {
-      console.log("close window");
-      this.openWindow = false;
+    closeWindow(chatId) {
+      console.log("close window", chatId);
+      this.chats = this.chats.filter(chat => chat.id !== chatId);
     },
     socketLogin() {
       this.$socket.emit("login", this.currentUser.id);
