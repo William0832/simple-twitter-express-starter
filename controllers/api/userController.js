@@ -86,7 +86,6 @@ let userController = {
   putUser: (req, res) =>
     userService.putUser(req, res, (data) => res.status(302).json(data)),
   getCurrentUser: (req, res) => {
-    console.log('here! controller')
     userService.getCurrentUser(req, res, (data) => res.json(data))
   }
 }

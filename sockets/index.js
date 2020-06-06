@@ -46,25 +46,24 @@ module.exports = (io) => {
   // 給定固定chat
   let setChatId = 0
   io.on('connection', (socket) => {
+    console.log('====================connected socket id :', socket.id)
+
+    socket.on('disconnect', () => {
+      console.log('====================disconnected socket id :', socket.id)
+    })
+
+
     if (!setChatId) {
-      console.log('can pick an user to talk!')
+      // console.log('can pick an user to talk!')
     }
     // get socket.id
     let socketId = socket.id
 
     // login
-    socket.on('login', async (user) => {
-      // update isOnline
-      user = await chatService.userOnline(user.id)
-      // store socketId
-      user.socketId = socketId
-      // console.log('login user: ', user)
-
-      // get chat list
-      let chats = await chatService.getChats(user.id)
-      // show chat list - socket.emt
-      socket.emit('showChats', chats)
+    socket.on('login', async (userId) => {
+      console.log('====================login ID', userId)
     })
+
     // invite user
     TODO: socket.on('invite', (invitee) => {
       // console.log(`invite user:${invitee}`)
@@ -113,12 +112,13 @@ module.exports = (io) => {
 
     //OnlineUser.vue
     socket.on('fetchOnlineUser', (userId) => {
-      console.log('User', userId)
+      console.log('====================User', userId)
     })
 
     socket.on('inviteUser', (payload) => {
-      console.log('inviteUser', payload)
+      console.log('====================inviteUser', payload)
     })
 
   })
+
 }
