@@ -1,5 +1,5 @@
 // const chatController = require('./chat')
-// const chatService = require('../services/chatService')
+const chatService = require('../services/chatService')
 Date.prototype.addSeconds = function (s) {
   let ms = s * 1000
   this.setTime(this.getTime() + ms)
@@ -24,14 +24,14 @@ module.exports = (io) => {
     {
       id: 3,
       userId: 3,
-      msg: 'im 3',
+      msg: 'i am 3',
       chatId: 2,
       time: t.addSeconds(15)
     },
     {
       id: 4,
       userId: 4,
-      msg: 'im 4',
+      msg: 'i am 4',
       chatId: 3,
       time: t.addSeconds(25)
     },
@@ -44,33 +44,43 @@ module.exports = (io) => {
     }
   ]
   // 給定固定chat
-  let setChatId = 2
+  let setChatId = 0
   io.on('connection', (socket) => {
+    if (!setChatId) {
+      console.log('can pick an user to talk!')
+    }
+    // get socket.id
     let socketId = socket.id
-    // 監聽客戶登入
-    socket.on('login', () => {
-      console.log('======================================')
-      console.log('user login')
-      console.log('socketId = ', socketId)
 
-      // write history msg
-      console.log('==================================')
-      console.log('寫入舊訊息', 'Room:', setChatId)
-      historyMsg.forEach((m) => {
-        if (m.chatId === setChatId) {
-          console.log(m)
-          socket.emit('talk', m)
-        }
-      })
-      let userIfo = new Object()
-      // userIfo.socketId = socketId
-      // let n = Math.floor(Math.random() * users.length) + 1
+    // login
+    socket.on('login', async (user) => {
+      // update isOnline
+      user = await chatService.userOnline(user.id)
+      // store socketId
+      user.socketId = socketId
+      // console.log('login user: ', user)
 
-      // userIfo.name = users[n].name
-      // userIfo.isOnline = true
-      // users[n] = userIfo
+      // get chat list
+      let chats = await chatService.getChats(user.id)
+      // show chat list - socket.emt
+      socket.emit('showChats', chats)
     })
-    // 監聽客戶傳來的資料
+    // invite user
+    TODO: socket.on('invite', (invitee) => {
+      // console.log(`invite user:${invitee}`)
+      // find the chatId in db
+      // let chat = chatService.getChat(myId, invitee, (data) => data)
+    })
+
+    // et history msg
+    // historyMsg.forEach((m) => {
+    //   if (m.chatId === setChatId) {
+    //     console.log(m)
+    //     socket.emit('talk', m)
+    //   }
+    // })
+
+    // talk
     socket.on('talk', (data) => {
       // io 再傳給全部的客戶
       console.log('server 收到', data)
@@ -99,44 +109,5 @@ module.exports = (io) => {
       })
       // io.emit('talk', data)
     })
-
-    // socket.on('changeChat',()=>{
-
-    // })
-
-    // socket.on('logout', (userId) => {
-    //   console.log('logout', userId)
-    //   if (!connectedUser[userId]) {
-    //     return
-    //   } else {
-    //     connectedUser[userId] = connectedUser[userId].filter(
-    //       (id) => id !== socket.id
-    //     )
-    //   }
-    //   console.log(connectedUser)
-    // })
-
-    // socket.on('invite', (invitation) => {
-    //   const { user, invitedUser } = invitation
-    //   console.log('id', socket.id, 'invite', invitedUser)
-    //   let roomId = checkRooms(user, invitedUser)
-
-    //   console.log(rooms, 'id', roomId)
-
-    //   socket.join(roomId)
-
-    //   if (connectedUser[invitedUser]) {
-    //     connectedUser[invitedUser].forEach((id, index, object) => {
-    //       if (io.sockets.connected[id]) {
-    //         io.sockets.connected[id].join(roomId)
-    //       } else {
-    //         object.splice(index, 1) //remove unconnected socketId
-    //       }
-    //       console.log('id', connectedUser[invitedUser])
-    //     })
-    //   }
-    // })
-
-    // chatController(io, socket)
   })
 }

@@ -2,9 +2,24 @@ const { Op } = require('sequelize')
 const db = require('../models')
 const { User, Chat, Message } = db
 const helpers = require('../_helpers')
-const { print } = require('../__helper')
 
 const chatService = {
+  userOnline: async (userId) => {
+    try {
+      let user = await User.findByPk(userId)
+      user.update({ isOnline: true })
+      return user.toJSON()
+    } catch (err) {
+      console.log(err.toString())
+    }
+  },
+  userOffline: async (userId) => {
+    try {
+      await User.findByPk(userId).update({ isOnline: false })
+    } catch (err) {
+      console.log(err.toString())
+    }
+  },
   // db 開新的聊天室
   postChat: async (req, res, callback) => {
     /*
@@ -53,20 +68,18 @@ const chatService = {
     }
   },
   //db 抓取開過的聊天室清單
-  getChats: async (req, res, callback) => {
+  // in: (myId)
+  // out: invitees:[{'id','name','avatar','isOnline','chatId'},...]
+  getChats: async (myId) => {
     /*
     帶入使用者本身的 id，
     檢查特例
     db 找 chats 包含聊天對象資料
      */
     try {
-      let currentUser = helpers.getUser(req)
       let chats = await Chat.findAll({
         where: {
-          [Op.or]: [
-            { CreatedUserId: currentUser.id },
-            { InvitedUserId: currentUser.id }
-          ]
+          [Op.or]: [{ CreatedUserId: myId }, { InvitedUserId: myId }]
         },
         attributes: ['id', 'CreatedUserId', 'InvitedUserId', 'createdAt']
       })
@@ -77,7 +90,7 @@ const chatService = {
       let userIds = []
       // 依照角色判斷，聊天對象id 存入users
       chats.forEach((c) => {
-        if (c.CreatedUserId === currentUser.id) {
+        if (c.CreatedUserId === myId) {
           userIds.push(c.InvitedUserId)
         } else {
           userIds.push(c.CreatedUserId)
@@ -94,30 +107,23 @@ const chatService = {
       chats.forEach((c, index) => {
         users[index].dataValues.chatId = c.id
       })
-
-      callback({ users })
+      users = users.map((e) => ({
+        ...e.dataValues
+      }))
+      return users
     } catch (err) {
-      callback({
+      return {
         status: 'error',
         message: err.toString()
-      })
+      }
     }
   },
   // db 抓取單一聊天室，要拿到聊天對象的userId
-  getChat: async (req, res, callback) => {
+  // in: (myId, chatId)
+  // out: invitee:{'id','name','avatar','isOnline','chatId'}
+  // TODO: id 版
+  getChat: async (myId, chatId) => {
     try {
-      /*
-      帶入chatId，
-      檢查特例
-      db 找 chat 
-      */
-      if (!req.params.id) {
-        return callback({
-          status: 'error',
-          message: 'chatId did not exist'
-        })
-      }
-      let chatId = req.params.id
       let chat = await Chat.findByPk(chatId)
       if (!chat) {
         return callback({
