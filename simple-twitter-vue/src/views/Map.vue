@@ -1,14 +1,22 @@
-<template>
-  <div id="map"></div>
+<template lang='pug'>
+  div
+    #map
+    form.form-inline(@submit.stop.prevent="handleSubmit")
+      .form-group.mx-sm-3.mb-2
+        label.sr-only(for='searchPlaces') Place:
+        input#searchPlaces.form-control(type='text', placeholder='url' ,v-bind='serchUrl')
+      button.btn.btn-primary.mb-2(type='submit' ) Search
 </template>
 
 <script>
 import GoogleMapsApiLoader from "google-maps-api-loader";
+import GoogleMapAPI from "../apis/GoogleMap";
 
 export default {
   name: "Map",
   data: () => ({
     map: null,
+    serchUrl: "",
     apiKey: process.env.VUE_APP_Google_Map_Key
   }),
   async mounted() {
@@ -25,6 +33,18 @@ export default {
         zoom: 4,
         center: uluru
       });
+    },
+    async handleSubmit() {
+      console.log("here!");
+      try {
+        const respond = await GoogleMapAPI.getMapSearch(
+          "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=AIzaSyCb7UPH-39L--Qt1ajwocZZ43pJ955WY6U"
+        );
+
+        console.log(respond);
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 };
