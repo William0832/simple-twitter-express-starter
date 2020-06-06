@@ -110,12 +110,16 @@ const tweetService = {
         })
       }
 
+      console.log(req.body)
+
       if (req.body.description.length > 140) {
         return callback({ status: 'error', message: 'description is too long' })
       }
 
       const tweet = await Tweet.create({
         description: req.body.description,
+        googleMapName: req.body.googleMapName ? req.body.googleMapName : null,
+        googleMapUrl: req.body.googleMapUrl ? req.body.googleMapUrl : null,
         UserId: helpers.getUser(req).id
       })
 

@@ -10,7 +10,7 @@
       .col.input-group 
         .input-group-prepend
           .input-group-text @
-        input.form-control(type='text', ref='search', placeholder='where are you?')
+        input.form-control(type='text', ref='search', v-model="googleMapName", placeholder='where are you?')
     .row.d-flex.justify-content-end.mt-2
       button.btn.btn-primary.col-2.mr-1(type='button', data-toggle='collapse', data-target='#collapseExample', aria-expanded='false', aria-controls='collapseExample')
         | Check-in
@@ -30,7 +30,9 @@ export default {
   data() {
     return {
       description: "",
-      googleMapSpot: {}
+      googleMapName: "",
+      googleMapUrl: "",
+      autocomplete: null
     };
   },
   mounted() {
@@ -39,20 +41,29 @@ export default {
   methods: {
     handleSubmit() {
       this.$emit("after-create-tweet", {
-        description: this.description
+        description: this.description,
+        googleMapName: this.googleMapName ? this.googleMapName : null,
+        googleMapUrl: this.googleMapUrl ? this.googleMapUrl : null
       });
       this.description = ""; // 將表單內的資料清空
+      this.googleMapName = "";
+      this.googleMapUrl = "";
     },
     initLocationSearch() {
-      let autocomplete = new window.google.maps.places.Autocomplete(
+      this.autocomplete = new window.google.maps.places.Autocomplete(
         this.$refs.search
       );
-      autocomplete.setFields(["name", "url"]);
-      autocomplete.setTypes(["establishment"]);
-      autocomplete.addListener("place_changed", function() {
-        this.googleMapSpot = autocomplete.getPlace();
-        console.log(this.googleMapSpot);
-      });
+      this.autocomplete.setFields(["name", "url"]);
+      this.autocomplete.setTypes(["establishment"]);
+      this.autocomplete.addListener(
+        "place_changed",
+        this.autocompletePlaceChanged
+      );
+    },
+    autocompletePlaceChanged() {
+      const googleMapSpot = this.autocomplete.getPlace();
+      this.googleMapName = googleMapSpot.name;
+      this.googleMapUrl = googleMapSpot.url;
     }
   }
 };

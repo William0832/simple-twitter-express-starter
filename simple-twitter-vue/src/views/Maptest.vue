@@ -9,25 +9,29 @@
 
 export default {
   data: () => ({
-    location: null
+    location: null,
+    autocomplete=null
   }),
   mounted() {
     window.checkAndAttachMapScript(this.initLocationSearch);
   },
   methods: {
     initLocationSearch() {
-      let autocomplete = new window.google.maps.places.Autocomplete(
+      this.autocomplete = new window.google.maps.places.Autocomplete(
         this.$refs.search
       );
-      autocomplete.setTypes(["establishment"]);
-      autocomplete.addListener("place_changed", function() {
-        let place = autocomplete.getPlace();
+      this.autocomplete.setTypes(["establishment"]);
+      this.autocomplete.addListener("place_changed", function() {
+        let place = this.autocomplete.getPlace();
         console.log(place);
         if (place && place.address_components) {
           // console.log(place.address_components);
         }
       });
-    }
+    },
+    // autocompletePlaceChanged(){
+
+    // }
   }
 };
 </script>
