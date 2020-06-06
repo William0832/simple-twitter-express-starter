@@ -4,10 +4,11 @@
       | Dropup
     .dropdown-menu
        #chat-popup.d-flex.flex-column.container(style="border: 2px solid black; max-width: 400px; max-height: 500px; padding: 0; background-color: white;")
-        .nav.row.no-gutters(style="background-color: black;")
-          img(src="https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/article_thumbnails/other/cat_weight_other/1800x1200_cat_weight_other.jpg?resize=600px:*" style="width: 75px; height: 75px; border-radius: 50%; object-fit: cover;")
-          p.my-auto.ml-1.mr-auto(style="color: white;") name {{chatId}}
-          button.btn.cancel(type='button', @click.prevent.stop="closeWindow" style="font-weight: bold; color: white;") X
+        a(href="#" data-toggle='dropdown')
+          .nav.row.no-gutters(style="background-color: black;")
+            img(src="https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/article_thumbnails/other/cat_weight_other/1800x1200_cat_weight_other.jpg?resize=600px:*" style="width: 75px; height: 75px; border-radius: 50%; object-fit: cover;")
+            p.my-auto.ml-1.mr-auto(style="color: white;") name {{chatId}}
+            button.btn.cancel(type='button', @click.prevent.stop="closeWindow" style="font-weight: bold; color: white;") X
 
         //- 顯示對話框的container 
         .d-flex.flex-column.container.overflow-auto
