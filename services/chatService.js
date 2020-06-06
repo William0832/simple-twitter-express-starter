@@ -21,49 +21,37 @@ const chatService = {
     }
   },
   // db 開新的聊天室
-  postChat: async (req, res, callback) => {
+  postChat: async (myId, guestId) => {
     /*
-      帶入聊天對象的 userId，
+      帶入聊天對象的 guestId
       檢查特例
       建立chat
     */
     try {
-      // 檢查 userId
-      if (!req.body.userId) {
-        return callback({
-          status: 'error',
-          message: 'userId did not exist'
-        })
-      }
-      let userId = req.body.userId
       //檢查 chat 是否存在
       let chat = await Chat.findOne({
         //
         where: {
           [Op.or]: [
-            { CreatedUserId: myId, InvitedUserId: userId },
-            { CreatedUserId: userId, InvitedUserId: myId }
+            { CreatedUserId: myId, InvitedUserId: guestId },
+            { CreatedUserId: guestId, InvitedUserId: myId }
           ]
         }
       })
       if (chat) {
         chat = chat.dataValues
-        return callback({
-          status: 'error',
-          message: `chats:${chat.id} is already exists`
-        })
+        console.log(`error: chats:${chat.id} is already exists`)
+        return chat
       }
       chat = await Chat.create({
         CreatedUserId: myId,
-        InvitedUserId: userId
+        InvitedUserId: guestId
       })
       chat = chat.dataValues
-      return callback({
-        status: 'success',
-        message: `chat:${chat.id} was successfully created`
-      })
+      console.log(`chat:${chat.id} was successfully created`)
+      return chat
     } catch (err) {
-      callback({ status: 'error', message: err.toString() })
+      console.log(err.toString())
     }
   },
   //db 抓取開過的聊天室清單
@@ -187,23 +175,5 @@ const chatService = {
       callback({ status: 'error', message: err.toString() })
     }
   }
-
-  // // 取得(上線)使用者狀態, 共用 userService ?
-  // getUsers: async (req, res, callback) => {},
-
-  // // 取得聊天對象的資訊 API , 共用 userService ?
-  // getUser: (req, res, callback) => {},
-
-  // // 取得過去的對話清單 API
-  // getChats: async (req, res, callback) => {},
-
-  // // 取得聊天室過去的對話紀錄 API
-  // getMessages: async (req, res, callback) => {},
-
-  // // 新增訊息 ( userId, chatId , message) Socket
-  // sendMessage: async (req, res, callback) => {},
-
-  // // 新增Chatroom Socket
-  // createSocket: async (req, res, callback) => {}
 }
 module.exports = chatService
