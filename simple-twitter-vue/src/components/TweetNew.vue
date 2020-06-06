@@ -13,7 +13,7 @@
         input.form-control(type='text', ref='search', v-model="googleMapName", placeholder='where are you?')
     .row.d-flex.justify-content-end.mt-2
       button.btn.btn-primary.col-2.mr-1(type='button', data-toggle='collapse', data-target='#collapseExample', aria-expanded='false', aria-controls='collapseExample')
-        | Check-in
+        font-awesome-icon(icon="map-marker-alt")
       button.col-2(
         type="submit"
         class="btn btn-primary mr-0") Tweet
