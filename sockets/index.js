@@ -1,10 +1,12 @@
-// const chatController = require('./chat')
 const chatService = require('../services/chatService')
+const notificationService = require('../services/notificationServices')
+
 Date.prototype.addSeconds = function (s) {
   let ms = s * 1000
   this.setTime(this.getTime() + ms)
   return this
 }
+
 module.exports = (io) => {
   let onlineUsers = {} // {1:[sk1,sk2,...], 2:[...],...}
   let rooms = {} // {1:{users:[1,2], sks:[sk1,sk2,s3...]}}
@@ -153,6 +155,69 @@ module.exports = (io) => {
     socket.on('sendMessage', (payload) => {
       const { message } = payload
       console.log('====================message', message)
+    })
+
+    //=================================================from jasper alert
+    // })
+
+    // socket.on('chat', (payload) => {
+    //   const { msg, user, invitedUser } = payload
+
+    //   const room = checkRooms(user, invitedUser)
+    //   console.log(socket.id, 'chat:', msg, 'room:', room)
+    //   // io.to(room).emit('chat', msg);
+
+    //   if (msg && room) {
+    //     console.log('chat ok')
+    //     io.to(room).emit('chat', msg)
+    //   } else {
+    //     console.log('chat NG')
+    //   }
+
+    // });
+
+    // socket.on('invite', (invitation) => {
+    //   const { user, invitedUser } = invitation
+    //   console.log('id', socket.id, 'invite', invitedUser)
+    //   let roomId = checkRooms(user, invitedUser)
+
+    //   console.log(rooms, 'id', roomId)
+
+    //   socket.join(roomId)
+
+    //   if (connectedUser[invitedUser]) {
+    //     connectedUser[invitedUser].forEach((id, index, object) => {
+    //       if (io.sockets.connected[id]) {
+    //         io.sockets.connected[id].join(roomId)
+    //       } else {
+    //         object.splice(index, 1) //remove unconnected socketId
+    //       }
+    //       console.log('id', connectedUser[invitedUser])
+    //     })
+    //   }
+
+    // });
+
+    socket.on('reply', async (payload) => {
+      const { userId, tweetId, type } = payload
+      console.log('reply notification')
+      await notificationService.postNotification(userId, tweetId, type)
+
+      io.emit('newReply')
+    })
+
+    socket.on('getNotifiations', async (userId) => {
+      console.log('fetch notification')
+      const notifications = await notificationService.getNotifications(userId)
+
+      socket.emit('returnNotifications', notifications)
+    })
+
+    socket.on('getNotifiationCounts', async (userId) => {
+      console.log('fetch notification counts')
+      const counts = await notificationService.getNotificationCounts(userId)
+
+      socket.emit('returnNotificationCounts', counts)
     })
   })
 }
