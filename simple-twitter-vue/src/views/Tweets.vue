@@ -29,7 +29,7 @@
         )    
         //- style="background-color: red;"
     div.row.no-gutters.d-flex.fixed-bottom
-      ChatWindow(@after-close="closeWindow" )
+      ChatRoom
     //-   ChatWindow(@after-close="closeWindow" )
     //-   ChatWindow(@after-close="closeWindow" )
 </template>
@@ -47,13 +47,17 @@ import { mapState } from "vuex";
 import tweetsAPI from "../apis/tweet";
 import followshipAPI from "../apis/followship";
 
+//test
+import ChatRoom from "../components/ChatRoom";
+
 export default {
   components: {
     TweetNew,
     TweetIndex,
     UserTop,
     OnlineUser,
-    ChatWindow
+    ChatWindow,
+    ChatRoom
   },
   data() {
     return {
