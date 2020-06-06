@@ -92,12 +92,15 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
 })
 
 
 
 router.beforeEach((async (to, from, next) => {
+
+  // console.log('store', store.state)
+
   const tokenInLocalStorage = localStorage.getItem('token')
   const tokenInStore = store.state.token
   let isAuthenticated = store.state.isAuthenticated
