@@ -48,8 +48,11 @@ module.exports = (io) => {
   io.on('connection', (socket) => {
     console.log('====================connected socket id :', socket.id)
 
+
     socket.on('disconnect', () => {
       console.log('====================disconnected socket id :', socket.id)
+      //TODO scan through user-socket link table , delete disconnected socket id
+      //TODO if no more socket id under user , user set to offline
     })
 
 
@@ -62,6 +65,7 @@ module.exports = (io) => {
     // login
     socket.on('login', async (userId) => {
       console.log('====================login ID', userId)
+      //TODO link user id with socket id
     })
 
     // invite user

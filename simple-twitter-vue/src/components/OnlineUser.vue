@@ -26,11 +26,6 @@ export default {
   created() {
     this.fetchOnlineUser();
   },
-  sockets: {
-    connected() {
-      console.log(connected);
-    }
-  },
   methods: {
     fetchOnlineUser() {
       this.$socket.emit("fetchOnlineUser", this.currentUser.id);
