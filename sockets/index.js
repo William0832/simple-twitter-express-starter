@@ -48,26 +48,41 @@ module.exports = (io) => {
         user[k] = userDbInfo[k]
       })
     })
-
     // TODO:
-    socket.on('fetchOnlineUser', async (userId) => {
+    socket.on('fetchOnlineUser', async (myId) => {
       try {
-        console.log('====================fetchOnlineUser', userId)
-        let showUseIds = []
-        let chats = []
+        console.log('====================fetchOnlineUser', myId)
+        let showUserIds = []
+        // get chats info from db
+        let chats = await chatService.getChats(myId)
+        // get other online user id list
         Object.keys(onlineUsers)
-          .filter((k) => k !== String(userId))
+          .filter((k) => String(k) !== String(myId))
           .forEach((k) => {
-            showUseIds.push(k)
+            showUserIds.push(k)
           })
-        // get chats from db
-        if (!showUseIds.length) {
-          console.log('only U is online!')
-          chats = await chatService.getChats(userId)
-        } else {
-          get
+        // TODO: f-test
+        showUserIds = [2, 4, 3, 16]
+        // get other online user chat info
+        if (showUserIds.length) {
+          // compare user is in the chat
+          chats = chats.filter((c) => showUserIds.includes(c.userId))
+          let temp = chats.map((c) => c.userId)
+          let notInChatsId = showUserIds.filter((e) => temp.indexOf(e) === -1)
+          console.log('ready to creat chat with these ids:', notInChatsId)
+          // get final id
+          notInChatsId.forEach(async (e) => {
+            // creat a chat in db
+            console.log('create chat!')
+            let chat = await chatService.postChat(myId, e)
+            console.log('new chat: ', chat)
+            chats.push(chat)
+          })
+          console.log(chats)
+          socket.emit('showChats', chats)
+          return
         }
-        // socket.emt to Vue
+        console.log('only U is online!')
         socket.emit('showChats', chats)
       } catch (err) {
         console.log(err.toString())
@@ -97,10 +112,6 @@ module.exports = (io) => {
       // }
     })
 
-    //OnlineUser.vue
-    socket.on('fetchOnlineUser', (userId) => {
-      console.log('====================User', userId)
-    })
     //ChatWindow.vue
     socket.on('fetchChatHistory', (payload) => {
       const { chatId } = payload
@@ -110,6 +121,8 @@ module.exports = (io) => {
       const { message } = payload
       console.log('====================message', message)
     })
+
+    //alert
     socket.on('reply', async (payload) => {
       const { userId, tweetId, type } = payload
       console.log('reply notification')

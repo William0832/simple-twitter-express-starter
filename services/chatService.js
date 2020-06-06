@@ -38,22 +38,34 @@ const chatService = {
             { CreatedUserId: myId, InvitedUserId: guestId },
             { CreatedUserId: guestId, InvitedUserId: myId }
           ]
-        }
+        },
+        attributes: ['id']
       })
       if (chat) {
-        chat = chat.dataValues
-        console.log(`error: chats:${chat.id} is already exists`)
+        console.log(`error: chats is already exists`)
         return chat
       }
-      chat = await Chat.create({
+      newChat = await Chat.create({
         CreatedUserId: myId,
         InvitedUserId: guestId
       })
-      chat = chat.dataValues
-      console.log(`chat:${chat.id} was successfully created`)
+      chat = { chatId: newChat.dataValues.id }
+      console.log(`chat was successfully created`)
+      // add user info for frontend
+      let user = await User.findByPk(guestId, {
+        attributes: ['id', 'name', 'avatar', 'isOnline']
+      })
+      user = user.dataValues
+      // final merger
+      user.userId = user.id
+      delete user.id
+      chat = {
+        ...user,
+        ...chat
+      }
       return chat
     } catch (err) {
-      console.log(err.toString())
+      console.log(err)
     }
   },
   //db 抓取開過的聊天室清單
@@ -75,6 +87,7 @@ const chatService = {
       chats = chats.map((e) => ({
         ...e.dataValues
       }))
+
       let guestIds = []
       // 依照角色判斷，聊天對象id 存入users
       chats.forEach((c) => {
@@ -94,12 +107,12 @@ const chatService = {
       guests = guests.map((e) => ({
         ...e.dataValues
       }))
+
       // each chats add chatId and guest
       chats = chats.map((e, index) => ({
         chatId: e.id,
         ...guests[index]
       }))
-
       chats = Promise.all(
         chats.map(async (chat) => {
           let lastMsg = await Message.findAll({
@@ -108,7 +121,12 @@ const chatService = {
             sort: ['created', 'DEC'],
             limit: 1
           })
-          lastMsg = lastMsg[0].dataValues
+          lastMsg = lastMsg[0]
+          if (!lastMsg) {
+            lastMsg = null
+          } else {
+            lastMsg = lastMsg.dataValues
+          }
           let temp = {
             ...chat,
             userId: chat.id,
