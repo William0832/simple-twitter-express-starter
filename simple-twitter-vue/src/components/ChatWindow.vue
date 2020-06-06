@@ -39,15 +39,10 @@ export default {
       required: true
     }
   },
-  data(){
+  data() {
     //- windowIndex: this.windows.length - 1
     return {
-      chatId: this.window.id
-    }
-    
-  },
-  data() {
-    return {
+      chatId: this.window.id,
       message: ""
     };
   },
@@ -59,7 +54,7 @@ export default {
       // emit訊息
     },
     closeWindow(window) {
-      this.$emit('after-close', window)
+      this.$emit("after-close", window);
     },
     afterChatWindowCreated() {
       this.$socket.emit("fetchChatHistory", { chatId: 111 });

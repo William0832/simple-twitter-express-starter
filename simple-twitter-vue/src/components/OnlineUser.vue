@@ -35,7 +35,7 @@ export default {
     fetchOnlineUser() {
       this.$socket.emit("fetchOnlineUser", this.currentUser.id);
     },
-    inviteUser(userId){
+    async inviteUser(userId) {
       await this.$socket.emit("inviteUser", {
         invitedUserId: this.currentUser.id,
         guestUser: userId

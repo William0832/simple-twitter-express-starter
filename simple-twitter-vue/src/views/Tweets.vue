@@ -58,7 +58,7 @@ import tweetsAPI from "../apis/tweet";
 import followshipAPI from "../apis/followship";
 
 //test
-import ChatRoom from "../components/ChatRoom";
+// import ChatRoom from "../components/ChatRoom";
 
 export default {
   components: {
@@ -210,24 +210,24 @@ export default {
         });
       }
     },
-    closeWindow(window){
-      this.windows = this.windows.filter(chat => chat.id !== window)
+    closeWindow(window) {
+      this.windows = this.windows.filter(chat => chat.id !== window);
     },
-    afterInviteUser(userId){
-      let windows = this.windows.map( window => window.id)
+    afterInviteUser(userId) {
+      let windows = this.windows.map(window => window.id);
 
-      if(this.windows.length === 3){
+      if (this.windows.length === 3) {
         return Toast.fire({
-          icon: 'warning',
-          title: '只能開啟3個聊天視窗！'
-        })
-      } else if(windows.includes(userId)) {
-        return
+          icon: "warning",
+          title: "只能開啟3個聊天視窗！"
+        });
+      } else if (windows.includes(userId)) {
+        return;
       } else {
         this.windows.push({
           id: userId
-        })
-        console.log('current windows: ', this.windows)
+        });
+        console.log("current windows: ", this.windows);
       }
     },
     socketLogin() {
