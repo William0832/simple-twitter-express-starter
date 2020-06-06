@@ -11,19 +11,24 @@
 
       .col-md-4
         ul.nav.nav-tabs
-          li.nav-item
-            a.nav-link.active(href='#') Popular
-          li.nav-item
-            a.nav-link(href='#') Chat
-
-          //- UserTop( 
-          //-   :top-users='topUsers'
-          //-   :current-user='currentUser'
-          //-   @after-add-follow='afterAddFollow'
-          //-   @after-delete-follow='afterDeleteFollow'
-          //-   )
+          li.nav-item(
+            v-for="tab in tabs" 
+            v-bind:key="tab"
+            v-bind:class="['tab-button', { active: currentTab === tab }]"
+            v-on:click="currentTab = tab"
+          )
+            a.nav-link(href='#') {{tab}}        
+        
+        Popular(
+          v-if="currentTab === 'Popular'" 
+          :top-users='topUsers'
+          :current-user='currentUser'
+          @after-add-follow='afterAddFollow'
+          @after-delete-follow='afterDeleteFollow'
+        )
           
-        OnlineUser( 
+        Chat( 
+          v-if="currentTab === 'Chat'" 
           :top-users='topUsers'
           :current-user='currentUser'
           @after-invite-user="afterInviteUser"
@@ -31,23 +36,9 @@
 
     .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0;")
       ChatWindow(
-      :key=3
-      :window="window3"
-      v-if = "isOpen3"
-      @after-close="closeWindow" 
-      style="margin: 0 0.3%"
-      )
-      ChatWindow( 
-      :key=2
-      :window="window2"
-      v-if = "isOpen2"
-      @after-close="closeWindow" 
-      style="margin: 0 0.3%"
-      )
-      ChatWindow( 
-      :key=1
-      :window="window1"
-      v-if = "isOpen1"
+      v-for="window in windows"
+      :key="window.id"
+      :window="window"
       @after-close="closeWindow" 
       style="margin: 0 0.3%"
       )
@@ -56,8 +47,8 @@
 <script>
 import TweetNew from "../components/TweetNew";
 import TweetIndex from "../components/TweetIndex";
-import UserTop from "../components/UserTop";
-import OnlineUser from "../components/OnlineUser";
+import Popular from "../components/UserTop";
+import Chat from "../components/OnlineUser";
 import ChatWindow from "../components/ChatWindow";
 import { Toast } from "../utils/helpers";
 
@@ -81,8 +72,8 @@ export default {
   components: {
     TweetNew,
     TweetIndex,
-    UserTop,
-    OnlineUser,
+    Popular,
+    Chat,
     ChatWindow
   },
   data() {
@@ -91,14 +82,16 @@ export default {
       topUsers: [],
       currentUser: dummyUser.currentUser,
       windows: [],
-      window1: -1,
-      window2: -1,
-      window3: -1,
-      isOpen1: false,
-      isOpen2: false,
-      isOpen3: false
+
+      currentTab: "Popular",
+      tabs: ["Popular", "Chat"]
     };
   },
+  // computed: {
+  //   currentTabComponent: function() {
+  //     return this.currentTab
+  //   }
+  // }
   created() {
     this.fetchTweets();
     // this.fetchTopUsers();
@@ -198,7 +191,6 @@ export default {
         console.log("afterAddLike2");
         const { data } = response;
 
-        //add statusText
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -217,7 +209,6 @@ export default {
 
         const { data } = response;
         console.log(data);
-        //add statusText
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -231,52 +222,23 @@ export default {
       }
     },
     closeWindow(window){
-      let windows = this.windows
-      console.log('close windowID: ', window)
-      if(windows.indexOf(window) === 2){
-        this.isOpen3 = false
-      } else if (windows.indexOf(window) === 1) {
-        this.isOpen2 === false? this.isOpen3 = false : this.isOpen2 = false
-      } else if(windows.indexOf(window) === 0) {
-        if(this.isOpen1 === false && this.isOpen2 === false){
-          this.isOpen3 = false
-        } else if (this.isOpen1 === false && this.isOpen3 === false ) {
-          this.isOpen2 = false
-        } else if (this.isOpen1 === false){
-          this.isOpen2 === false
-        }
-        else this.isOpen1 = false
-      }
-      this.windows = this.windows.filter(chatId => chatId !== window)
-
-      console.log(this.window1, this.window2, this.window3)
-      // console.log('p',this.windows)
-
-      // this.window2 = windows[1]
-      // this.window1 = windows[0]
+      this.windows = this.windows.filter(chat => chat.id !== window)
     },
     afterInviteUser(userId){
+      let windows = this.windows.map( window => window.id)
+
       if(this.windows.length === 3){
         return Toast.fire({
           icon: 'warning',
           title: '只能開啟3個聊天視窗！'
         })
-      } else if(this.windows.includes(userId)) {
+      } else if(windows.includes(userId)) {
         return
       } else {
-        this.windows.push(userId)
-        console.log('windows ', this.windows)
-        let windows = this.windows
-        if(windows.length === 1) {
-          this.window1 = windows[0]
-          this.isOpen1 = true
-        } else if(windows.length === 2) {
-          this.window2 = windows[1]          
-          this.isOpen2 = true
-        } else if(windows.length === 3) {
-          this.window3 = windows[2]
-          this.isOpen3 = true
-        }
+        this.windows.push({
+          id: userId
+        })
+        console.log('current windows: ', this.windows)
       }
     }
   }
