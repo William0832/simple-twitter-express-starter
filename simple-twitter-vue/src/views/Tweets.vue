@@ -26,12 +26,31 @@
         OnlineUser( 
           :top-users='topUsers'
           :current-user='currentUser'
-          @after-add-follow='afterAddFollow'
-          @after-delete-follow='afterDeleteFollow'
+          @after-invite-user="afterInviteUser"
         )    
-        
+
     .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0;")
-      ChatWindow(v-for="window in windows" :key="window" @after-close="closeWindow" style="margin: 0 0.3%")
+      ChatWindow(
+      :key=3
+      :window="window3"
+      v-if = "isOpen3"
+      @after-close="closeWindow" 
+      style="margin: 0 0.3%"
+      )
+      ChatWindow( 
+      :key=2
+      :window="window2"
+      v-if = "isOpen2"
+      @after-close="closeWindow" 
+      style="margin: 0 0.3%"
+      )
+      ChatWindow( 
+      :key=1
+      :window="window1"
+      v-if = "isOpen1"
+      @after-close="closeWindow" 
+      style="margin: 0 0.3%"
+      )
 </template>
 
 <script>
@@ -71,8 +90,13 @@ export default {
       tweets: [],
       topUsers: [],
       currentUser: dummyUser.currentUser,
-      // chat room array
-      windows: [1,2]
+      windows: [],
+      window1: -1,
+      window2: -1,
+      window3: -1,
+      isOpen1: false,
+      isOpen2: false,
+      isOpen3: false
     };
   },
   created() {
@@ -206,9 +230,54 @@ export default {
         });
       }
     },
-    closeWindow(){
-      console.log('close window')
-      this.openWindow = false
+    closeWindow(window){
+      let windows = this.windows
+      console.log('close windowID: ', window)
+      if(windows.indexOf(window) === 2){
+        this.isOpen3 = false
+      } else if (windows.indexOf(window) === 1) {
+        this.isOpen2 === false? this.isOpen3 = false : this.isOpen2 = false
+      } else if(windows.indexOf(window) === 0) {
+        if(this.isOpen1 === false && this.isOpen2 === false){
+          this.isOpen3 = false
+        } else if (this.isOpen1 === false && this.isOpen3 === false ) {
+          this.isOpen2 = false
+        } else if (this.isOpen1 === false){
+          this.isOpen2 === false
+        }
+        else this.isOpen1 = false
+      }
+      this.windows = this.windows.filter(chatId => chatId !== window)
+
+      console.log(this.window1, this.window2, this.window3)
+      // console.log('p',this.windows)
+
+      // this.window2 = windows[1]
+      // this.window1 = windows[0]
+    },
+    afterInviteUser(userId){
+      if(this.windows.length === 3){
+        return Toast.fire({
+          icon: 'warning',
+          title: '只能開啟3個聊天視窗！'
+        })
+      } else if(this.windows.includes(userId)) {
+        return
+      } else {
+        this.windows.push(userId)
+        console.log('windows ', this.windows)
+        let windows = this.windows
+        if(windows.length === 1) {
+          this.window1 = windows[0]
+          this.isOpen1 = true
+        } else if(windows.length === 2) {
+          this.window2 = windows[1]          
+          this.isOpen2 = true
+        } else if(windows.length === 3) {
+          this.window3 = windows[2]
+          this.isOpen3 = true
+        }
+      }
     }
   }
 };

@@ -1,6 +1,11 @@
 <template lang="pug">
   .container.overflow-auto(style="max-height: 700px; width: 395px;")
-    button.row.btn.btn-light.my-1.p-3.d-flex.align-items-center(v-for='user in topUsers' :key='user.id' type='button' style="width:370px;")
+    button.row.btn.btn-light.my-1.p-3.d-flex.align-items-center(
+    @click.prevent.stop="inviteUser(user.id)"
+    v-for='user in topUsers' 
+    :key='user.id' 
+    type='button' style="width:370px;")
+
       .col-3
         img(:src="user.avatar")
       .col-7.text-center
@@ -20,7 +25,7 @@ export default {
     currentUser: {
       type: Object,
       required: true
-    }
+    },
   },
   methods: {
     addFollow(userId) {
@@ -28,6 +33,9 @@ export default {
     },
     deleteFollow(userId) {
       this.$emit("after-delete-follow", userId);
+    },
+    inviteUser(userId){
+      this.$emit('after-invite-user', userId)
     }
   }
 };
