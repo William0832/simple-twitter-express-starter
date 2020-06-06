@@ -70,7 +70,7 @@ const chatService = {
         where: {
           [Op.or]: [{ CreatedUserId: myId }, { InvitedUserId: myId }]
         },
-        attributes: ['id', 'CreatedUserId', 'InvitedUserId', 'createdAt']
+        attributes: ['id', 'CreatedUserId', 'InvitedUserId']
       })
 
       chats = chats.map((e) => ({
@@ -95,11 +95,22 @@ const chatService = {
       guests = guests.map((e) => ({
         ...e.dataValues
       }))
-      // each chatsList add chatId and guest
+      // each chats add chatId and guest
       chats = chats.map((e, index) => ({
         chatId: e.id,
-        guests: guests[index]
+        ...guests[index]
       }))
+      chats = chats.map((e) => {
+        let temp = { ...e, userId: e.id }
+        delete temp.id
+        return temp
+      })
+      chats.forEach(async (e)=>{
+        let lastMsg = await Message.findAll({
+          // TODO: find last msg in chat
+          where: { [Op.or]: [{ UserId: myId }, { ChatId:  }] }
+        }) 
+      }) 
       return chats
     } catch (err) {
       console.log(err.toString())

@@ -6,55 +6,73 @@ Date.prototype.addSeconds = function (s) {
   return this
 }
 module.exports = (io) => {
-  let onlineUsers = []
-  let chats = []
+  let onlineUsers = {} // {1:[sk1,sk2,...], 2:[...],...}
+  let rooms = {} // {1:{users:[1,2], sks:[sk1,sk2,s3...]}}
 
-  io.on('connection', (socket) => {
+  io.on('connection', async (socket) => {
     console.log('==================== connected socket id :', socket.id)
     socket.on('disconnect', () => {
       console.log('====================disconnected socket id :', socket.id)
-      //TODO scan through user-socket link table , delete disconnected socket id
-      //TODO if no more socket id under user , user set to offline
+      //DONE! scan through user-socket link table , delete disconnected socket id
+      Object.keys(onlineUsers).forEach((k) => {
+        onlineUsers[k] = onlineUsers[k].filter((e) => e !== socket.id)
+      })
+      //DONE! if no more socket id under user , user set to offline
+      Object.keys(onlineUsers).forEach((k) => {
+        if (!onlineUsers[k].length) {
+          console.log(`user:${k} is log out!`)
+          //DONE! if no more socket id under user , user set to offline
+          // TODO: check vue
+          io.emit('userLogout', {
+            userId: k,
+            isOnline: false
+          })
+        }
+      })
+      console.log('disconnected', onlineUsers)
     })
-    // get socket.id
-    let socketId = socket.id
     // login
     socket.on('login', async (myId) => {
-      let user = {}
-      // push socket id in user's socketIds
-      user.socketIds = []
-      user.socketIds.push(socketId)
-      // update user with db
-      userDbInfo = await chatService.userOnline(myId)
-      Object.keys(userDbInfo).forEach((e) => {
-        user[e] = userDbInfo[e]
-      })
-      // add use in onlineUsers (by some conditions)
-      if (!onLineUsers.length) {
-        onLineUsers.forEach((e) => {
-          if (e.id !== user.id) {
-            onLineUsers.push(user)
-          }
-        })
-      } else {
-        onLineUsers.push(user)
+      // DONE! push socket id in onlineUser socketIds
+      if (!onlineUsers[myId]) {
+        onlineUsers[myId] = []
       }
-      // add user's chat list, find in db
-      chats = await chatService.getChats(user.id)
+      onlineUsers[myId].push(socket.id)
+      console.log('push socket in onlineUser!', onlineUsers)
+      // DONE update user with db
+      let user = {}
+      let userDbInfo = await chatService.userOnline(myId)
+      Object.keys(userDbInfo).forEach((k) => {
+        user[k] = userDbInfo[k]
+      })
     })
-    // check if out of socket function still got user and chats
-    console.log('==========================\n', 'login users: \n', onlineUsers)
-    console.log('==========================\nchats:\n', chats)
 
-    //OnlineUser.vue
     // TODO:
-    socket.on('fetchOnlineUser', (userId) => {
-      console.log('====================User', userId)
-      onLineUsersEsp = onlineUsers.map((e) => e.id !== userId)
+    socket.on('fetchOnlineUser', async (userId) => {
+      try {
+        console.log('====================fetchOnlineUser', userId)
+        let showUseIds = []
+        let chats = []
+        Object.keys(onlineUsers)
+          .filter((k) => k !== String(userId))
+          .forEach((k) => {
+            showUseIds.push(k)
+          })
+        // get chats from db
+        if (!showUseIds.length) {
+          console.log('only U is online!')
+          let chats = await chatService.getChats(userId)
+          console.log(chats)
+        } else {
+          console.log('do some thing else!')
+        }
+        // console.log(showUseIds)
+        // show chat list - socket.emt to Vue
+        socket.emit('showChats', chats)
+      } catch (err) {
+        console.log(err.toString())
+      }
     })
-
-    // show chat list - socket.emt to Vue
-    socket.emit('showChats', chats)
 
     // invite user
     // TODO:
@@ -71,11 +89,12 @@ module.exports = (io) => {
       // -------- 1.get history msg and talk!
       // -- out:
       // ----
-      try {
-        console.log(chat)
-      } catch (err) {
-        console.log(err)
-      }
+      // try {
+      //   if (!chat) return
+      //   console.log(chat)
+      // } catch (err) {
+      //   console.log(err)
+      // }
     })
 
     // et history msg
