@@ -1,6 +1,11 @@
 <template lang="pug">
   .container.overflow-auto(style="max-height: 700px; width: 395px;")
-    button.row.btn.btn-light.my-1.p-3.d-flex.align-items-center(v-for='user in topUsers' :key='user.id' type='button' style="width:370px;" @click.stop.prevent='afterInviteUser(user.id)')
+    button.row.btn.btn-light.my-1.p-3.d-flex.align-items-center(
+    @click.prevent.stop="inviteUser(user.id)"
+    v-for='user in topUsers' 
+    :key='user.id' 
+    type='button' style="width:370px;")
+
       .col-3
         img(:src="user.avatar")
       .col-7.text-center
@@ -30,11 +35,13 @@ export default {
     fetchOnlineUser() {
       this.$socket.emit("fetchOnlineUser", this.currentUser.id);
     },
-    afterInviteUser(userId) {
-      this.$socket.emit("inviteUser", {
+    async inviteUser(userId) {
+      await this.$socket.emit("inviteUser", {
         invitedUserId: this.currentUser.id,
         guestUser: userId
       });
+
+      this.$emit("after-invite-user", userId);
     }
   }
 };

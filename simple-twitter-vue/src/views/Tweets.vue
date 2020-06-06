@@ -11,34 +11,44 @@
 
       .col-md-4
         ul.nav.nav-tabs
-          li.nav-item
-            a.nav-link.active(href='#') Popular
-          li.nav-item
-            a.nav-link(href='#') Chat
-
-          //- UserTop( 
-          //-   :top-users='topUsers'
-          //-   :current-user='currentUser'
-          //-   @after-add-follow='afterAddFollow'
-          //-   @after-delete-follow='afterDeleteFollow'
-          //-   )
-          
-        OnlineUser( 
+          li.nav-item(
+            v-for="tab in tabs" 
+            v-bind:key="tab"
+            v-bind:class="['tab-button', { active: currentTab === tab }]"
+            v-on:click="currentTab = tab"
+          )
+            a.nav-link(href='#') {{tab}}        
+        
+        Popular(
+          v-if="currentTab === 'Popular'" 
           :top-users='topUsers'
           :current-user='currentUser'
+          @after-add-follow='afterAddFollow'
+          @after-delete-follow='afterDeleteFollow'
+        )
+          
+        Chat( 
+          v-if="currentTab === 'Chat'" 
+          :top-users='topUsers'
+          :current-user='currentUser'
+          @after-invite-user="afterInviteUser"
         )    
-        //- style="background-color: red;"
-    div.row.no-gutters.d-flex.fixed-bottom
-      ChatWindow(@after-close="closeWindow" )
-    //-   ChatWindow(@after-close="closeWindow" )
-    //-   ChatWindow(@after-close="closeWindow" )
+
+    .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0;")
+      ChatWindow(
+      v-for="window in windows"
+      :key="window.id"
+      :window="window"
+      @after-close="closeWindow" 
+      style="margin: 0 0.3%"
+      )
 </template>
 
 <script>
 import TweetNew from "../components/TweetNew";
 import TweetIndex from "../components/TweetIndex";
-import UserTop from "../components/UserTop";
-import OnlineUser from "../components/OnlineUser";
+import Popular from "../components/UserTop";
+import Chat from "../components/OnlineUser";
 import ChatWindow from "../components/ChatWindow";
 import { Toast } from "../utils/helpers";
 import { mapState } from "vuex";
@@ -47,19 +57,25 @@ import { mapState } from "vuex";
 import tweetsAPI from "../apis/tweet";
 import followshipAPI from "../apis/followship";
 
+//test
+// import ChatRoom from "../components/ChatRoom";
+
 export default {
   components: {
     TweetNew,
     TweetIndex,
-    UserTop,
-    OnlineUser,
+    Popular,
+    Chat,
     ChatWindow
   },
   data() {
     return {
       tweets: [],
       topUsers: [],
-      windows: []
+      windows: [],
+
+      currentTab: "Popular",
+      tabs: ["Popular", "Chat"]
     };
   },
   computed: {
@@ -164,7 +180,6 @@ export default {
         console.log("afterAddLike2");
         const { data } = response;
 
-        //add statusText
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -183,7 +198,6 @@ export default {
 
         const { data } = response;
         console.log(data);
-        //add statusText
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -196,9 +210,25 @@ export default {
         });
       }
     },
-    closeWindow() {
-      console.log("close window");
-      this.openWindow = false;
+    closeWindow(window) {
+      this.windows = this.windows.filter(chat => chat.id !== window);
+    },
+    afterInviteUser(userId) {
+      let windows = this.windows.map(window => window.id);
+
+      if (this.windows.length === 3) {
+        return Toast.fire({
+          icon: "warning",
+          title: "只能開啟3個聊天視窗！"
+        });
+      } else if (windows.includes(userId)) {
+        return;
+      } else {
+        this.windows.push({
+          id: userId
+        });
+        console.log("current windows: ", this.windows);
+      }
     },
     socketLogin() {
       this.$socket.emit("login", this.currentUser.id);
