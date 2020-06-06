@@ -6,7 +6,9 @@ const helpers = require('../_helpers')
 const chatService = {
   userOnline: async (userId) => {
     try {
-      let user = await User.findByPk(userId)
+      let user = await User.findByPk(userId, {
+        attributes: ['id', 'name', 'avatar', 'isOnline']
+      })
       user.update({ isOnline: true })
       return user.toJSON()
     } catch (err) {
@@ -74,40 +76,38 @@ const chatService = {
       chats = chats.map((e) => ({
         ...e.dataValues
       }))
-      let userIds = []
+      let guestIds = []
       // 依照角色判斷，聊天對象id 存入users
       chats.forEach((c) => {
         if (c.CreatedUserId === myId) {
-          userIds.push(c.InvitedUserId)
+          guestIds.push(c.InvitedUserId)
         } else {
-          userIds.push(c.CreatedUserId)
+          guestIds.push(c.CreatedUserId)
         }
       })
-      // find users information
-      let users = await User.findAll({
+      // find guest information
+      let guests = await User.findAll({
         where: {
-          id: userIds
+          id: guestIds
         },
         attributes: ['id', 'name', 'avatar', 'isOnline']
       })
-      // each user add chatId
-      chats.forEach((c, index) => {
-        users[index].dataValues.chatId = c.id
-      })
-      users = users.map((e) => ({
+      guests = guests.map((e) => ({
         ...e.dataValues
       }))
-      return users
+      // each chatsList add chatId and guest
+      chats = chats.map((e, index) => ({
+        chatId: e.id,
+        guests: guests[index]
+      }))
+      return chats
     } catch (err) {
-      return {
-        status: 'error',
-        message: err.toString()
-      }
+      console.log(err.toString())
     }
   },
   // db 抓取單一聊天室，要拿到聊天對象的userId
   // in: (myId, chatId)
-  // out: invitee:{'id','name','avatar','isOnline','chatId'}
+  // out: chats:{'chatId', guest:{'id','name','avatar','isOnline'}}
   // TODO: id 版
   getChat: async (myId, chatId) => {
     try {
@@ -118,19 +118,19 @@ const chatService = {
       }
       chat = chat.dataValues
       // 檢查身分
-      let otherUserId = ''
+      let guestId = ''
       if (chat.CreatedUserId === myId) {
-        otherUserId = chat.InvitedUserId
+        guestId = chat.InvitedUserId
       } else if (myId === chat.InvitedUserId) {
-        otherUserId = chat.CreatedUserId
+        guestId = chat.CreatedUserId
       } else {
         console.log('error: U do not belong to this chat')
         return
       }
-      let otherUser = await User.findByPk(otherUserId, {
+      let guest = await User.findByPk(guestId, {
         attributes: ['id', 'name', 'avatar', 'isOnline']
       })
-      otherUser = otherUser.dataValues
+      guest = guest.dataValues
       otherUser.chatId = chatId
       return otherUser
     } catch (err) {

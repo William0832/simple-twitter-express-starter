@@ -6,57 +6,72 @@ Date.prototype.addSeconds = function (s) {
   return this
 }
 module.exports = (io) => {
-  let users = []
-  let chats = [
-    { chatId: 1, creator: 1, invitee: 2, socketIds: [] }, // [1,2]
-    { chatId: 2, creator: 1, invitee: 3, socketIds: [] }, // [1,3]
-    { chatId: 3, creator: 2, invitee: 4, socketIds: [] } // [2,4]
-  ]
-  let historyMsg = []
-  let user = new Object()
-  // 給定固定chat
-  let setChatId = 0
-  io.on('connection', (socket) => {
-    console.log('====================connected socket id :', socket.id)
+  let onlineUsers = []
+  let chats = []
 
+  io.on('connection', (socket) => {
+    console.log('==================== connected socket id :', socket.id)
     socket.on('disconnect', () => {
       console.log('====================disconnected socket id :', socket.id)
       //TODO scan through user-socket link table , delete disconnected socket id
       //TODO if no more socket id under user , user set to offline
     })
-
-    if (!setChatId) {
-      // console.log('can pick an user to talk!')
-    }
     // get socket.id
     let socketId = socket.id
-
     // login
-    socket.on('login', async (user) => {
-      console.log('====================login ID', userId)
-      //TODO link user id with socket id
-
-      // update data and isOnline!
-      userInDb = await chatService.userOnline(user.id)
-      Object.keys(userInDb).forEach((e) => {
-        user[e] = userInDb[e]
+    socket.on('login', async (myId) => {
+      let user = {}
+      // push socket id in user's socketIds
+      user.socketIds = []
+      user.socketIds.push(socketId)
+      // update user with db
+      userDbInfo = await chatService.userOnline(myId)
+      Object.keys(userDbInfo).forEach((e) => {
+        user[e] = userDbInfo[e]
       })
-      // store socketId
-      user.socketId = socketId
-      // console.log('login user: ', user)
+      // add use in onlineUsers (by some conditions)
+      if (!onLineUsers.length) {
+        onLineUsers.forEach((e) => {
+          if (e.id !== user.id) {
+            onLineUsers.push(user)
+          }
+        })
+      } else {
+        onLineUsers.push(user)
+      }
+      // add user's chat list, find in db
+      chats = await chatService.getChats(user.id)
+    })
+    // check if out of socket function still got user and chats
+    console.log('==========================\n', 'login users: \n', onlineUsers)
+    console.log('==========================\nchats:\n', chats)
 
-      // get chat list
-      let chats = await chatService.getChats(user.id)
-      // show chat list - socket.emt
-      socket.emit('showChats', chats)
+    //OnlineUser.vue
+    // TODO:
+    socket.on('fetchOnlineUser', (userId) => {
+      console.log('====================User', userId)
+      onLineUsersEsp = onLineUsers.map((e) => e.id !== userId)
     })
 
+    // show chat list - socket.emt to Vue
+    socket.emit('showChats', chats)
+
     // invite user
-    TODO: socket.on('invite', async (chatId) => {
+    // TODO:
+    socket.on('inviteUser', async (chatId) => {
+      console.log('====================inviteUser', chatId)
+      // check chatId in chats ?
+      // -- in:
+      // ---- check guest isOnline ?
+      // ------ onLine:
+      // -------- 1.add guest's socket-id to chat
+      // TODO:
+      // -------- 2.ready to get history msg and talk!
+      // ------ offLine:
+      // -------- 1.get history msg and talk!
+      // -- out:
+      // ----
       try {
-        console.log(`socket.on get chatId:${chatId}`)
-        // find the chatId in db
-        let chat = await chatService.getChat(user.id, chatId)
         console.log(chat)
       } catch (err) {
         console.log(err)
@@ -72,43 +87,43 @@ module.exports = (io) => {
     // })
 
     // talk
-    socket.on('talk', (data) => {
-      // io 再傳給全部的客戶
-      console.log('server 收到', data)
-      // chat 不存在開新的chat
-      if (!chats[data.chatId - 1]) {
-        chats.push({
-          id: chats.length + 1,
-          socketIds: data.socketId
-        })
-        // 送出資訊
-        chats[data.chatId - 1].socketIds.forEach((id) => {
-          console.log(id)
-          io.to(id).emit('talk', data)
-        })
-      }
-      // 客戶在chat內
-      if (!chats[data.chatId - 1].socketIds.includes(data.socketId)) {
-        // 將客戶 socketId 存入對應的 chat 中
-        chats[data.chatId - 1].socketIds.push(data.socketId)
-      }
-      console.log(chats)
-      // 送出資訊
-      chats[data.chatId - 1].socketIds.forEach((id) => {
-        console.log(id)
-        io.to(id).emit('talk', data)
-      })
-      // io.emit('talk', data)
-    })
+    // socket.on('talk', (data) => {
+    //   // io 再傳給全部的客戶
+    //   console.log('server 收到', data)
+    //   // chat 不存在開新的chat
+    //   if (!chats[data.chatId - 1]) {
+    //     chats.push({
+    //       id: chats.length + 1,
+    //       socketIds: data.socketId
+    //     })
+    //     // 送出資訊
+    //     chats[data.chatId - 1].socketIds.forEach((id) => {
+    //       console.log(id)
+    //       io.to(id).emit('talk', data)
+    //     })
+    //   }
+    //   // 客戶在chat內
+    //   if (!chats[data.chatId - 1].socketIds.includes(data.socketId)) {
+    //     // 將客戶 socketId 存入對應的 chat 中
+    //     chats[data.chatId - 1].socketIds.push(data.socketId)
+    //   }
+    //   console.log(chats)
+    //   // 送出資訊
+    //   chats[data.chatId - 1].socketIds.forEach((id) => {
+    //     console.log(id)
+    //     io.to(id).emit('talk', data)
+    //   })
+    //   // io.emit('talk', data)
+    // })
 
-    //OnlineUser.vue
-    socket.on('fetchOnlineUser', (userId) => {
-      console.log('====================User', userId)
-    })
+    // //OnlineUser.vue
+    // socket.on('fetchOnlineUser', (userId) => {
+    //   console.log('====================User', userId)
+    // })
 
-    socket.on('inviteUser', (payload) => {
-      console.log('====================inviteUser', payload)
-    })
+    // socket.on('inviteUser', (payload) => {
+    //   console.log('====================inviteUser', payload)
+    // })
 
     //ChatWindow.vue
     socket.on('fetchChatHistory', (payload) => {
