@@ -1,6 +1,6 @@
 <template lang="pug">
   .container.overflow-auto(style="max-height: 700px; width: 395px;")
-    button.row.btn.btn-light.my-1.p-3.d-flex.align-items-center(v-for='user in topUsers' :key='user.id' type='button' style="width:370px;")
+    button.row.btn.btn-light.my-1.p-3.d-flex.align-items-center(v-for='user in topUsers' :key='user.id' type='button' style="width:370px;" @click.stop.prevent='afterInviteUser(user.id)')
       .col-3
         img(:src="user.avatar")
       .col-7.text-center
@@ -11,23 +11,30 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   props: {
     topUsers: {
       type: Array,
       required: true
-    },
-    currentUser: {
-      type: Object,
-      required: true
     }
   },
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"])
+  },
+  created() {
+    this.fetchOnlineUser();
+  },
   methods: {
-    addFollow(userId) {
-      this.$emit("after-add-follow", userId);
+    fetchOnlineUser() {
+      this.$socket.emit("fetchOnlineUser", this.currentUser.id);
     },
-    deleteFollow(userId) {
-      this.$emit("after-delete-follow", userId);
+    afterInviteUser(userId) {
+      this.$socket.emit("inviteUser", {
+        invitedUserId: this.currentUser.id,
+        guestUser: userId
+      });
     }
   }
 };

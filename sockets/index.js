@@ -17,14 +17,25 @@ module.exports = (io) => {
   // 給定固定chat
   let setChatId = 0
   io.on('connection', (socket) => {
+    console.log('====================connected socket id :', socket.id)
+
+    socket.on('disconnect', () => {
+      console.log('====================disconnected socket id :', socket.id)
+      //TODO scan through user-socket link table , delete disconnected socket id
+      //TODO if no more socket id under user , user set to offline
+    })
+
     if (!setChatId) {
-      console.log('can pick an user to talk!')
+      // console.log('can pick an user to talk!')
     }
     // get socket.id
     let socketId = socket.id
 
     // login
     socket.on('login', async (user) => {
+      console.log('====================login ID', userId)
+      //TODO link user id with socket id
+
       // update data and isOnline!
       userInDb = await chatService.userOnline(user.id)
       Object.keys(userInDb).forEach((e) => {
@@ -39,6 +50,7 @@ module.exports = (io) => {
       // show chat list - socket.emt
       socket.emit('showChats', chats)
     })
+
     // invite user
     TODO: socket.on('invite', async (chatId) => {
       try {
@@ -87,6 +99,15 @@ module.exports = (io) => {
         io.to(id).emit('talk', data)
       })
       // io.emit('talk', data)
+    })
+
+    //OnlineUser.vue
+    socket.on('fetchOnlineUser', (userId) => {
+      console.log('====================User', userId)
+    })
+
+    socket.on('inviteUser', (payload) => {
+      console.log('====================inviteUser', payload)
     })
   })
 }
