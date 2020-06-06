@@ -51,22 +51,14 @@ import Popular from "../components/UserTop";
 import Chat from "../components/OnlineUser";
 import ChatWindow from "../components/ChatWindow";
 import { Toast } from "../utils/helpers";
+import { mapState } from "vuex";
 
 //api
 import tweetsAPI from "../apis/tweet";
 import followshipAPI from "../apis/followship";
 
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: "root",
-    email: "root@example.com",
-    avatar:
-      "https://loremflickr.com/240/240/man,women/?random=76.38409798671886",
-    role: "admin"
-  },
-  isAuthenticated: true
-};
+//test
+import ChatRoom from "../components/ChatRoom";
 
 export default {
   components: {
@@ -80,21 +72,18 @@ export default {
     return {
       tweets: [],
       topUsers: [],
-      currentUser: dummyUser.currentUser,
       windows: [],
 
       currentTab: "Popular",
       tabs: ["Popular", "Chat"]
     };
   },
-  // computed: {
-  //   currentTabComponent: function() {
-  //     return this.currentTab
-  //   }
-  // }
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"])
+  },
   created() {
     this.fetchTweets();
-    // this.fetchTopUsers();
+    this.socketLogin();
   },
   methods: {
     async fetchTweets() {
@@ -240,6 +229,9 @@ export default {
         })
         console.log('current windows: ', this.windows)
       }
+    },
+    socketLogin() {
+      this.$socket.emit("login", this.currentUser.id);
     }
   }
 };

@@ -1,83 +1,169 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style></style>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+  </head>
 
-<head>
-  <title>Socket.IO chat</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <body class="w-100 d-inline-block">
+    <div class="container-fluid center mw-100">
+      <div class="row">
+        <div class="col-9">
+          <div>
+            <div>Chat: <snap id="chatValue">0</snap></div>
+            <!-- Msg -->
+            <ul id="msgBoard" class="list-group"></ul>
+          </div>
+          <div>
+            <form
+              id="login"
+              class="border row comment-box-main p-3 rounded-bottom"
+              action=""
+            >
+              <label for="useId">userId</label>
+              <input id="userId" autocomplete="off" />
+              <button>login</button>
+            </form>
+            <form
+              id="sendMsg"
+              class="row comment-box-main p-3 rounded-bottom"
+              action=""
+            >
+              <label for="chatId">chatId</label>
+              <input id="chatId" autocomplete="off" />
+              <br />
+              <br />
+              <label for="inputMsg">msg:</label>
+              <input id="inputMsg" autocomplete="off" />
+              <button>Send</button>
+            </form>
+          </div>
+        </div>
 
-    body {
-      font: 13px Helvetica, Arial;
-    }
+        <!-- online list -->
+        <div class="col-3">
+          <ul id="chatList" class="list-group"></ul>
+        </div>
+      </div>
+    </div>
 
-    form {
-      background: #000;
-      padding: 3px;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+      // 監聽物件
+      let chatValue = $('#chatValue')
+      let msgBoard = $('#msgBoard')
+      let inputMsg = $('#inputMsg')
+      let userId = $('#userId')
+      let chatId = $('#chatId')
+      let sendMsg = $('sendMsg')
+      let login = $('#login')
+      let chatList = $('#chatList')
+      // 事件
+      $(function () {
+        let socket = io()
+        // login
+        login.click((e) => {
+          if (!userId.val()) {
+            return
+          }
+          e.preventDefault()
+          let user = {
+            id: Number(userId.val()),
+            // socketId: socket.id,
+            isOnline: true
+          }
+          // console.log(user, 'login')
 
-    form input {
-      border: 0;
-      padding: 10px;
-      width: 90%;
-      margin-right: 0.5%;
-    }
+          socket.emit('login', user)
+        })
 
-    form button {
-      width: 9%;
-      background: rgb(130, 224, 255);
-      border: none;
-      padding: 10px;
-    }
+        // show chat list - socket.on
+        socket.on('showChats', (chats) => {
+          chats.forEach((e) => {
+            text = `
+            <li data-chat-id:="${e.chatId}" class="list-group-item container">
+                <div data-chat-id:="${e.chatId}"class="card">
+                  <div data-chat-id:="${e.chatId}"class="card-body">
+                    <img data-chat-id:="${e.chatId}"src=${e.avatar} class="float-left rounded-circle mr-2" width="50" height="50">
+                    <div data-chat-id:="${e.chatId}"class="message d-flex justify-content-between">
+                      <h5 data-chat-id:="${e.chatId}"class="card-title">${e.name}</h5>
+                      <h6 data-chat-id:="${e.chatId}"class="card-subtitle mb-2 text-muted">${e.isOnline}</h6>
+                    </div>
+                  </div>
+                </div>
+            </li>
+            `
+            chatList.append(text)
+          })
+        })
+        // +頻道
+        TODO: chatList.click((e) => {
+          e.preventDefault() // prevents page reloading
 
-    #messages {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-    }
+          let chatId = e.target.dataset.chatId
+          console.log('chatId', chatId)
+          // invite user
+          socket.emit('invite', chatId)
+        })
 
-    #messages li {
-      padding: 5px 10px;
-    }
+        // 送出表單至server
+        sendMsg.submit((e) => {
+          e.preventDefault() // prevents page reloading
+          let data = {
+            chatId: chatId.val(),
+            msg: inputMsg.val(),
+            time: new Date()
+          }
+          // socket.emit('changeChat',data)
+          socket.emit('talk', data)
+          // 清空訊息
+          inputMsg.val('')
+          return false
+        })
 
-    #messages li:nth-child(odd) {
-      background: #eee;
-    }
-  </style>
-</head>
-
-<body>
-  <ul id="messages"></ul>
-  <form action="">
-    <input id="m" autocomplete="off" /><button>Send</button>
-  </form>
-
-
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-  <script>
-    $(function () {
-      var socket = io();
-      socket.emit('login', 'userHtml')
-
-      $('form').submit(function (e) {
-        e.preventDefault(); // prevents page reloading
-        socket.emit('chat', $('#m').val());
-        $('#m').val('');
-        return false;
-      });
-
-      socket.on('chat', function (msg) {
-        $('#messages').append($('<li>').text(msg));
-      });
-    });
-  </script>
-</body>
-
+        // 聊天
+        socket.on('talk', function (data) {
+          console.log('socket.on', 'talk', data)
+          // 改Chat
+          chatValue.text(data.chatId)
+          // 顯示訊息
+          let text = `
+            <li class="pl-3 list-group-item d-flex justify-content-between">
+              <div>
+                <span class="h4 font-weight-bold pr-4 ">{${data.userId}}: </span>
+                <span class="h5">${data.msg}</span>
+              </div>
+              
+              <div class="text-secondary font-weight-light font-italic"
+                >-${data.time}</div
+              >
+            </li>
+          `
+          msgBoard.append($(`<li>`).html(text))
+        })
+      })
+    </script>
+  </body>
 </html>

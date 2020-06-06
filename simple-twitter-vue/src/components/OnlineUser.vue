@@ -16,26 +16,32 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   props: {
     topUsers: {
       type: Array,
       required: true
-    },
-    currentUser: {
-      type: Object,
-      required: true
-    },
+    }
+  },
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"])
+  },
+  created() {
+    this.fetchOnlineUser();
   },
   methods: {
-    addFollow(userId) {
-      this.$emit("after-add-follow", userId);
-    },
-    deleteFollow(userId) {
-      this.$emit("after-delete-follow", userId);
+    fetchOnlineUser() {
+      this.$socket.emit("fetchOnlineUser", this.currentUser.id);
     },
     inviteUser(userId){
-      this.$emit('after-invite-user', userId)
+      await this.$socket.emit("inviteUser", {
+        invitedUserId: this.currentUser.id,
+        guestUser: userId
+      });
+
+      this.$emit("after-invite-user", userId);
     }
   }
 };

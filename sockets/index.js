@@ -1,117 +1,139 @@
-const chatController = require('./chat')
-// const chatService = require('../services/chatService')
-
+// const chatController = require('./chat')
+const chatService = require('../services/chatService')
+Date.prototype.addSeconds = function (s) {
+  let ms = s * 1000
+  this.setTime(this.getTime() + ms)
+  return this
+}
 module.exports = (io) => {
-  let connectedUser = {}
-
-  let rooms = []
-
-  const cleanUnconnectedSokcetId = function (username) {
-    connectedUser[username].forEach((id, index, object) => {
-      if (!io.sockets.connected[id]) {
-        object.splice(index, 1) //remove unconnected socketId
-      }
-    })
-  }
-
-  const checkRooms = function (user, invitedUser) {
-    // if (!rooms.length) {
-    //   console.log('no room exist')
-    //   rooms.push([user, invitedUser])
-    //   return 0
-    // }
-    if (!invitedUser) {
-      return null
+  let users = [
+    { name: 'a', userId: 1 },
+    { name: 'b', userId: 2 },
+    { name: 'c', userId: 3 },
+    { name: 'd', userId: 4 }
+  ]
+  let chats = [
+    { chatId: 1, creator: 1, invitee: 2, socketIds: [] }, // [1,2]
+    { chatId: 2, creator: 1, invitee: 3, socketIds: [] }, // [1,3]
+    { chatId: 3, creator: 2, invitee: 4, socketIds: [] } // [2,4]
+  ]
+  let t = new Date()
+  let historyMsg = [
+    { id: 1, userId: 1, msg: 'i am 1', chatId: 1, time: t },
+    { id: 2, userId: 2, msg: 'i am 2', chatId: 2, time: t.addSeconds(5) },
+    {
+      id: 3,
+      userId: 3,
+      msg: 'i am 3',
+      chatId: 2,
+      time: t.addSeconds(15)
+    },
+    {
+      id: 4,
+      userId: 4,
+      msg: 'i am 4',
+      chatId: 3,
+      time: t.addSeconds(25)
+    },
+    {
+      id: 5,
+      userId: 1,
+      msg: 'im 1',
+      chatId: 1,
+      time: t.addSeconds(5)
     }
-
-    const index = rooms.findIndex((room, index) => {
-      console.log('user:', user, ', invitedUser:', invitedUser, ', room:', room)
-      console.log(room.includes(user))
-      console.log(room.includes(invitedUser))
-
-      return room.includes(user) && room.includes(invitedUser)
-    })
-
-    console.log('index', index)
-
-    if (index === -1) {
-      ;('fisrt!')
-      rooms.push([user, invitedUser])
-      return rooms.length - 1
-    }
-
-    return index
-  }
-
+  ]
+  // 給定固定chat
+  let setChatId = 0
   io.on('connection', (socket) => {
-    console.log('soket id :', socket.id)
-    // console.log('session:', socket.request.session)
+    console.log('====================connected socket id :', socket.id)
 
-    io.clients((error, clients) => {
-      if (error) throw error
-      console.log(clients)
+
+    socket.on('disconnect', () => {
+      console.log('====================disconnected socket id :', socket.id)
+      //TODO scan through user-socket link table , delete disconnected socket id
+      //TODO if no more socket id under user , user set to offline
     })
 
-    socket.on('login', (userId) => {
-      console.log('login', userId)
-      if (!connectedUser[userId]) {
-        connectedUser[userId] = [socket.id]
-      } else {
-        connectedUser[userId].push(socket.id)
-      }
 
-      cleanUnconnectedSokcetId(userId)
-      console.log(connectedUser)
+    if (!setChatId) {
+      // console.log('can pick an user to talk!')
+    }
+    // get socket.id
+    let socketId = socket.id
+
+    // login
+    socket.on('login', async (userId) => {
+      console.log('====================login ID', userId)
+      //TODO link user id with socket id
     })
 
-    socket.on('logout', (userId) => {
-      console.log('logout', userId)
-      if (!connectedUser[userId]) {
-        return
-      } else {
-        connectedUser[userId] = connectedUser[userId].filter(
-          (id) => id !== socket.id
-        )
-      }
-      console.log(connectedUser)
+    // invite user
+    TODO: socket.on('invite', (invitee) => {
+      // console.log(`invite user:${invitee}`)
+      // find the chatId in db
+      // let chat = chatService.getChat(myId, invitee, (data) => data)
     })
 
-    socket.on('chat', (payload) => {
-      const { msg, user, invitedUser } = payload
+    // et history msg
+    // historyMsg.forEach((m) => {
+    //   if (m.chatId === setChatId) {
+    //     console.log(m)
+    //     socket.emit('talk', m)
+    //   }
+    // })
 
-      const room = checkRooms(user, invitedUser)
-      console.log(socket.id, 'chat:', msg, 'room:', room)
-      // io.to(room).emit('chat', msg);
-
-      if (msg && room) {
-        console.log('chat ok')
-        io.to(room).emit('chat', msg)
-      } else {
-        console.log('chat NG')
-      }
-    })
-
-    socket.on('invite', (invitation) => {
-      const { user, invitedUser } = invitation
-      console.log('id', socket.id, 'invite', invitedUser)
-      let roomId = checkRooms(user, invitedUser)
-
-      console.log(rooms, 'id', roomId)
-
-      socket.join(roomId)
-
-      if (connectedUser[invitedUser]) {
-        connectedUser[invitedUser].forEach((id, index, object) => {
-          if (io.sockets.connected[id]) {
-            io.sockets.connected[id].join(roomId)
-          } else {
-            object.splice(index, 1) //remove unconnected socketId
-          }
-          console.log('id', connectedUser[invitedUser])
+    // talk
+    socket.on('talk', (data) => {
+      // io 再傳給全部的客戶
+      console.log('server 收到', data)
+      // chat 不存在開新的chat
+      if (!chats[data.chatId - 1]) {
+        chats.push({
+          id: chats.length + 1,
+          socketIds: data.socketId
+        })
+        // 送出資訊
+        chats[data.chatId - 1].socketIds.forEach((id) => {
+          console.log(id)
+          io.to(id).emit('talk', data)
         })
       }
+      // 客戶在chat內
+      if (!chats[data.chatId - 1].socketIds.includes(data.socketId)) {
+        // 將客戶 socketId 存入對應的 chat 中
+        chats[data.chatId - 1].socketIds.push(data.socketId)
+      }
+      console.log(chats)
+      // 送出資訊
+      chats[data.chatId - 1].socketIds.forEach((id) => {
+        console.log(id)
+        io.to(id).emit('talk', data)
+      })
+      // io.emit('talk', data)
     })
 
-    // chatController(io, socket)
+
+    //OnlineUser.vue
+    socket.on('fetchOnlineUser', (userId) => {
+      console.log('====================User', userId)
+    })
+
+    socket.on('inviteUser', (payload) => {
+      console.log('====================inviteUser', payload)
+    })
+
+
+    //ChatWindow.vue
+    socket.on('fetchChatHistory', (payload) => {
+      const { chatId } = payload
+      console.log('====================chatId', chatId)
+    })
+
+    socket.on('sendMessage', (payload) => {
+      const { message } = payload
+      console.log('====================message', message)
+    })
   })
+
 }

@@ -17,8 +17,8 @@
             p.text-break kjfhdkhdkfhkfhkdfhkdfjfdkhjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjsgkerkh
 
       .input-bar.row.no-gutters
-        input.col-10.form-control(type="text" placeholder='Type message..', required='')
-        button.col-2.btn(type='submit' style="border: 1px solid black;") Send
+        input.col-10.form-control(type="text" placeholder='Type message..', required='' v-model='message')
+        button.col-2.btn(type='submit' style="border: 1px solid black;"  @click.prevent.stop="afterSendMessage" ) Send
 </template>
 
 <script>
@@ -46,12 +46,29 @@ export default {
     }
     
   },
+  data() {
+    return {
+      message: ""
+    };
+  },
+  created() {
+    this.afterChatWindowCreated();
+  },
   methods: {
     sendMsg() {
-      // emit訊息 
+      // emit訊息
     },
     closeWindow(window) {
       this.$emit('after-close', window)
+    },
+    afterChatWindowCreated() {
+      this.$socket.emit("fetchChatHistory", { chatId: 111 });
+    },
+    afterSendMessage() {
+      if (this.message) {
+        this.$socket.emit("sendMessage", { message: this.message });
+        this.message = "";
+      }
     }
   }
 };
