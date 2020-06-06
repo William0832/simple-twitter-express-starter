@@ -109,5 +109,16 @@ module.exports = (io) => {
       })
       // io.emit('talk', data)
     })
+
+
+    //OnlineUser.vue
+    socket.on('fetchOnlineUser', (userId) => {
+      console.log('User', userId)
+    })
+
+    socket.on('inviteUser', (payload) => {
+      console.log('inviteUser', payload)
+    })
+
   })
 }

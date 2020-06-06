@@ -26,14 +26,12 @@
         OnlineUser( 
           :top-users='topUsers'
           :current-user='currentUser'
-          @after-add-follow='afterAddFollow'
-          @after-delete-follow='afterDeleteFollow'
         )    
         //- style="background-color: red;"
-    div.row.no-gutters.d-flex.fixed-bottom
-      ChatWindow(@after-close="closeWindow" )
-      ChatWindow(@after-close="closeWindow" )
-      ChatWindow(@after-close="closeWindow" )
+    //- div.row.no-gutters.d-flex.fixed-bottom
+    //-   ChatWindow(@after-close="closeWindow" )
+    //-   ChatWindow(@after-close="closeWindow" )
+    //-   ChatWindow(@after-close="closeWindow" )
 </template>
 
 <script>
@@ -207,9 +205,9 @@ export default {
         });
       }
     },
-    closeWindow(){
-      console.log('close window')
-      this.openWindow = false
+    closeWindow() {
+      console.log("close window");
+      this.openWindow = false;
     }
   }
 };
