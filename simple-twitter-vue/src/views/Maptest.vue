@@ -10,7 +10,7 @@
 export default {
   data: () => ({
     location: null,
-    autocomplete=null
+    autocomplete: null
   }),
   mounted() {
     window.checkAndAttachMapScript(this.initLocationSearch);
@@ -28,7 +28,7 @@ export default {
           // console.log(place.address_components);
         }
       });
-    },
+    }
     // autocompletePlaceChanged(){
 
     // }

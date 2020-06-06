@@ -9,6 +9,7 @@
           | , {{tweet.createdAt | formatTime}}
         p
           | {{tweet.description}}
+        a(:href='tweet.googleMapUrl' v-if='tweet.googleMapName') @{{tweet.googleMapName}}
         .row.justify-content-start
           .col.mw-50
             router-link(:to="{ name: 'replies', params: { tweet_id: tweet.id }}")
@@ -29,25 +30,26 @@ export default {
       required: true
     }
   },
-  data(){
+  data() {
     return {
       isProcessing: false
-    }
+    };
   },
   methods: {
     addLike(tweetId) {
-      this.isProcessing = true
+      this.isProcessing = true;
       this.$emit("after-add-like", tweetId);
       setTimeout(() => {
-        this.isProcessing = false
+        this.isProcessing = false;
       }, 500);
     },
     deleteLike(tweetId) {
-      this.isProcessing = true
+      this.isProcessing = true;
       this.$emit("after-delete-like", tweetId);
       setTimeout(() => {
-        this.isProcessing = false
-      }, 500);    }
+        this.isProcessing = false;
+      }, 500);
+    }
   }
 };
 </script>
