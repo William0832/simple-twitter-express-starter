@@ -6,43 +6,14 @@ Date.prototype.addSeconds = function (s) {
   return this
 }
 module.exports = (io) => {
-  let users = [
-    { name: 'a', userId: 1 },
-    { name: 'b', userId: 2 },
-    { name: 'c', userId: 3 },
-    { name: 'd', userId: 4 }
-  ]
+  let users = []
   let chats = [
     { chatId: 1, creator: 1, invitee: 2, socketIds: [] }, // [1,2]
     { chatId: 2, creator: 1, invitee: 3, socketIds: [] }, // [1,3]
     { chatId: 3, creator: 2, invitee: 4, socketIds: [] } // [2,4]
   ]
-  let t = new Date()
-  let historyMsg = [
-    { id: 1, userId: 1, msg: 'i am 1', chatId: 1, time: t },
-    { id: 2, userId: 2, msg: 'i am 2', chatId: 2, time: t.addSeconds(5) },
-    {
-      id: 3,
-      userId: 3,
-      msg: 'i am 3',
-      chatId: 2,
-      time: t.addSeconds(15)
-    },
-    {
-      id: 4,
-      userId: 4,
-      msg: 'i am 4',
-      chatId: 3,
-      time: t.addSeconds(25)
-    },
-    {
-      id: 5,
-      userId: 1,
-      msg: 'im 1',
-      chatId: 1,
-      time: t.addSeconds(5)
-    }
-  ]
+  let historyMsg = []
+  let user = new Object()
   // 給定固定chat
   let setChatId = 0
   io.on('connection', (socket) => {
@@ -54,8 +25,11 @@ module.exports = (io) => {
 
     // login
     socket.on('login', async (user) => {
-      // update isOnline
-      user = await chatService.userOnline(user.id)
+      // update data and isOnline!
+      userInDb = await chatService.userOnline(user.id)
+      Object.keys(userInDb).forEach((e) => {
+        user[e] = userInDb[e]
+      })
       // store socketId
       user.socketId = socketId
       // console.log('login user: ', user)
@@ -66,11 +40,15 @@ module.exports = (io) => {
       socket.emit('showChats', chats)
     })
     // invite user
-    TODO: socket.on('invite', (chatId) => {
-      console.log(`socket.on get chatId:${chatId}`)
-      // find the chatId in db
-      let chat = chatService.getChat(user.id, chatId)
-      console.log(chat)
+    TODO: socket.on('invite', async (chatId) => {
+      try {
+        console.log(`socket.on get chatId:${chatId}`)
+        // find the chatId in db
+        let chat = await chatService.getChat(user.id, chatId)
+        console.log(chat)
+      } catch (err) {
+        console.log(err)
+      }
     })
 
     // et history msg

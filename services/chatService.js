@@ -35,15 +35,14 @@ const chatService = {
           message: 'userId did not exist'
         })
       }
-      let currentUser = helpers.getUser(req)
       let userId = req.body.userId
       //檢查 chat 是否存在
       let chat = await Chat.findOne({
         //
         where: {
           [Op.or]: [
-            { CreatedUserId: currentUser.id, InvitedUserId: userId },
-            { CreatedUserId: userId, InvitedUserId: currentUser.id }
+            { CreatedUserId: myId, InvitedUserId: userId },
+            { CreatedUserId: userId, InvitedUserId: myId }
           ]
         }
       })
@@ -55,7 +54,7 @@ const chatService = {
         })
       }
       chat = await Chat.create({
-        CreatedUserId: currentUser.id,
+        CreatedUserId: myId,
         InvitedUserId: userId
       })
       chat = chat.dataValues
@@ -126,44 +125,41 @@ const chatService = {
     try {
       let chat = await Chat.findByPk(chatId)
       if (!chat) {
-        return callback({
-          status: 'error',
-          message: 'chat did not exist'
-        })
+        console.log('chat did not exist')
+        return
       }
       chat = chat.dataValues
       // 檢查身分
-      let currentUser = helpers.getUser(req)
-      let userId = ''
-      if (chat.CreatedUserId === currentUser.id) {
-        userId = chat.InvitedUserId
-      } else if (currentUser.id === chat.InvitedUserId) {
-        userId = chat.CreatedUserId
+      let otherUserId = ''
+      if (chat.CreatedUserId === myId) {
+        otherUserId = chat.InvitedUserId
+      } else if (myId === chat.InvitedUserId) {
+        otherUserId = chat.CreatedUserId
       } else {
-        callback({ status: 'error', message: 'U do not belong to this chat' })
+        console.log('error: U do not belong to this chat')
+        return
       }
-      let user = await User.findByPk(userId, {
+      let otherUser = await User.findByPk(otherUserId, {
         attributes: ['id', 'name', 'avatar', 'isOnline']
       })
-      user = user.dataValues
-      user.chatId = chatId
-      callback({ user })
+      otherUser = otherUser.dataValues
+      otherUser.chatId = chatId
+      return otherUser
     } catch (err) {
-      callback({ status: 'error', message: err.toString() })
+      console.log(err.toString())
     }
   },
   // db 將發出的新訊息存入
-  postMsg: async (req, res, callback) => {
+  postMsg: async (myId, chatId, msg) => {
     try {
       if (isNaN(req.params.id)) {
         callback({ status: 'error', message: 'chatId need to be a number!' })
       }
       let chatId = req.params.id
-      let currentUser = helpers.getUser(req)
       let message = req.body.message
       let msg = await Message.create({
         ChatId: chatId,
-        UserId: currentUser.id,
+        UserId: myId,
         message: message
       })
       callback({
@@ -175,14 +171,8 @@ const chatService = {
     }
   },
   //db 取得聊天室的全部訊息
-  getMsgs: async (req, res, callback) => {
+  getMsgs: async (myId, chatId) => {
     try {
-      if (isNaN(req.params.id)) {
-        callback({ status: 'error', message: 'chatId need to be a number!' })
-      }
-      let chatId = req.params.id
-      console.log(chatId)
-
       let msgs = await Message.findAll({
         where: { ChatId: chatId },
         include: [
