@@ -28,7 +28,7 @@
           :current-user='currentUser'
         )    
         //- style="background-color: red;"
-    div.row.no-gutters.d-flex.fixed-bottom
+    div.row.no-gutters.d-flex.fixed-top
       ChatRoom
     //-   ChatWindow(@after-close="closeWindow" )
     //-   ChatWindow(@after-close="closeWindow" )
