@@ -103,18 +103,18 @@
         socket.on('showChats', (chats) => {
           chats.forEach((e) => {
             text = `
-            <li data-chat-id:="${e.chatId}" class="list-group-item container">
-                <div data-chat-id:="${e.chatId}"class="card">
-                  <div data-chat-id:="${e.chatId}"class="card-body">
-                    <img data-chat-id:="${e.chatId}"src=${e.avatar} class="float-left rounded-circle mr-2" width="50" height="50">
-                    <div data-chat-id:="${e.chatId}"class="message d-flex justify-content-between">
-                      <h5 data-chat-id:="${e.chatId}"class="card-title">${e.name}</h5>
-                      <h6 data-chat-id:="${e.chatId}"class="card-subtitle mb-2 text-muted">${e.isOnline}</h6>
-                    </div>
-                  </div>
-                </div>
-            </li>
-            `
+            <li data-chat-id="${e.chatId}" class="list-group-item container">
+               <div data-chat-id="${e.chatId}"class="card">
+                   <div data-chat-id="${e.chatId}"class="card-body">
+                    <img data-chat-id="${e.chatId}"src=${e.avatar} class="float-left rounded-circle mr-2" width="50" height="50">
+                     <div data-chat-id="${e.chatId}"class="message d-flex justify-content-between">
+                       <h5 data-chat-id="${e.chatId}"class="card-title">${e.name}</h5>
+                       <h6 data-chat-id="${e.chatId}"class="card-subtitle mb-2 text-muted">${e.isOnline}</h6>
+                     </div>
+                   </div>
+                 </div>
+             </li>
+             `
             chatList.append(text)
           })
         })

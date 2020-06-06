@@ -66,10 +66,11 @@ module.exports = (io) => {
       socket.emit('showChats', chats)
     })
     // invite user
-    TODO: socket.on('invite', (invitee) => {
-      // console.log(`invite user:${invitee}`)
+    TODO: socket.on('invite', (chatId) => {
+      console.log(`socket.on get chatId:${chatId}`)
       // find the chatId in db
-      // let chat = chatService.getChat(myId, invitee, (data) => data)
+      let chat = chatService.getChat(user.id, chatId)
+      console.log(chat)
     })
 
     // et history msg
