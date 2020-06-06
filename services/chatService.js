@@ -70,18 +70,8 @@ const chatService = {
         where: {
           [Op.or]: [{ CreatedUserId: myId }, { InvitedUserId: myId }]
         },
-        attributes: ['id', 'CreatedUserId', 'InvitedUserId'],
-        includes: [
-          Message
-          //   {
-          //     model: Message,
-          //     order: ['createdAt', 'DSC'],
-          //     attributes: ['message', 'UserId', 'ChatId', 'created'],
-          //     limit: 1
-          //   }
-        ]
+        attributes: ['id', 'CreatedUserId', 'InvitedUserId']
       })
-      console.log('!!!db: chats:', chats)
       chats = chats.map((e) => ({
         ...e.dataValues
       }))
@@ -109,11 +99,25 @@ const chatService = {
         chatId: e.id,
         ...guests[index]
       }))
-      chats = chats.map((e) => {
-        let temp = { ...e, userId: e.id }
-        delete temp.id
-        return temp
-      })
+
+      chats = Promise.all(
+        chats.map(async (chat) => {
+          let lastMsg = await Message.findAll({
+            where: { ChatId: chat.chatId },
+            attributes: ['message', 'createdAt', 'UserId'],
+            sort: ['created', 'DEC'],
+            limit: 1
+          })
+          lastMsg = lastMsg[0].dataValues
+          let temp = {
+            ...chat,
+            userId: chat.id,
+            lastMsg: lastMsg
+          }
+          delete temp.id
+          return temp
+        })
+      )
       return chats
     } catch (err) {
       console.log(err.toString())

@@ -63,13 +63,11 @@ module.exports = (io) => {
         // get chats from db
         if (!showUseIds.length) {
           console.log('only U is online!')
-          let chats = await chatService.getChats(userId)
-          console.log(chats)
+          chats = await chatService.getChats(userId)
         } else {
-          console.log('do some thing else!')
+          get
         }
-        // console.log(showUseIds)
-        // show chat list - socket.emt to Vue
+        // socket.emt to Vue
         socket.emit('showChats', chats)
       } catch (err) {
         console.log(err.toString())
@@ -78,8 +76,8 @@ module.exports = (io) => {
 
     // invite user
     // TODO:
-    socket.on('inviteUser', async (chatId) => {
-      console.log('====================inviteUser', chatId)
+    socket.on('inviteUser', async (payload) => {
+      console.log('====================inviteUser', payload)
       // check chatId in chats ?
       // -- in:
       // ---- check guest isOnline ?
@@ -99,105 +97,19 @@ module.exports = (io) => {
       // }
     })
 
-    // et history msg
-    // historyMsg.forEach((m) => {
-    //   if (m.chatId === setChatId) {
-    //     console.log(m)
-    //     socket.emit('talk', m)
-    //   }
-    // })
-
-    // talk
-    // socket.on('talk', (data) => {
-    //   // io 再傳給全部的客戶
-    //   console.log('server 收到', data)
-    //   // chat 不存在開新的chat
-    //   if (!chats[data.chatId - 1]) {
-    //     chats.push({
-    //       id: chats.length + 1,
-    //       socketIds: data.socketId
-    //     })
-    //     // 送出資訊
-    //     chats[data.chatId - 1].socketIds.forEach((id) => {
-    //       console.log(id)
-    //       io.to(id).emit('talk', data)
-    //     })
-    //   }
-    //   // 客戶在chat內
-    //   if (!chats[data.chatId - 1].socketIds.includes(data.socketId)) {
-    //     // 將客戶 socketId 存入對應的 chat 中
-    //     chats[data.chatId - 1].socketIds.push(data.socketId)
-    //   }
-    //   console.log(chats)
-    //   // 送出資訊
-    //   chats[data.chatId - 1].socketIds.forEach((id) => {
-    //     console.log(id)
-    //     io.to(id).emit('talk', data)
-    //   })
-    //   // io.emit('talk', data)
-    // })
-
-    // //OnlineUser.vue
-    // socket.on('fetchOnlineUser', (userId) => {
-    //   console.log('====================User', userId)
-    // })
-
-    // socket.on('inviteUser', (payload) => {
-    //   console.log('====================inviteUser', payload)
-    // })
-
+    //OnlineUser.vue
+    socket.on('fetchOnlineUser', (userId) => {
+      console.log('====================User', userId)
+    })
     //ChatWindow.vue
     socket.on('fetchChatHistory', (payload) => {
       const { chatId } = payload
       console.log('====================chatId', chatId)
     })
-
     socket.on('sendMessage', (payload) => {
       const { message } = payload
       console.log('====================message', message)
     })
-
-    //=================================================from jasper alert
-    // })
-
-    // socket.on('chat', (payload) => {
-    //   const { msg, user, invitedUser } = payload
-
-    //   const room = checkRooms(user, invitedUser)
-    //   console.log(socket.id, 'chat:', msg, 'room:', room)
-    //   // io.to(room).emit('chat', msg);
-
-    //   if (msg && room) {
-    //     console.log('chat ok')
-    //     io.to(room).emit('chat', msg)
-    //   } else {
-    //     console.log('chat NG')
-    //   }
-
-    // });
-
-    // socket.on('invite', (invitation) => {
-    //   const { user, invitedUser } = invitation
-    //   console.log('id', socket.id, 'invite', invitedUser)
-    //   let roomId = checkRooms(user, invitedUser)
-
-    //   console.log(rooms, 'id', roomId)
-
-    //   socket.join(roomId)
-
-    //   if (connectedUser[invitedUser]) {
-    //     connectedUser[invitedUser].forEach((id, index, object) => {
-    //       if (io.sockets.connected[id]) {
-    //         io.sockets.connected[id].join(roomId)
-    //       } else {
-    //         object.splice(index, 1) //remove unconnected socketId
-    //       }
-    //       console.log('id', connectedUser[invitedUser])
-    //     })
-    //   }
-
-    // });
-
     socket.on('reply', async (payload) => {
       const { userId, tweetId, type } = payload
       console.log('reply notification')
