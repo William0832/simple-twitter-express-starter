@@ -123,6 +123,17 @@ module.exports = (io) => {
       console.log('====================inviteUser', payload)
     })
 
+
+    //ChatWindow.vue
+    socket.on('fetchChatHistory', (payload) => {
+      const { chatId } = payload
+      console.log('====================chatId', chatId)
+    })
+
+    socket.on('sendMessage', (payload) => {
+      const { message } = payload
+      console.log('====================message', message)
+    })
   })
 
 }

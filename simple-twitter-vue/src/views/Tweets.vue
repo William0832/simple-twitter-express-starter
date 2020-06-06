@@ -28,8 +28,8 @@
           :current-user='currentUser'
         )    
         //- style="background-color: red;"
-    //- div.row.no-gutters.d-flex.fixed-bottom
-    //-   ChatWindow(@after-close="closeWindow" )
+    div.row.no-gutters.d-flex.fixed-bottom
+      ChatWindow(@after-close="closeWindow" )
     //-   ChatWindow(@after-close="closeWindow" )
     //-   ChatWindow(@after-close="closeWindow" )
 </template>
