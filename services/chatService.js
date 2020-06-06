@@ -70,9 +70,18 @@ const chatService = {
         where: {
           [Op.or]: [{ CreatedUserId: myId }, { InvitedUserId: myId }]
         },
-        attributes: ['id', 'CreatedUserId', 'InvitedUserId']
+        attributes: ['id', 'CreatedUserId', 'InvitedUserId'],
+        includes: [
+          Message
+          //   {
+          //     model: Message,
+          //     order: ['createdAt', 'DSC'],
+          //     attributes: ['message', 'UserId', 'ChatId', 'created'],
+          //     limit: 1
+          //   }
+        ]
       })
-
+      console.log('!!!db: chats:', chats)
       chats = chats.map((e) => ({
         ...e.dataValues
       }))
@@ -105,12 +114,6 @@ const chatService = {
         delete temp.id
         return temp
       })
-      chats.forEach(async (e)=>{
-        let lastMsg = await Message.findAll({
-          // TODO: find last msg in chat
-          where: { [Op.or]: [{ UserId: myId }, { ChatId:  }] }
-        }) 
-      }) 
       return chats
     } catch (err) {
       console.log(err.toString())

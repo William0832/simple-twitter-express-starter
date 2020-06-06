@@ -15,7 +15,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       ChatId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        reference: {
+          model: 'Chats',
+          key: 'id'
+        }
       },
       createdAt: {
         allowNull: false,
