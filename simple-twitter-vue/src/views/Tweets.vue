@@ -26,6 +26,7 @@
         OnlineUser( 
           :top-users='topUsers'
           :current-user='currentUser'
+          @after-invite-user ='afterInviteUser'
         )    
         //- style="background-color: red;"
     div.row.no-gutters.d-flex.fixed-bottom
@@ -207,6 +208,9 @@ export default {
     },
     socketLogin() {
       this.$socket.emit("login", this.currentUser.id);
+    },
+    afterInviteUser(userId) {
+      this.chats.push({ id: userId });
     }
   }
 };
