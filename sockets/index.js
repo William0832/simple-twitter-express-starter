@@ -109,9 +109,6 @@ module.exports = (io) => {
     socket.on('inviteUser', (payload) => {
       console.log('====================inviteUser', payload)
     })
-<<<<<<< HEAD
-=======
-
 
     //ChatWindow.vue
     socket.on('fetchChatHistory', (payload) => {
@@ -123,6 +120,5 @@ module.exports = (io) => {
       const { message } = payload
       console.log('====================message', message)
     })
->>>>>>> origin/chat/jasper
   })
 }
