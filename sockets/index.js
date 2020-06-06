@@ -50,7 +50,7 @@ module.exports = (io) => {
     // TODO:
     socket.on('fetchOnlineUser', (userId) => {
       console.log('====================User', userId)
-      onLineUsersEsp = onLineUsers.map((e) => e.id !== userId)
+      onLineUsersEsp = onlineUsers.map((e) => e.id !== userId)
     })
 
     // show chat list - socket.emt to Vue
