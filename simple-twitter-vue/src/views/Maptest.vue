@@ -19,10 +19,12 @@ export default {
       let autocomplete = new window.google.maps.places.Autocomplete(
         this.$refs.search
       );
+      autocomplete.setTypes(["establishment"]);
       autocomplete.addListener("place_changed", function() {
         let place = autocomplete.getPlace();
+        console.log(place);
         if (place && place.address_components) {
-          console.log(place.address_components);
+          // console.log(place.address_components);
         }
       });
     }
