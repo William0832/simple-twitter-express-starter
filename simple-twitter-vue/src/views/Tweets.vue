@@ -41,9 +41,9 @@ export default {
       topUsers: []
     };
   },
-  created() {
-    this.fetchTweets();
-    // this.fetchTopUsers();
+  async created() {
+    await this.fetchTweets();
+    await this.fetchTopUsers();
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"])
@@ -56,7 +56,6 @@ export default {
         const { data } = response;
 
         this.tweets = data.tweets;
-        this.topUsers = data.topUsers;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -64,9 +63,20 @@ export default {
         });
       }
     },
-    // fetchTopUsers() {
-    //   this.topUsers = dummyTopUsers.topUsers;
-    // },
+    async fetchTopUsers() {
+      try {
+        const response = await tweetsAPI.getTopUsers();
+
+        const { data } = response;
+
+        this.topUsers = data.topUsers;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得風雲人物資料，請稍後再試"
+        });
+      }
+    },
     async afterCreateTweet(tweet) {
       try {
         if (!tweet.description) {
@@ -107,7 +117,7 @@ export default {
           throw new Error(data.message);
         }
 
-        this.fetchTweets();
+        this.fetchTopUsers();
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -128,7 +138,7 @@ export default {
           throw new Error(data.message);
         }
 
-        this.fetchTweets();
+        this.fetchTopUsers();
       } catch (error) {
         Toast.fire({
           icon: "error",

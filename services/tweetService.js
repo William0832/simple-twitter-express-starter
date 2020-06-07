@@ -24,6 +24,39 @@ const removeKeys = (data, keys) => {
 const tweetService = {
   getTweets: async (req, res, callback) => {
     try {
+      let likedTweets = await Like.findAll({
+        where: { UserId: helpers.getUser(req).id },
+        attributes: ['TweetId']
+      })
+
+      likedTweets = likedTweets.map((like) => like.TweetId)
+
+
+      let tweets = await Tweet.findAll({
+        include: [
+          { model: User, attributes: ['id', 'email', 'name', 'avatar'] },
+          { model: Reply, attributes: ['id', 'UserId'] },
+          { model: Like, attributes: ['id', 'UserId'] }
+        ],
+        order: [['createdAt', 'DESC']]
+      })
+      tweets = tweets.map((tweet) => ({
+        ...tweet.dataValues,
+        repliesCount: tweet.Replies.length || 0,
+        likesCount: tweet.Likes.length || 0,
+        isLiked: likedTweets.includes(tweet.id) ? true : false
+      }))
+      removeKeys(tweets, ['Replies', 'Likes'])
+
+      return callback({
+        tweets
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  getTopUsers: async (req, res, callback) => {
+    try {
       let followedUser = await User.findByPk(helpers.getUser(req).id, {
         attributes: [],
         include: [
@@ -69,32 +102,8 @@ const tweetService = {
         isFollowed: followedUserId.includes(user.id) ? true : false
       }))
 
-      let likedTweets = await Like.findAll({
-        where: { UserId: helpers.getUser(req).id },
-        attributes: ['TweetId']
-      })
-
-      likedTweets = likedTweets.map((like) => like.TweetId)
-
-
-      let tweets = await Tweet.findAll({
-        include: [
-          { model: User, attributes: ['id', 'email', 'name', 'avatar'] },
-          { model: Reply, attributes: ['id', 'UserId'] },
-          { model: Like, attributes: ['id', 'UserId'] }
-        ],
-        order: [['createdAt', 'DESC']]
-      })
-      tweets = tweets.map((tweet) => ({
-        ...tweet.dataValues,
-        repliesCount: tweet.Replies.length || 0,
-        likesCount: tweet.Likes.length || 0,
-        isLiked: likedTweets.includes(tweet.id) ? true : false
-      }))
-      removeKeys(tweets, ['Replies', 'Likes'])
 
       return callback({
-        tweets,
         topUsers
       })
     } catch (error) {
