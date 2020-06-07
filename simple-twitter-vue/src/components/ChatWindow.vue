@@ -8,16 +8,16 @@
       //- 顯示對話框的container 
       .d-flex.flex-column.container.overflow-auto
         //- 自己的對話條
-        .row.mt-3
+        .row.mt-3(v-if="sentMessage")
           div.col-5.ml-auto(style="border: 2px solid black; background-color: black;")
-            p.text-break(style="color: white") kjfhdkhsdkfkshdkfjhkghfkegehgkjeghkehghgrgsejh
+            p.text-break(style="color: white") {{ sentMessage }}
         //- 對方的對話條
-        .row.mt-3
+        .row.mt-3(v-if="repliedMessage")
           div.col-5.mr-auto(style="border: 2px solid black; background-color: white;")
-            p.text-break kjfhdkhdkfhkfhkdfhkdfjfdkhjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjsgkerkh
+            p.text-break {{ repliedMessage }}
 
       .input-bar.row.no-gutters
-        input.col-10.form-control(type="text" placeholder='Type message..', required='' v-model='message')
+        input.col-10.form-control(type="text" placeholder='Type message..', required='' v-model='sentMessage')
         button.col-2.btn(type='submit' style="border: 1px solid black;"  @click.prevent.stop="afterSendMessage" ) Send
 </template>
 
@@ -34,6 +34,8 @@ export default {
     //   required: true
     // }
 
+
+
     window: {
       type: Object,
       required: true
@@ -43,49 +45,45 @@ export default {
     //- windowIndex: this.windows.length - 1
     return {
       chatId: this.window.id,
-      message: ""
+      repliedMessage: '',
+      sentMessage: ''
     };
   },
   sockets:{
-    replyMessage(payload){
-      const { message } = payload
-      console.log('message: ', message)
+    // user收到回覆訊息
+    async replyMessage(payload){ 
+      try {
+        this.repliedMessage = ''
+        const { message } = await payload
+        console.log('message: ', message)
+        this.repliedMessage = message
+
+      } catch(error) {
+        console.log(error)
+      }
     }
   },
   created() {
     this.afterChatWindowCreated();
   },
   methods: {
-    closeWindow(window) {
-      this.$emit("after-close", window);
-    },
     afterChatWindowCreated() {
       this.$socket.emit("fetchChatHistory", { chatId: 111 });
     },
-    afterSendMessage() {
-      if (this.message) {
-        this.$socket.emit("sendMessage", { message: this.message });
-        this.message = "";
-      //   this.$socket.on('sendMessage', function(message) {
-      //     console.log(message)
-      //   })
+    // user 發送訊息
+    async afterSendMessage() {
+      try {
+        if (this.sentMessage) {
+          this.$socket.emit("sendMessage", { message: this.sentMessage });
+          this.sentMessage = "";
+        }
+      } catch(error){
+        console.log(error)
       }
-    },
-    sendMsg() {
-      // emit訊息
     },
     closeWindow(window) {
       this.$emit("after-close", window);
     },
-    afterChatWindowCreated() {
-      this.$socket.emit("fetchChatHistory", { chatId: 111 });
-    },
-    afterSendMessage() {
-      if (this.message) {
-        this.$socket.emit("sendMessage", { message: this.message });
-        this.message = "";
-      }
-    }
   }
 };
 </script>
