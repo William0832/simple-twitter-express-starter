@@ -49,12 +49,15 @@ export default {
   },
   sockets: {
     returnNotifications(notifications) {
+      console.log("returnNotifications");
       this.notifications = notifications;
     },
     returnNotificationCounts(counts) {
+      console.log("returnNotificationCounts");
       this.notificationCounts = counts;
     },
     newReply() {
+      console.log("newReply");
       this.fetchNotificationCounts();
     }
   },
@@ -71,6 +74,7 @@ export default {
       this.fetchNotificationCounts();
     },
     fetchNotificationCounts() {
+      console.log("fetchNotificationCounts");
       this.$socket.emit("getNotifiationCounts", this.currentUser.id);
     }
   }

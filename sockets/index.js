@@ -163,8 +163,9 @@ module.exports = (io) => {
     })
 
     socket.on('getNotifiationCounts', async (userId) => {
-      console.log('fetch notification counts')
+      console.log('fetch notification counts,userId', userId)
       const counts = await notificationService.getNotificationCounts(userId)
+      console.log('counts', counts)
 
       socket.emit('returnNotificationCounts', counts)
     })

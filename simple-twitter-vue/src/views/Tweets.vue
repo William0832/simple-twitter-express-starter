@@ -1,14 +1,14 @@
 <template lang="pug">
   .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-5
-      .row.flex-grow-1.overflow-hidden
-        .col-md-8.mh-100.overflow-auto
-          TweetNew(
-            :user-id='currentUser.id' 
-            @after-create-tweet='afterCreateTweet')
-          TweetIndex( :tweets='tweets'
-            @after-add-like='afterAddLike'
-            @after-delete-like='afterDeleteLike')
-        .col-md-4.mh-100.overflow-auto 
+    .row.flex-grow-1.overflow-hidden
+      .col-md-8.mh-100.overflow-auto
+        TweetNew(
+          :user-id='currentUser.id' 
+          @after-create-tweet='afterCreateTweet')
+        TweetIndex( :tweets='tweets'
+          @after-add-like='afterAddLike'
+          @after-delete-like='afterDeleteLike')
+      .col-md-4.mh-100.overflow-auto 
         ul.nav.nav-tabs
           li.nav-item(
             v-for="tab in tabs" 
@@ -32,7 +32,6 @@
           :current-user='currentUser'
           @after-invite-user="afterInviteUser"
         )    
-
     .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0;")
       ChatWindow(
       v-for="window in windows"

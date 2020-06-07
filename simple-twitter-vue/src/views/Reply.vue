@@ -19,6 +19,7 @@ import Replies from "../components/Replies";
 import ReplyNew from "../components/ReplyNew";
 import UserProfileCard from "../components/UserProfileCard";
 import { Toast } from "../utils/helpers";
+import { mapState } from "vuex";
 
 //api
 import replyAPI from "../apis/reply";
@@ -122,16 +123,18 @@ export default {
         }
 
         this.fetchReplies(tweetId);
-      } catch (error) {
-        console.log(error);
-        Toast.fire({
-          icon: "error",
-          title: error
+
         console.log("reply notify");
         this.$socket.emit("reply", {
           userId: this.currentUser.id,
           tweetId: tweetId,
           type: "reply"
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: error
         });
       }
     },
