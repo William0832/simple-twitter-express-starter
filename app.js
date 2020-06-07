@@ -53,8 +53,8 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
-app.listen(port, () => console.log(`App listening on port ${port}!`))
-server.listen(socketPort, () => console.log(`Socket listening on port ${socketPort}!`))
+// app.listen(port, () => console.log(`App listening on port ${port}!`))
+server.listen(port, () => console.log(`Server listening on port ${port}!`))
 
 require('./routes')(app)
 // socket
