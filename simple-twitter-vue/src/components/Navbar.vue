@@ -18,7 +18,7 @@
            .dropdown-item(v-for='notification in notifications') 
             router-link(:to="{name: 'replies', params: { tweet_id: notification.tweetId }}" ) {{notification.message}}
         router-link.text-white.mr-3(:to="{name: 'user', params: { id: currentUser.id }}" v-if='isAuthenticated')
-          | 使用者 您好
+          | 使用者 {{currentUser.name}} ,您好
         button.btn.btn-sm.btn-outline-success.my-2.my-sm-0(type='button'  @click="logout" v-if='isAuthenticated')
           | 登出
 </template>
