@@ -87,12 +87,15 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
 })
 
 
 
 router.beforeEach((async (to, from, next) => {
+
+  // console.log('store', store.state)
+
   const tokenInLocalStorage = localStorage.getItem('token')
   const tokenInStore = store.state.token
   let isAuthenticated = store.state.isAuthenticated
@@ -108,7 +111,6 @@ router.beforeEach((async (to, from, next) => {
     return
   }
 
-  console.log(isAuthenticated)
   // 如果 token 有效則轉址到餐聽首頁
   if (isAuthenticated && to.name === 'sign-in') {
     next('/tweets')
