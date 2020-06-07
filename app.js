@@ -1,5 +1,8 @@
 const express = require('express')
-const helpers = require('./_helpers');
+const helpers = require('./_helpers')
+const path = require('path')
+const serveStatic = require('serve-static')
+
 const cors = require('cors')
 
 const app = express()
@@ -11,8 +14,9 @@ const session = require('express-session')
 
 const flash = require('connect-flash')
 const methodOverride = require('method-override')
-if (process.env.NODE_ENV !== 'production') {      // 如果不是 production 模式
-  require('dotenv').config()                      // 使用 dotenv 讀取 .env 檔案
+if (process.env.NODE_ENV !== 'production') {
+  // 如果不是 production 模式
+  require('dotenv').config() // 使用 dotenv 讀取 .env 檔案
 }
 const passport = require('./config/passport')
 app.locals.moment = require('moment') //let moment function available in pug templates
@@ -40,8 +44,7 @@ app.use((req, res, next) => {
   res.locals.user = helpers.getUser(req)
   next()
 })
-
-app.get('/', (req, res) => res.send('Hello World!'))
+app.use(serveStatic(path.join(__dirname, '/simple-twitter-vue/dist')))
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 require('./routes')(app)
