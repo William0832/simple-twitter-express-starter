@@ -46,10 +46,31 @@ export default {
       message: ""
     };
   },
+  sockets:{
+    replyMessage(payload){
+      const { message } = payload
+      console.log('message: ', message)
+    }
+  },
   created() {
     this.afterChatWindowCreated();
   },
   methods: {
+    closeWindow(window) {
+      this.$emit("after-close", window);
+    },
+    afterChatWindowCreated() {
+      this.$socket.emit("fetchChatHistory", { chatId: 111 });
+    },
+    afterSendMessage() {
+      if (this.message) {
+        this.$socket.emit("sendMessage", { message: this.message });
+        this.message = "";
+      //   this.$socket.on('sendMessage', function(message) {
+      //     console.log(message)
+      //   })
+      }
+    },
     sendMsg() {
       // emit訊息
     },

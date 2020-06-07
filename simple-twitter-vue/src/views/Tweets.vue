@@ -40,6 +40,11 @@
       @after-close="closeWindow" 
       style="margin: 0 0.3%"
       )
+      
+      //- 有閒情逸致再做icon縮小按鈕 
+      //- div(style="height: 50%")
+      //-   button.btn-btn-light(style="border-radius: 50%; background-img: ")
+
 </template>
 
 <script>
