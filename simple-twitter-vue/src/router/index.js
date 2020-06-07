@@ -80,16 +80,6 @@ const routes = [
     component: () => import('../views/Reply')
   },
   {
-    path: '/map',
-    name: 'map',
-    component: () => import('../views/Map')
-  },
-  {
-    path: '/maptest',
-    name: 'maptest',
-    component: () => import('../views/Maptest')
-  },
-  {
     path: '*',
     name: 'not-found',
     component: NotFound
