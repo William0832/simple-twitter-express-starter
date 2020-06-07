@@ -48,7 +48,7 @@ module.exports = (io) => {
         user[k] = userDbInfo[k]
       })
     })
-    // TODO:
+
     socket.on('fetchOnlineUser', async (myId) => {
       try {
         console.log('====================fetchOnlineUser', myId)
@@ -61,25 +61,28 @@ module.exports = (io) => {
           .forEach((k) => {
             showUserIds.push(k)
           })
-        // TODO: f-test
-        showUserIds = [2, 4, 3, 16]
+        // ========TEST=======
+        // showUserIds = [2, 3, 20, 33, 19, 22, 35]
+        // =======================
         // get other online user chat info
         if (showUserIds.length) {
           // compare user is in the chat
           chats = chats.filter((c) => showUserIds.includes(c.userId))
           let temp = chats.map((c) => c.userId)
           let notInChatsId = showUserIds.filter((e) => temp.indexOf(e) === -1)
-          console.log('ready to creat chat with these ids:', notInChatsId)
+          console.log('no chatId users', notInChatsId)
           // get final id
-          notInChatsId.forEach(async (e) => {
-            // creat a chat in db
-            console.log('create chat!')
-            let chat = await chatService.postChat(myId, e)
-            console.log('new chat: ', chat)
+          notInChatsId.forEach(async (e, index) => {
+            let chat = await chatService.getNewUser(e)
+            chat.chatId = null
             chats.push(chat)
+            if (index + 1 === notInChatsId.length) {
+              socket.emit('showChats', chat)
+              console.log(chats)
+              return
+            }
           })
-          console.log(chats)
-          socket.emit('showChats', chats)
+          // socket.emit('showChats', chats)
           return
         }
         console.log('only U is online!')
@@ -90,36 +93,62 @@ module.exports = (io) => {
     })
 
     // invite user
-    // TODO:
     socket.on('inviteUser', async (payload) => {
-      console.log('====================inviteUser', payload)
-      // check chatId in chats ?
-      // -- in:
-      // ---- check guest isOnline ?
-      // ------ onLine:
-      // -------- 1.add guest's socket-id to chat
-      // TODO:
-      // -------- 2.ready to get history msg and talk!
-      // ------ offLine:
-      // -------- 1.get history msg and talk!
-      // -- out:
-      // ----
-      // try {
-      //   if (!chat) return
-      //   console.log(chat)
-      // } catch (err) {
-      //   console.log(err)
-      // }
+      try {
+        console.log('====================inviteUser', payload)
+        let { invitedUserId, guestUser } = payload
+        // ====TEST===
+        // guestUser = 22
+        // ===========
+        let chat = await chatService.getChat(invitedUserId, guestUser)
+        console.log('!!!!!', chat)
+        // check chatId in chats ?
+        if (!chat || !chat.chatId) {
+          chat = await chatService.postChat(invitedUserId, guestUser)
+          console.log('create', chat)
+        }
+        let chatId = chat.chatId
+        // set socket room
+        // get onlineUser socketIds(no socketIds still Ok!)
+        let temp = []
+        let ids = [invitedUserId, guestUser]
+        ids.forEach((i) => {
+          if (!onlineUsers[i]) {
+            onlineUsers[i] = []
+          }
+          onlineUsers[i].forEach((e) => {
+            temp.push(e)
+          })
+        })
+        console.log(chatId)
+        rooms[chatId] = {
+          users: [invitedUserId, guestUser],
+          socketIds: temp
+        }
+        console.log(onlineUsers, '\n', rooms)
+      } catch (err) {
+        console.log(err)
+      }
     })
 
     //ChatWindow.vue
-    socket.on('fetchChatHistory', (payload) => {
-      const { chatId } = payload
-      console.log('====================chatId', chatId)
+    socket.on('fetchChatHistory', async (payload) => {
+      console.log('====================chatId', payload)
+      payload = 25
+      let msgs = await chatService.getMsgs(payload)
+      let users = await chatService.getChatByChatId(payload)
+      console.log({ users, msgs })
+      // TODO:
+      socket.emit('showHistory', { users, msgs })
+      rooms[payload]
     })
+    // TODO:
     socket.on('sendMessage', (payload) => {
       const { message } = payload
-      console.log('====================message', message)
+      // const { chatId } = payload
+      let chatId = 1
+      io.to(rooms[chatId]).emit
+      console.log('====================message', payload)
     })
 
     //alert

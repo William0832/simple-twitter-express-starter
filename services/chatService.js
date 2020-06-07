@@ -1,7 +1,6 @@
 const { Op } = require('sequelize')
 const db = require('../models')
 const { User, Chat, Message } = db
-const helpers = require('../_helpers')
 
 const chatService = {
   userOnline: async (userId) => {
@@ -22,7 +21,6 @@ const chatService = {
       console.log(err.toString())
     }
   },
-  // db 開新的聊天室
   postChat: async (myId, guestId) => {
     /*
       帶入聊天對象的 guestId
@@ -43,7 +41,10 @@ const chatService = {
       })
       if (chat) {
         console.log(`error: chats is already exists`)
-        return chat
+        chat = chat.dataValues
+        chat.chatId = chat.id
+        delete chat.id
+        return chat.dataValues
       }
       newChat = await Chat.create({
         CreatedUserId: myId,
@@ -68,6 +69,21 @@ const chatService = {
       console.log(err)
     }
   },
+  getNewUser: async (id) => {
+    try {
+      let user = await User.findByPk(id, {
+        attributes: ['id', 'name', 'avatar', 'isOnline']
+      })
+      user = user.dataValues
+      user.userId = user.id
+      user.lastMsg = null
+      delete user.id
+      return user
+    } catch (err) {
+      console.log(err.toString())
+    }
+  },
+
   //db 抓取開過的聊天室清單
   // in: (myId)
   // out: invitees:[{'id','name','avatar','isOnline','chatId'},...]
@@ -144,41 +160,54 @@ const chatService = {
   // db 抓取單一聊天室，要拿到聊天對象的userId
   // in: (myId, chatId)
   // out: chats:{'chatId', guest:{'id','name','avatar','isOnline'}}
-  // TODO: id 版
-  getChat: async (myId, chatId) => {
+  getChat: async (myId, guestId) => {
     try {
-      let chat = await Chat.findByPk(chatId)
+      let chat = await Chat.findOne({
+        where: {
+          [Op.or]: [
+            { CreatedUserId: myId, InvitedUserId: guestId },
+            { CreatedUserId: guestId, InvitedUserId: myId }
+          ]
+        },
+        attributes: ['id']
+      })
       if (!chat) {
         console.log('chat did not exist')
-        return
+        return null
       }
       chat = chat.dataValues
-      // 檢查身分
-      let guestId = ''
-      if (chat.CreatedUserId === myId) {
-        guestId = chat.InvitedUserId
-      } else if (myId === chat.InvitedUserId) {
-        guestId = chat.CreatedUserId
-      } else {
-        console.log('error: U do not belong to this chat')
-        return
-      }
-      let guest = await User.findByPk(guestId, {
-        attributes: ['id', 'name', 'avatar', 'isOnline']
-      })
-      guest = guest.dataValues
-      otherUser.chatId = chatId
-      return otherUser
+      chat.chatId = chat.id
+      delete chat.id
+      return chat
     } catch (err) {
       console.log(err.toString())
     }
   },
+  getChatByChatId: async (id) => {
+    let chat = await Chat.findByPk(id, {
+      attributes: ['id', 'InvitedUserId', 'CreatedUserId']
+    })
+    chat = chat.dataValues
+    let inviter = await User.findByPk(chat.CreatedUserId, {
+      attributes: ['name', 'avatar']
+    })
+    let guest = await User.findByPk(chat.InvitedUserId, {
+      attributes: ['name', 'avatar']
+    })
+    inviter = inviter.dataValues
+    guest = guest.dataValues
+    let data = {
+      invitedUsername: inviter.name,
+      guestUserName: guest.name,
+      invitedUserAvatar: inviter.avatar,
+      guestUserAvatar: inviter.avatar,
+      chatroomId: chat.id
+    }
+    return data
+  },
   // db 將發出的新訊息存入
   postMsg: async (myId, chatId, msg) => {
     try {
-      if (isNaN(req.params.id)) {
-        callback({ status: 'error', message: 'chatId need to be a number!' })
-      }
       let chatId = req.params.id
       let message = req.body.message
       let msg = await Message.create({
@@ -186,29 +215,23 @@ const chatService = {
         UserId: myId,
         message: message
       })
-      callback({
-        status: 'success',
-        message: 'message was successfully created'
-      })
     } catch (err) {
-      callback({ status: 'error', message: err.toString() })
+      console.log(err.toString())
     }
   },
   //db 取得聊天室的全部訊息
-  getMsgs: async (myId, chatId) => {
+  getMsgs: async (chatId) => {
     try {
       let msgs = await Message.findAll({
         where: { ChatId: chatId },
-        include: [
-          { model: User, attributes: ['id', 'name', 'avatar', 'isOnline'] }
-        ],
-        attributes: ['id', 'message', 'createdAt'],
+        attributes: ['message', 'userId'],
         // 按時間遞減
         order: [['createdAt', 'DESC']]
       })
-      callback({ msgs })
+      msgs = msgs.map((e) => ({ ...e.dataValues }))
+      return msgs
     } catch (err) {
-      callback({ status: 'error', message: err.toString() })
+      console.log(err.toString())
     }
   }
 }
