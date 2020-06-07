@@ -22,7 +22,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.use(new VueSocketIO({
   debug: true,
-  connection: '//localhost:4000',
+  connection: '//localhost:3000',
   options: {} //Optional options
 }))
 
