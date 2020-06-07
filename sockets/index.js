@@ -1,12 +1,6 @@
 const chatService = require('../services/chatService')
 const notificationService = require('../services/notificationServices')
 
-Date.prototype.addSeconds = function (s) {
-  let ms = s * 1000
-  this.setTime(this.getTime() + ms)
-  return this
-}
-
 module.exports = (io) => {
   let onlineUsers = {} // {1:[sk1,sk2,...], 2:[...],...}
   let rooms = {} // {1:{users:[1,2], sks:[sk1,sk2,s3...]}}
@@ -86,7 +80,7 @@ module.exports = (io) => {
           return
         }
         console.log('only U is online!')
-        socket.emit('showChats', chats)
+        socket.emit('fetchOnlineUser', chats)
       } catch (err) {
         console.log(err.toString())
       }
@@ -134,20 +128,21 @@ module.exports = (io) => {
     //ChatWindow.vue
     socket.on('fetchChatHistory', async (payload) => {
       console.log('====================chatId', payload)
-      payload = 25
+      // payload = 25
+      if (!Object.keys(rooms).includes(payload)) {
+        console.log('chatId is not exist')
+        return
+      }
       let msgs = await chatService.getMsgs(payload)
       let users = await chatService.getChatByChatId(payload)
       console.log({ users, msgs })
-      // TODO:
-      socket.emit('showHistory', { users, msgs })
-      rooms[payload]
+      io.to(rooms[payload]).emit('fetchChatHistory', { users, msgs })
     })
-    // TODO:
     socket.on('sendMessage', (payload) => {
       const { message } = payload
       // const { chatId } = payload
       let chatId = 1
-      io.to(rooms[chatId]).emit
+      io.to(rooms[chatId]).emit('sendMessage', payload)
       console.log('====================message', payload)
     })
 

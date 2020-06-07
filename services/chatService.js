@@ -184,26 +184,30 @@ const chatService = {
     }
   },
   getChatByChatId: async (id) => {
-    let chat = await Chat.findByPk(id, {
-      attributes: ['id', 'InvitedUserId', 'CreatedUserId']
-    })
-    chat = chat.dataValues
-    let inviter = await User.findByPk(chat.CreatedUserId, {
-      attributes: ['name', 'avatar']
-    })
-    let guest = await User.findByPk(chat.InvitedUserId, {
-      attributes: ['name', 'avatar']
-    })
-    inviter = inviter.dataValues
-    guest = guest.dataValues
-    let data = {
-      invitedUsername: inviter.name,
-      guestUserName: guest.name,
-      invitedUserAvatar: inviter.avatar,
-      guestUserAvatar: inviter.avatar,
-      chatroomId: chat.id
+    try {
+      let chat = await Chat.findByPk(id, {
+        attributes: ['id', 'InvitedUserId', 'CreatedUserId']
+      })
+      chat = chat.dataValues
+      let inviter = await User.findByPk(chat.CreatedUserId, {
+        attributes: ['name', 'avatar']
+      })
+      let guest = await User.findByPk(chat.InvitedUserId, {
+        attributes: ['name', 'avatar']
+      })
+      inviter = inviter.dataValues
+      guest = guest.dataValues
+      let data = {
+        invitedUsername: inviter.name,
+        guestUserName: guest.name,
+        invitedUserAvatar: inviter.avatar,
+        guestUserAvatar: inviter.avatar,
+        chatroomId: chat.id
+      }
+      return data
+    } catch (err) {
+      console.log(err.toString())
     }
-    return data
   },
   // db 將發出的新訊息存入
   postMsg: async (myId, chatId, msg) => {
