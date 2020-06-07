@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "engines": {
-    "node": "v10.15.x"
+    "node": "10.15.x"
   },
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "NODE_TLS_REJECT_UNAUTHORIZED='0' node app.js node app.js",
     "dev": "cross-env NODE_ENV=development nodemon app.js",
     "test": "cross-env NODE_ENV=test mocha test/*/*.js --exit --recursive --timeout 5000"
   },
