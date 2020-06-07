@@ -1,14 +1,15 @@
 <template lang="pug">
-  .container.py-5
-      .row
-        .col-md-8
+  .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-5
+      .row.flex-grow-1.overflow-hidden
+        .col-md-8.mh-100.overflow-auto
           TweetNew(
             :user-id='currentUser.id' 
             @after-create-tweet='afterCreateTweet')
           TweetIndex( :tweets='tweets'
             @after-add-like='afterAddLike'
             @after-delete-like='afterDeleteLike')
-        .col-md-4
+        .col-md-4.mh-100.overflow-auto 
+          h4 Popular users
           UserTop( 
             :top-users='topUsers'
             :current-user='currentUser'
@@ -52,7 +53,6 @@ export default {
       try {
         const response = await tweetsAPI.getTweets();
 
-        console.log(response.data);
         const { data } = response;
 
         this.tweets = data.tweets;
@@ -138,9 +138,7 @@ export default {
     },
     async afterAddLike(tweetId) {
       try {
-        console.log("afterAddLike", tweetId);
         const response = await tweetsAPI.tweets.like(tweetId);
-        console.log("afterAddLike2");
         const { data } = response;
 
         //add statusText

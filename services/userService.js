@@ -222,7 +222,6 @@ const userService = {
     }
   },
   getCurrentUser: async (req, res, callback) => {
-    // console.log('getCurrentUser', helpers.getUser(req))
     callback(helpers.getUser(req))
   }
 }
