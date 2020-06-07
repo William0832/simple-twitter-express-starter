@@ -9,11 +9,11 @@ module.exports = (io) => {
     console.log('==================== connected socket id :', socket.id)
     socket.on('disconnect', () => {
       console.log('====================disconnected socket id :', socket.id)
-      //DONE! scan through user-socket link table , delete disconnected socket id
+      //scan through user-socket link table , delete disconnected socket id
       Object.keys(onlineUsers).forEach((k) => {
         onlineUsers[k] = onlineUsers[k].filter((e) => e !== socket.id)
       })
-      //DONE! if no more socket id under user , user set to offline
+      //if no more socket id under user , user set to offline
       Object.keys(onlineUsers).forEach((k) => {
         if (!onlineUsers[k].length) {
           console.log(`user:${k} is log out!`)
@@ -27,7 +27,6 @@ module.exports = (io) => {
       })
       console.log('disconnected', onlineUsers)
     })
-    // login
     socket.on('login', async (myId) => {
       // DONE! push socket id in onlineUser socketIds
       if (!onlineUsers[myId]) {
@@ -43,6 +42,7 @@ module.exports = (io) => {
       })
     })
 
+    // chat
     socket.on('fetchOnlineUser', async (myId) => {
       try {
         console.log('====================payload', myId)
@@ -85,8 +85,6 @@ module.exports = (io) => {
         console.log(err.toString())
       }
     })
-
-    // invite user
     socket.on('inviteUser', async (payload) => {
       try {
         console.log('====================inviteUser', payload)
@@ -120,18 +118,17 @@ module.exports = (io) => {
           socketIds: temp
         }
         console.log(onlineUsers, '\n', rooms)
+        socket.emit(inviteUser, { chatId })
       } catch (err) {
         console.log(err)
       }
     })
-
-    //ChatWindow.vue
     socket.on('fetchChatHistory', async (payload) => {
       console.log('====================chatId', payload)
       // payload = 25
       if (!Object.keys(rooms).includes(payload)) {
         console.log('chatId is not exist')
-        return
+        returnchatId
       }
       let msgs = await chatService.getMsgs(payload)
       let users = await chatService.getChatByChatId(payload)
@@ -163,19 +160,15 @@ module.exports = (io) => {
 
       io.emit('newReply')
     })
-
     socket.on('getNotifiations', async (userId) => {
       console.log('fetch notification')
       const notifications = await notificationService.getNotifications(userId)
-
       socket.emit('returnNotifications', notifications)
     })
-
     socket.on('getNotifiationCounts', async (userId) => {
       console.log('fetch notification counts,userId', userId)
       const counts = await notificationService.getNotificationCounts(userId)
       console.log('counts', counts)
-
       socket.emit('returnNotificationCounts', counts)
     })
   })
