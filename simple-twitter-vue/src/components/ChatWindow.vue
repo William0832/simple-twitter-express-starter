@@ -34,10 +34,12 @@ export default {
     //   required: true
     // }
 
-
-
     window: {
       type: Object,
+      required: true
+    },
+    chatroomId: {
+      type: Number,
       required: true
     }
   },
@@ -45,21 +47,20 @@ export default {
     //- windowIndex: this.windows.length - 1
     return {
       chatId: this.window.id,
-      repliedMessage: '',
-      sentMessage: ''
+      repliedMessage: "",
+      sentMessage: ""
     };
   },
-  sockets:{
+  sockets: {
     // user收到回覆訊息
-    async replyMessage(payload){ 
+    async replyMessage(payload) {
       try {
-        this.repliedMessage = ''
-        const { message } = await payload
-        console.log('message: ', message)
-        this.repliedMessage = message
-
-      } catch(error) {
-        console.log(error)
+        this.repliedMessage = "";
+        const { message } = await payload;
+        console.log("message: ", message);
+        this.repliedMessage = message;
+      } catch (error) {
+        console.log(error);
       }
     }
   },
@@ -74,18 +75,24 @@ export default {
     async afterSendMessage() {
       try {
         if (this.sentMessage) {
-          this.$socket.emit("sendMessage", { message: this.sentMessage });
+          // //////////////////
+          this.$socket.emit("sendMessage", { message: this.sentMessage, chatId: this.chatroomId, userId: '' });
           this.sentMessage = "";
         }
-      } catch(error){
-        console.log(error)
+      } catch (error) {
+        console.log(error);
       }
     },
     closeWindow(window) {
       this.$emit("after-close", window);
-    },
+    }
   }
 };
+
+// 我要給socket user id、chatId
+// 從component OnlineUser 拿 userId、chatroomId
+// 再emit回去給socket
+// this.$socket.emit()//////
 </script>
 
 

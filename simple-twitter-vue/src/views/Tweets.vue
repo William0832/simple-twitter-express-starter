@@ -28,7 +28,6 @@
           
         Chat( 
           v-if="currentTab === 'Chat'" 
-          :top-users='topUsers'
           :current-user='currentUser'
           @after-invite-user="afterInviteUser"
         )    
@@ -75,10 +74,10 @@ export default {
     return {
       tweets: [],
       topUsers: [],
+      onlineUsers: [],
       windows: [],
-
       currentTab: "Popular",
-      tabs: ["Popular", "Chat"]
+      tabs: ["Popular", "Chat"],
     };
   },
   computed: {
@@ -89,6 +88,24 @@ export default {
     this.socketLogin();
   },
   methods: {
+    afterInviteUser(userId) {
+      let windows = this.windows.map(window => window.id);
+
+      if (this.windows.length === 3) {
+        return Toast.fire({
+          icon: "warning",
+          title: "只能開啟3個聊天視窗！"
+        });
+      } else if (windows.includes(userId)) {
+        return;
+      } else {
+        this.windows.push({
+          id: userId
+        });
+        // console.log('chatroomId', this.chatroomId)
+        console.log("current windows: ", this.windows);
+      }
+    },
     async fetchTweets() {
       try {
         const response = await tweetsAPI.getTweets();
@@ -104,9 +121,6 @@ export default {
         });
       }
     },
-    // fetchTopUsers() {
-    //   this.topUsers = dummyTopUsers.topUsers;
-    // },
     async afterCreateTweet(tweet) {
       try {
         if (!tweet.description) {
@@ -215,23 +229,6 @@ export default {
     },
     closeWindow(window) {
       this.windows = this.windows.filter(chat => chat.id !== window);
-    },
-    afterInviteUser(userId) {
-      let windows = this.windows.map(window => window.id);
-
-      if (this.windows.length === 3) {
-        return Toast.fire({
-          icon: "warning",
-          title: "只能開啟3個聊天視窗！"
-        });
-      } else if (windows.includes(userId)) {
-        return;
-      } else {
-        this.windows.push({
-          id: userId
-        });
-        console.log("current windows: ", this.windows);
-      }
     },
     socketLogin() {
       this.$socket.emit("login", this.currentUser.id);

@@ -80,10 +80,33 @@ module.exports = (io) => {
           return
         }
         console.log('only U is online!')
-        socket.emit('fetchOnlineUser', chats)
+        socket.emit('getOnlineUser', chats)
       } catch (err) {
         console.log(err.toString())
       }
+    })
+
+
+    //ChatWindow.vue
+    socket.on('fetchChatHistory', async (payload) => {
+      console.log('====================chatId', payload)
+      // payload = 25
+      if (!Object.keys(rooms).includes(payload)) {
+        console.log('chatId is not exist')
+        return
+      }
+      let msgs = await chatService.getMsgs(payload)
+      let users = await chatService.getChatByChatId(payload)
+      console.log({ users, msgs })
+      io.to(rooms[payload]).emit('fetchChatHistory', { users, msgs })
+    })
+
+    socket.on('sendMessage', (payload) => {
+      const { message } = payload
+      // const { chatId } = payload
+      let chatId = 1
+      io.to(rooms[chatId]).emit('sendMessage', payload)
+      console.log('====================message', payload)
     })
 
     // invite user
@@ -125,28 +148,8 @@ module.exports = (io) => {
       }
     })
 
-    //ChatWindow.vue
-    socket.on('fetchChatHistory', async (payload) => {
-      console.log('====================chatId', payload)
-      // payload = 25
-      if (!Object.keys(rooms).includes(payload)) {
-        console.log('chatId is not exist')
-        return
-      }
-      let msgs = await chatService.getMsgs(payload)
-      let users = await chatService.getChatByChatId(payload)
-      console.log({ users, msgs })
-      io.to(rooms[payload]).emit('fetchChatHistory', { users, msgs })
-    })
-    socket.on('sendMessage', (payload) => {
-      const { message } = payload
-      // const { chatId } = payload
-      let chatId = 1
-      io.to(rooms[chatId]).emit('sendMessage', payload)
-      console.log('====================message', payload)
-    })
 
-    //alert
+    //小鈴鐺
     socket.on('reply', async (payload) => {
       const { userId, tweetId, type } = payload
       console.log('reply notification')

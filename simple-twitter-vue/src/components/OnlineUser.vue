@@ -1,8 +1,8 @@
 <template lang="pug">
   .container.overflow-auto(style="max-height: 700px; width: 395px;")
     button.row.btn.btn-light.my-1.p-3.d-flex.align-items-center(
-    @click.prevent.stop="inviteUser(user.id)"
-    v-for='user in topUsers' 
+    @click.prevent.stop="inviteUser(user.userId)"
+    v-for='user in onlineUsers' 
     :key='user.id' 
     type='button' style="width:370px;")
 
@@ -19,27 +19,47 @@
 import { mapState } from "vuex";
 
 export default {
-  props: {
-    topUsers: {
-      type: Array,
-      required: true
-    }
-  },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"])
+  },
+  sockets: {
+    getOnlineUser(chats) {
+      console.log('hey')
+      this.onlineUsers = chats
+      console.log('onlineUsers: ', this.onlineUsers)
+    }
   },
   created() {
     this.fetchOnlineUser();
   },
+  data() {
+    return {
+      onlineUsers: []
+    };
+  },
   methods: {
-    fetchOnlineUser() {
-      this.$socket.emit("fetchOnlineUser", this.currentUser.id);
+    async fetchOnlineUser() {
+      try {
+        await this.$socket.emit("fetchOnlineUser", this.currentUser.id);
+      } catch (error) {
+        console.error(error);
+      }
     },
     async inviteUser(userId) {
       await this.$socket.emit("inviteUser", {
         invitedUserId: this.currentUser.id,
-        guestUser: userId
+        guestUser: userId,
       });
+
+      console.log('online', this.onlineUsers)
+      
+      // let usersId = this.onlineUsers.map(user => user.userId)
+      console.log('currentUser: ', this.currentUser.id)
+      // console.log('usersId: ', usersId)
+      // console.log('userId: ', userId)
+
+      // let guestUser = this.onlineUsers.filter( user => user.userId === userId)
+      // console.log('groupUsers', guestUser)
 
       this.$emit("after-invite-user", userId);
     }
