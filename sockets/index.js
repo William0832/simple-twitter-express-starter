@@ -45,7 +45,7 @@ module.exports = (io) => {
 
     socket.on('fetchOnlineUser', async (myId) => {
       try {
-        console.log('====================fetchOnlineUser', myId)
+        console.log('====================payload', myId)
         let showUserIds = []
         // get chats info from db
         let chats = await chatService.getChats(myId)
@@ -71,7 +71,7 @@ module.exports = (io) => {
             chat.chatId = null
             chats.push(chat)
             if (index + 1 === notInChatsId.length) {
-              socket.emit('showChats', chat)
+              socket.emit('fetchOnlineUser', chat)
               console.log(chats)
               return
             }
@@ -136,14 +136,23 @@ module.exports = (io) => {
       let msgs = await chatService.getMsgs(payload)
       let users = await chatService.getChatByChatId(payload)
       console.log({ users, msgs })
-      io.to(rooms[payload]).emit('fetchChatHistory', { users, msgs })
+      socket.emit('fetchChatHistory', { users, msgs })
     })
-    socket.on('sendMessage', (payload) => {
-      const { message } = payload
-      // const { chatId } = payload
-      let chatId = 1
-      io.to(rooms[chatId]).emit('sendMessage', payload)
-      console.log('====================message', payload)
+    socket.on('sendMessage', async (payload) => {
+      try {
+        console.log('====================message', payload)
+        let { message, chatId, userId } = payload
+        // console.log(userId, chatId, message)
+        if (!userId || !chatId || !message) {
+          console.log('sendMessage ERROR: No data to work')
+          return
+        }
+        await chatService.postMsg(userId, chatId, message)
+        io.to(rooms[chatId]).emit('sendMessage', payload)
+        console.log('====================message', payload)
+      } catch (err) {
+        console.log(err.toString())
+      }
     })
 
     //alert
