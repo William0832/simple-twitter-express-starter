@@ -57,6 +57,9 @@ export default {
     this.fetchTweet(tweetId);
     this.fetchReplies(tweetId);
   },
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"])
+  },
   methods: {
     async fetchTweet(tweetId) {
       try {
@@ -124,6 +127,11 @@ export default {
         Toast.fire({
           icon: "error",
           title: error
+        console.log("reply notify");
+        this.$socket.emit("reply", {
+          userId: this.currentUser.id,
+          tweetId: tweetId,
+          type: "reply"
         });
       }
     },
