@@ -74,6 +74,18 @@ export default {
     sendMsg() {
       // emit訊息
     },
+    closeWindow(window) {
+      this.$emit("after-close", window);
+    },
+    afterChatWindowCreated() {
+      this.$socket.emit("fetchChatHistory", { chatId: 111 });
+    },
+    afterSendMessage() {
+      if (this.message) {
+        this.$socket.emit("sendMessage", { message: this.message });
+        this.message = "";
+      }
+    }
   }
 };
 </script>

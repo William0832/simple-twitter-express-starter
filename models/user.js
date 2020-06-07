@@ -38,6 +38,14 @@ module.exports = (sequelize, DataTypes) => {
     //   as: 'Creators'
     // })
     User.hasMany(models.Message)
+    User.hasMany(models.Notification, {
+      foreignKey: 'id',
+      as: 'posted'
+    })
+    User.hasMany(models.Notification, {
+      foreignKey: 'id',
+      as: 'notified'
+    })
   }
   return User
 }

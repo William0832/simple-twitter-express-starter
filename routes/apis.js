@@ -11,7 +11,6 @@ const tweetController = require('../controllers/api/tweetController.js')
 const replyController = require('../controllers/api/replyController.js')
 const followshipController = require('../controllers/api/followshipController.js')
 const likeController = require('../controllers/api/likeController')
-const chatController = require('../controllers/api/chatController')
 
 const authenticated = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
@@ -38,9 +37,7 @@ const authenticatedAdmin = (req, res, next) => {
 }
 const isOwner = (req, res, next) => {
   let user = helpers.getUser(req)
-  if (String(user.id) === req.params.id) {
-    return next()
-  }
+  if (String(user.id) === req.params.id) { return next() }
   console.log('userIdoo:', user.id, 'req.params: ', req.params.id)
   return res.status(302).json({ status: 'error', message: '沒有修改權限' })
 }
@@ -80,11 +77,7 @@ router.post(
 
 //Followship routes
 router.post('/followships/', authenticated, followshipController.postFollowship)
-router.delete(
-  '/followships/:followingId',
-  authenticated,
-  followshipController.deleteFollowship
-)
+router.delete('/followships/:followingId', authenticated, followshipController.deleteFollowship)
 
 //Admin routes
 router.get(
@@ -125,6 +118,7 @@ router.delete(
   authenticated,
   followshipController.deleteFollowship
 )
+
 // like routes
 router.post('/tweets/:id/like', authenticated, likeController.like)
 router.post('/tweets/:id/unlike', authenticated, likeController.unlike)
@@ -132,29 +126,13 @@ router.post('/tweets/:id/unlike', authenticated, likeController.unlike)
 router.get('/', authenticated, (req, res) => res.redirect('/tweets'))
 
 //Reply routes
-router.get(
-  '/tweets/:tweet_id/replies',
-  authenticated,
-  replyController.getReplies
-)
-router.post(
-  '/tweets/:tweet_id/replies',
-  authenticated,
-  replyController.postReply
-)
+router.get('/tweets/:tweet_id/replies', authenticated, replyController.getReplies)
+router.post('/tweets/:tweet_id/replies', authenticated, replyController.postReply)
 //Vuex get current user
-router.get('/current-user', authenticated, userController.getCurrentUser)
-
-// chat
-// db 開新的聊天室
-router.post('/chats', authenticated, chatController.postChat)
-//db 抓取開過的聊天室清單
-router.get('/chats', authenticated, chatController.getChats)
-// db 抓取單一聊天室，要拿到聊天對象的userId
-router.get('/chats/:id', authenticated, chatController.getChat)
-// db 將發出的新訊息存入
-router.post('/chats/:id/msgs', authenticated, chatController.postMsg)
-//db 取得聊天室的全部訊息
-router.get('/chats/:id/msgs', authenticated, chatController.getMsgs)
+router.get(
+  '/current-user',
+  authenticated,
+  userController.getCurrentUser
+)
 
 module.exports = router

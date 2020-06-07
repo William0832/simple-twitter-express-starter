@@ -6,6 +6,16 @@ import store from '../store'
 
 Vue.use(VueRouter)
 
+const authorizeIsAdmin = (to, from, next) => {
+  const currentUser = store.state.currentUser
+  if (currentUser && !(currentUser.role === 'admin')) {
+    next('/404')
+    return
+  }
+
+  next()
+}
+
 const routes = [
   {
     path: '/',
@@ -26,29 +36,13 @@ const routes = [
     path: '/admin/tweets',
     name: 'admin-tweets',
     component: () => import('../views/AdminTweets.vue'),
-    beforeEnter: (to, from, next) => {
-      const currentUser = store.state.currentUser
-      if (currentUser && !currentUser.isAdmin) {
-        next('/404')
-        return
-      }
-
-      next()
-    }
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '/admin/users',
     name: 'admin-users',
     component: () => import('../views/AdminUsers.vue'),
-    beforeEnter: (to, from, next) => {
-      const currentUser = store.state.currentUser
-      if (currentUser && !currentUser.isAdmin) {
-        next('/404')
-        return
-      }
-
-      next()
-    }
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '/users/:id/tweets',
@@ -86,9 +80,14 @@ const routes = [
     component: () => import('../views/Reply')
   },
   {
-    path: '/chat/:id',
-    name: 'chat',
-    component: () => import('../views/ChatRoom')
+    path: '/map',
+    name: 'map',
+    component: () => import('../views/Map')
+  },
+  {
+    path: '/maptest',
+    name: 'maptest',
+    component: () => import('../views/Maptest')
   },
   {
     path: '*',
@@ -98,10 +97,15 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
 })
 
+
+
 router.beforeEach((async (to, from, next) => {
+
+  // console.log('store', store.state)
+
   const tokenInLocalStorage = localStorage.getItem('token')
   const tokenInStore = store.state.token
   let isAuthenticated = store.state.isAuthenticated
@@ -117,7 +121,6 @@ router.beforeEach((async (to, from, next) => {
     return
   }
 
-  console.log(isAuthenticated)
   // 如果 token 有效則轉址到餐聽首頁
   if (isAuthenticated && to.name === 'sign-in') {
     next('/tweets')

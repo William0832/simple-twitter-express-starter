@@ -32,11 +32,7 @@ app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(methodOverride('_method'))
-let sessionMiddleware = session({ secret: 'secret', resave: false, saveUninitialized: false })
-app.use(sessionMiddleware)
-io.use(function (socket, next) {
-  sessionMiddleware(socket.request, socket.request.res || {}, next);
-})
+app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
@@ -48,13 +44,8 @@ app.use((req, res, next) => {
   next()
 })
 
-
-
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
-});
-app.listen(port, () => console.log(`App listening on port ${port}!`))
-server.listen(socketPort, () => console.log(`Socket listening on port ${socketPort}!`))
+// app.listen(port, () => console.log(`App listening on port ${port}!`))
+server.listen(port, () => console.log(`Server listening on port ${port}!`))
 
 require('./routes')(app)
 // socket

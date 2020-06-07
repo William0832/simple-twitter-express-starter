@@ -1,15 +1,14 @@
 <template lang="pug">
-  .container.py-5
-    .row
-      .col-md-8
+  .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-5
+    .row.flex-grow-1.overflow-hidden
+      .col-md-8.mh-100.overflow-auto
         TweetNew(
           :user-id='currentUser.id' 
           @after-create-tweet='afterCreateTweet')
         TweetIndex( :tweets='tweets'
           @after-add-like='afterAddLike'
           @after-delete-like='afterDeleteLike')
-
-      .col-md-4
+      .col-md-4.mh-100.overflow-auto 
         ul.nav.nav-tabs
           li.nav-item(
             v-for="tab in tabs" 
@@ -33,7 +32,6 @@
           :current-user='currentUser'
           @after-invite-user="afterInviteUser"
         )    
-
     .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0;")
       ChatWindow(
       v-for="window in windows"
@@ -56,22 +54,14 @@ import Popular from "../components/UserTop";
 import Chat from "../components/OnlineUser";
 import ChatWindow from "../components/ChatWindow";
 import { Toast } from "../utils/helpers";
+import { mapState } from "vuex";
 
 //api
 import tweetsAPI from "../apis/tweet";
 import followshipAPI from "../apis/followship";
 
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: "root",
-    email: "root@example.com",
-    avatar:
-      "https://loremflickr.com/240/240/man,women/?random=76.38409798671886",
-    role: "admin"
-  },
-  isAuthenticated: true
-};
+//test
+// import ChatRoom from "../components/ChatRoom";
 
 export default {
   components: {
@@ -85,21 +75,18 @@ export default {
     return {
       tweets: [],
       topUsers: [],
-      currentUser: dummyUser.currentUser,
       windows: [],
 
       currentTab: "Popular",
       tabs: ["Popular", "Chat"]
     };
   },
-  // computed: {
-  //   currentTabComponent: function() {
-  //     return this.currentTab
-  //   }
-  // }
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"])
+  },
   created() {
     this.fetchTweets();
-    // this.fetchTopUsers();
+    this.socketLogin();
   },
   methods: {
     async fetchTweets() {
@@ -130,7 +117,7 @@ export default {
           throw new Error("Tweet should be shorter than 140 characters!");
         }
 
-        const response = await tweetsAPI.tweets.create(tweet.description);
+        const response = await tweetsAPI.tweets.create(tweet);
 
         const { data } = response;
 
@@ -226,25 +213,28 @@ export default {
         });
       }
     },
-    closeWindow(window){
-      this.windows = this.windows.filter(chat => chat.id !== window)
+    closeWindow(window) {
+      this.windows = this.windows.filter(chat => chat.id !== window);
     },
-    afterInviteUser(userId){
-      let windows = this.windows.map( window => window.id)
+    afterInviteUser(userId) {
+      let windows = this.windows.map(window => window.id);
 
-      if(this.windows.length === 3){
+      if (this.windows.length === 3) {
         return Toast.fire({
-          icon: 'warning',
-          title: '只能開啟3個聊天視窗！'
-        })
-      } else if(windows.includes(userId)) {
-        return
+          icon: "warning",
+          title: "只能開啟3個聊天視窗！"
+        });
+      } else if (windows.includes(userId)) {
+        return;
       } else {
         this.windows.push({
           id: userId
-        })
-        console.log('current windows: ', this.windows)
+        });
+        console.log("current windows: ", this.windows);
       }
+    },
+    socketLogin() {
+      this.$socket.emit("login", this.currentUser.id);
     }
   }
 };
