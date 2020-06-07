@@ -13,9 +13,10 @@
         .dropdown
           button#dropdownMenuButton.btn.btn-secondary(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false'  @click='fetchNotifications')
             font-awesome-icon(icon="bell")
-            span.badge.badge-light(v-if='notificationCounts') {{notificationCounts}}
+            span.badge.badge-light(v-if='notificationCounts >0 ') {{notificationCounts}}
           .dropdown-menu.dropdown-menu-right(aria-labelledby='dropdownMenuButton')
-            a.dropdown-item(href='#' v-for='notification in notifications') {{notification.message}}
+           .dropdown-item(v-for='notification in notifications') 
+            router-link(:to="{name: 'replies', params: { tweet_id: notification.tweetId }}" ) {{notification.message}}
         router-link.text-white.mr-3(:to="{name: 'user', params: { id: currentUser.id }}" v-if='isAuthenticated')
           | 使用者 您好
         button.btn.btn-sm.btn-outline-success.my-2.my-sm-0(type='button'  @click="logout" v-if='isAuthenticated')
