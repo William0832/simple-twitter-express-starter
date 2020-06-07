@@ -6,8 +6,7 @@ import VueSocketIO from 'vue-socket.io'
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserSecret, faSpinner, faBell, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons'
-import { faUserSecret, faSpinner, faBell, faCircle } from '@fortawesome/free-solid-svg-icons'
+import { faUserSecret, faSpinner, faBell, faMapMarkerAlt, faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 Vue.config.productionTip = false
