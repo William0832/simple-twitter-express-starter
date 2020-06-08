@@ -2,7 +2,8 @@
   .container
     .row.border.border-secondary.rounded.my-1.p-2(v-for='tweet in tweets' :key='tweet.id')
       .col-3.d-flex.align-items-center.justify-content-center
-        img(:src="tweet.User.avatar")
+        img(:src="tweet.User.avatar" v-if="tweet.User.avatar !== null")
+        img(:src="nullAvatar" v-else)
       .col-8.text-left
         h3
           router-link(:to="{ name: 'user', params: { id:tweet.User.id }}")  @{{tweet.User.name}}
@@ -29,25 +30,27 @@ export default {
       required: true
     }
   },
-  data(){
+  data() {
     return {
+      nullAvatar: "https://i.imgur.com/TA7O4Tm.png",
       isProcessing: false
-    }
+    };
   },
   methods: {
     addLike(tweetId) {
-      this.isProcessing = true
+      this.isProcessing = true;
       this.$emit("after-add-like", tweetId);
       setTimeout(() => {
-        this.isProcessing = false
+        this.isProcessing = false;
       }, 500);
     },
     deleteLike(tweetId) {
-      this.isProcessing = true
+      this.isProcessing = true;
       this.$emit("after-delete-like", tweetId);
       setTimeout(() => {
-        this.isProcessing = false
-      }, 500);    }
+        this.isProcessing = false;
+      }, 500);
+    }
   }
 };
 </script>
