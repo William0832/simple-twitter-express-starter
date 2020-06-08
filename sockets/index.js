@@ -71,7 +71,7 @@ module.exports = (io) => {
             chat.chatId = null
             chats.push(chat)
             if (index + 1 === notInChatsId.length) {
-              socket.emit('showChats', chat)
+              socket.emit('getOnlineUser', chats)
               console.log(chats)
               return
             }
@@ -91,14 +91,15 @@ module.exports = (io) => {
     socket.on('fetchChatHistory', async (payload) => {
       console.log('====================chatId', payload)
       // payload = 25
-      if (!Object.keys(rooms).includes(payload)) {
+      rooms = { chatId: 1 }
+      if (!Object.values(rooms).includes(payload.chatId)) {
         console.log('chatId is not exist')
         return
       }
-      let msgs = await chatService.getMsgs(payload)
-      let users = await chatService.getChatByChatId(payload)
+      let msgs = await chatService.getMsgs(payload.chatId)
+      let users = await chatService.getChatByChatId(payload.chatId)
       console.log({ users, msgs })
-      io.to(rooms[payload]).emit('fetchChatHistory', { users, msgs })
+      io.to(rooms[payload]).emit('getChatHistory', { users, msgs })
     })
 
     socket.on('sendMessage', (payload) => {

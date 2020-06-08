@@ -39,7 +39,7 @@
       @after-close="closeWindow" 
       style="margin: 0 0.3%"
       )
-      
+
       //- 有閒情逸致再做icon縮小按鈕 
       //- div(style="height: 50%")
       //-   button.btn-btn-light(style="border-radius: 50%; background-img: ")
@@ -88,7 +88,7 @@ export default {
     this.socketLogin();
   },
   methods: {
-    afterInviteUser(userId) {
+    afterInviteUser(userId, guestUser) {
       let windows = this.windows.map(window => window.id);
 
       if (this.windows.length === 3) {
@@ -96,13 +96,13 @@ export default {
           icon: "warning",
           title: "只能開啟3個聊天視窗！"
         });
-      } else if (windows.includes(userId)) {
+      } else if (windows.includes(guestUser.chatId)) {
         return;
       } else {
         this.windows.push({
-          id: userId
+          id: guestUser.chatId,
+          guestUser: guestUser
         });
-        // console.log('chatroomId', this.chatroomId)
         console.log("current windows: ", this.windows);
       }
     },

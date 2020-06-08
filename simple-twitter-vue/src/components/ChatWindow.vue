@@ -1,54 +1,71 @@
 <template lang="pug">
     #chat-popup.d-flex.flex-column.container(style="border: 2px solid black; max-width: 23%; max-height: 48vh; padding: 0; background-color: white;")
       .nav.row.no-gutters(style="background-color: black;")
-        img(src="https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/article_thumbnails/other/cat_weight_other/1800x1200_cat_weight_other.jpg?resize=600px:*" style="width: 75px; height: 75px; border-radius: 50%; object-fit: cover;")
-        p.my-auto.ml-1.mr-auto(style="color: white;") userid: {{chatId}}
-        button.btn.cancel(type='button', @click.prevent.stop="closeWindow(chatId)" style="font-weight: bold; color: white;") X
-
-      //- 顯示對話框的container 
-      .d-flex.flex-column.container.overflow-auto
-        //- 自己的對話條
-        .row.mt-3(v-if="sentMessage")
-          div.col-5.ml-auto(style="border: 2px solid black; background-color: black;")
-            p.text-break(style="color: white") {{ sentMessage }}
-        //- 對方的對話條
-        .row.mt-3(v-if="repliedMessage")
-          div.col-5.mr-auto(style="border: 2px solid black; background-color: white;")
-            p.text-break {{ repliedMessage }}
+        img.frame(:src="window.guestUser.avatar")
+        p.my-auto.ml-1.mr-auto(style="color: white;") {{ window.guestUser.name }}
+        button.btn.cancel(type='button', @click.prevent.stop="closeWindow(window.guestUser.chatId)" style="font-weight: bold; color: white;") X                
+      
+      li.list-unstyled
+        //- 顯示對話框的container 
+        .d-flex.flex-column.container.overflow-auto
+          //- 自己的對話條
+          .row.mt-3(v-if="sentMessage")
+            div.col-5.ml-auto(style="border: 2px solid black; background-color: black;")
+              p.text-break(style="color: white") {{ sentMessage }}
+          //- 對方的對話條
+          .row.mt-3(v-if="repliedMessage")
+            div.col-5.mr-auto(style="border: 2px solid black; background-color: white;")
+              p.text-break {{ repliedMessage }}
 
       .input-bar.row.no-gutters
-        input.col-10.form-control(type="text" placeholder='Type message..', required='' v-model='sentMessage')
+        input.col-10.form-control(type="text" placeholder='Type message..', required='' v-model='message')
         button.col-2.btn(type='submit' style="border: 1px solid black;"  @click.prevent.stop="afterSendMessage" ) Send
 </template>
 
 <script>
+import { mapState } from "vuex";
+
+const dummyData = {
+  users: {
+     invitedUsername: 'root',
+     guestUserName: 'user1',
+     invitedUserAvatar:
+      'https://loremflickr.com/240/240/man,women/?random=63.701084733544214',
+     guestUserAvatar:
+      'https://loremflickr.com/240/240/man,women/?random=63.701084733544214',
+     chatroomId: 1 
+  },
+  msgs: [
+    { message: '6/6繼續發大財', userId: 3 },
+    { message: '88', userId: 1 },
+    { message: 'lol', userId: 3 },
+    { message: '晚安', userId: 1 }  
+  ]
+}
+
 export default {
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"])
+  },
   props: {
+
     // 訊息打包成Array
     // messages:{
     // type: Array,
     // default:{}
 
-    // invitedUser: {
-    //   type: Object,
-    //   required: true
-    // }
-
     window: {
       type: Object,
       required: true
     },
-    chatroomId: {
-      type: Number,
-      required: true
-    }
   },
   data() {
-    //- windowIndex: this.windows.length - 1
     return {
       chatId: this.window.id,
       repliedMessage: "",
-      sentMessage: ""
+      sentMessage: "",
+      guestUserId: this.window.guestUser.userId,
+      message: ''
     };
   },
   sockets: {
@@ -62,6 +79,14 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    async getChatHistory({ users, msgs }){
+      try {
+        console.log('////////////////////// history //////////////////')
+        console.log('users: ', users, 'msgs: ', msgs)
+      } catch(error){
+        console.log(error)
+      }
     }
   },
   created() {
@@ -69,15 +94,24 @@ export default {
   },
   methods: {
     afterChatWindowCreated() {
-      this.$socket.emit("fetchChatHistory", { chatId: 111 });
+      // chatId: this.window.guestUser.chatId
+      this.$socket.emit("fetchChatHistory", { chatId: 1 });
     },
     // user 發送訊息
     async afterSendMessage() {
       try {
+        this.sentMessage = this.message
+
         if (this.sentMessage) {
-          // //////////////////
-          this.$socket.emit("sendMessage", { message: this.sentMessage, chatId: this.chatroomId, userId: '' });
-          this.sentMessage = "";
+          this.$socket.emit("sendMessage", { 
+            message: this.sentMessage, 
+            guestUserId: this.guestUserId, 
+            currentUserId: this.currentUser.id, 
+            chatId: this.window.guestUser.chatId 
+          });
+
+          this.message = ''
+          this.sentMessage = ''
         }
       } catch (error) {
         console.log(error);
@@ -88,26 +122,21 @@ export default {
     }
   }
 };
-
-// 我要給socket user id、chatId
-// 從component OnlineUser 拿 userId、chatroomId
-// 再emit回去給socket
-// this.$socket.emit()//////
 </script>
 
 
 <style scoped>
-img {
+.img {
   width: 70px;
   height: 70px;
   padding: 10px;
 }
 
-.frame {
+.frame{
   width: 70px;
   height: 70px;
-  border-radius: 50%;
   background-image: "";
   background-size: contain;
+  border-radius: 50%;
 }
 </style>
