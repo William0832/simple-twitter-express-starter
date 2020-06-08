@@ -9,17 +9,17 @@ module.exports = (io) => {
     console.log('==================== connected socket id :', socket.id)
     socket.on('disconnect', () => {
       console.log('====================disconnected socket id :', socket.id)
-      //scan through user-socket link table , delete disconnected socket id
-      Object.keys(onlineUsers).forEach((k) => {
+      // TODO: refactor by Object.entries(Obj)
+      Object.keys(onlineUsers).forEach(async (k) => {
         onlineUsers[k] = onlineUsers[k].filter((e) => e !== socket.id)
-      })
-      //if no more socket id under user , user set to offline
-      Object.keys(onlineUsers).forEach((k) => {
-        if (!onlineUsers[k].length) {
+        //if no more socket id under user , user set to offline
+        if (!onlineUsers[k][0]) {
           console.log(`user:${k} is log out!`)
-          //DONE! if no more socket id under user , user set to offline
-          // TODO: check vue
-          io.emit('userLogout', {
+          // update db state
+          await chatService.userOffline(k)
+          // TODO: add socket.on event in Vue: updateOnlineState
+          // (after user click chat tab)
+          io.emit('updateOnlineState', {
             userId: k,
             isOnline: false
           })
@@ -27,39 +27,51 @@ module.exports = (io) => {
       })
       console.log('disconnected', onlineUsers)
     })
-    socket.on('login', async (myId) => {
-      // DONE! push socket id in onlineUser socketIds
-      if (!onlineUsers[myId]) {
-        onlineUsers[myId] = []
+    socket.on('login', async (userId) => {
+      // push socket id in onlineUser socketIds
+      if (!onlineUsers[userId]) {
+        onlineUsers[userId] = []
       }
-      onlineUsers[myId].push(socket.id)
+      onlineUsers[userId].push(socket.id)
       console.log('push socket in onlineUser!', onlineUsers)
-      // DONE update user with db
-      let user = {}
-      let userDbInfo = await chatService.userOnline(myId)
-      Object.keys(userDbInfo).forEach((k) => {
-        user[k] = userDbInfo[k]
+      // update user state in db
+      await chatService.userOnline(userId)
+      // TODO: add socket.on event in Vue: updateOnlineState
+      // (after user click chat tab)
+      io.emit('updateOnlineState', {
+        userId: userId,
+        isOnline: true
+      })
+    })
+    // FIXME:  disconnect issue: add logout socket.emit event from Vue
+    socket.on('logout', async (userId) => {
+      // clean socketsId
+      onlineUsers[userId] = []
+      // update db
+      await chatService.userOffline(userId)
+      // TODO: add socket.on event in Vue: updateOnlineState
+      // (after user click chat tab)
+      io.emit('updateOnlineState', {
+        userId,
+        isOnline: false
       })
     })
 
     // chat
     socket.on('fetchOnlineUser', async (myId) => {
       try {
-        console.log('====================payload', myId)
-        let showUserIds = []
+        console.log('====================fetchOnlineUser', myId)
         // get chats info from db
         let chats = await chatService.getChats(myId)
         // get other online user id list
-        Object.keys(onlineUsers)
-          .filter((k) => String(k) !== String(myId))
-          .forEach((k) => {
-            showUserIds.push(k)
-          })
+        let showUserIds = Object.keys(onlineUsers).filter(
+          (k) => String(k) !== String(myId)
+        )
         // ========TEST=======
         // showUserIds = [2, 3, 20, 33, 19, 22, 35]
         // =======================
         // get other online user chat info
-        if (showUserIds.length) {
+        if (showUserIds[0]) {
           // compare user is in the chat
           chats = chats.filter((c) => showUserIds.includes(c.userId))
           let temp = chats.map((c) => c.userId)
@@ -85,6 +97,7 @@ module.exports = (io) => {
         console.log(err.toString())
       }
     })
+
     socket.on('inviteUser', async (payload) => {
       try {
         console.log('====================inviteUser', payload)
@@ -119,18 +132,19 @@ module.exports = (io) => {
         console.log('onlineUsers:', onlineUsers)
         console.log('rooms', rooms)
 
-        // TODO: new user to chat need send chatId to Vue
+        // TODO: add socket.on event in Vue: getChatId
+        // (new user to chat)
         socket.emit('getChatId', { chatId })
       } catch (err) {
         console.log(err.toString())
       }
     })
+
     socket.on('fetchChatHistory', async (payload) => {
       try {
         console.log('====================chatId', payload)
         let { chatId } = payload
         // payload = 25
-        console.log('chatId', chatId)
         console.log('rooms', rooms)
         // TODO: 正常不會發生，在fetchOnlineUser & inviteUser 都給了
         // if (!Object.keys(rooms).includes(String(chatId))) {
@@ -139,15 +153,16 @@ module.exports = (io) => {
         // }
         let msgs = await chatService.getMsgs(chatId)
         let users = await chatService.getChatByChatId(chatId)
-        console.log({ users, msgs })
+        console.log(msgs)
         socket.emit('getChatHistory', { users, msgs })
       } catch (err) {
         console.log(err.toString())
       }
     })
+
     socket.on('sendMessage', async (payload) => {
       try {
-        console.log('====================message', payload)
+        console.log('====================sendMessage', payload)
         let { message, chatId, userId } = payload
         // console.log(userId, chatId, message)
         if (!userId || !chatId || !message) {
@@ -155,7 +170,7 @@ module.exports = (io) => {
           return
         }
         await chatService.postMsg(userId, chatId, message)
-        io.to(rooms[chatId]).emit('sendMessage', payload)
+        io.to(rooms[chatId]).emit('replyMessage', payload)
         console.log('====================message', payload)
       } catch (err) {
         console.log(err.toString())
