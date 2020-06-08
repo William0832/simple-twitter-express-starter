@@ -3,17 +3,22 @@ const notificationService = require('../services/notificationServices')
 
 module.exports = (io) => {
   let onlineUsers = {} // {1:[sk1,sk2,...], 2:[...],...}
-  let rooms = {} // {1:{users:[1,2], sks:[sk1,sk2,s3...]}}
+  let rooms = {} // {1:{users:[1,2], sks:[sk1,sk2,s3...]}}  //TODO rooms 可以不需要
 
   io.on('connection', async (socket) => {
     console.log('==================== connected socket id :', socket.id)
+
     socket.on('disconnect', () => {
       console.log('====================disconnected socket id :', socket.id)
       //DONE! scan through user-socket link table , delete disconnected socket id
+
+      // TODO 案: 改用 Object.entries()
       Object.keys(onlineUsers).forEach((k) => {
         onlineUsers[k] = onlineUsers[k].filter((e) => e !== socket.id)
       })
       //DONE! if no more socket id under user , user set to offline
+      // TODO 案: 改用 Object.entries()
+      // Object.entries(obj).forEach(([key, value]) => console.log(`${key}: ${value}`)); // "foo: bar", "baz: 42"
       Object.keys(onlineUsers).forEach((k) => {
         if (!onlineUsers[k].length) {
           console.log(`user:${k} is log out!`)
@@ -30,6 +35,7 @@ module.exports = (io) => {
     // login
     socket.on('login', async (myId) => {
       // DONE! push socket id in onlineUser socketIds
+      //TODO 案: onlineUsers[myId] = onlineUsers[myId] || []
       if (!onlineUsers[myId]) {
         onlineUsers[myId] = []
       }
@@ -38,11 +44,14 @@ module.exports = (io) => {
       // DONE update user with db
       let user = {}
       let userDbInfo = await chatService.userOnline(myId)
+      //TODO 問: user要用在哪?
       Object.keys(userDbInfo).forEach((k) => {
         user[k] = userDbInfo[k]
       })
     })
 
+
+    //OnlineUser.vue
     socket.on('fetchOnlineUser', async (myId) => {
       try {
         console.log('====================fetchOnlineUser', myId)
@@ -52,6 +61,7 @@ module.exports = (io) => {
         // get other online user id list
         Object.keys(onlineUsers)
           .filter((k) => String(k) !== String(myId))
+          // TODO 案:Object.keys本身就回傳陣列，不用再一個個push, showUserIds=Object.keys(...).fliter(...) 就好
           .forEach((k) => {
             showUserIds.push(k)
           })
@@ -59,6 +69,7 @@ module.exports = (io) => {
         // showUserIds = [2, 3, 20, 33, 19, 22, 35]
         // =======================
         // get other online user chat info
+        // TODO 問:這邊是要對上線的使用者中，跟使用者還沒建立過對話的，要新建一個chatId?
         if (showUserIds.length) {
           // compare user is in the chat
           chats = chats.filter((c) => showUserIds.includes(c.userId))
@@ -71,7 +82,7 @@ module.exports = (io) => {
             chat.chatId = null
             chats.push(chat)
             if (index + 1 === notInChatsId.length) {
-              socket.emit('showChats', chat)
+              socket.emit('getOnlineUser', chats)
               console.log(chats)
               return
             }
@@ -84,29 +95,6 @@ module.exports = (io) => {
       } catch (err) {
         console.log(err.toString())
       }
-    })
-
-
-    //ChatWindow.vue
-    socket.on('fetchChatHistory', async (payload) => {
-      console.log('====================chatId', payload)
-      // payload = 25
-      if (!Object.keys(rooms).includes(payload)) {
-        console.log('chatId is not exist')
-        return
-      }
-      let msgs = await chatService.getMsgs(payload)
-      let users = await chatService.getChatByChatId(payload)
-      console.log({ users, msgs })
-      io.to(rooms[payload]).emit('fetchChatHistory', { users, msgs })
-    })
-
-    socket.on('sendMessage', (payload) => {
-      const { message } = payload
-      // const { chatId } = payload
-      let chatId = 1
-      io.to(rooms[chatId]).emit('sendMessage', payload)
-      console.log('====================message', payload)
     })
 
     // invite user
@@ -148,6 +136,29 @@ module.exports = (io) => {
       }
     })
 
+
+
+    //ChatWindow.vue
+    socket.on('fetchChatHistory', async (payload) => {
+      console.log('====================chatId', payload)
+      // payload = 25
+      if (!Object.keys(rooms).includes(payload)) {
+        console.log('chatId is not exist')
+        return
+      }
+      let msgs = await chatService.getMsgs(payload)
+      let users = await chatService.getChatByChatId(payload)
+      console.log({ users, msgs })
+      io.to(rooms[payload]).emit('fetchChatHistory', { users, msgs })
+    })
+
+    socket.on('sendMessage', (payload) => {
+      const { message } = payload
+      // const { chatId } = payload
+      let chatId = 1
+      io.to(rooms[chatId]).emit('sendMessage', payload)
+      console.log('====================message', payload)
+    })
 
     //小鈴鐺
     socket.on('reply', async (payload) => {
