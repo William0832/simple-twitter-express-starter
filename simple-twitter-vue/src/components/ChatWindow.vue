@@ -25,35 +25,11 @@
 <script>
 import { mapState } from "vuex";
 
-const dummyData = {
-  users: {
-     invitedUsername: 'root',
-     guestUserName: 'user1',
-     invitedUserAvatar:
-      'https://loremflickr.com/240/240/man,women/?random=63.701084733544214',
-     guestUserAvatar:
-      'https://loremflickr.com/240/240/man,women/?random=63.701084733544214',
-     chatroomId: 1 
-  },
-  msgs: [
-    { message: '6/6繼續發大財', userId: 2 },
-    { message: '88', userId: 1 },
-    { message: 'lol', userId: 2 },
-    { message: '晚安', userId: 1 }  
-  ]
-}
-
 export default {
   computed: {
     ...mapState(["currentUser", "isAuthenticated"])
   },
   props: {
-
-    // 訊息打包成Array
-    // messages:{
-    // type: Array,
-    // default:{}
-
     window: {
       type: Object,
       required: true
@@ -62,11 +38,10 @@ export default {
   data() {
     return {
       chatId: this.window.id,
-      repliedMessage: "",
-      sentMessage: "",
       guestUserId: this.window.guestUser.userId,
       message: '',
-      messagesHistory: [] 
+      messages: [],
+      users: {}
     };
   },
   sockets: {
@@ -75,7 +50,6 @@ export default {
       try {
         this.repliedMessage = "";
         const { message } = await payload;
-        console.log("message: ", message);
         this.repliedMessage = message;
       } catch (error) {
         console.log(error);
@@ -83,41 +57,37 @@ export default {
     },
     async getChatHistory({ users, msgs }){
       try {
-        console.log('////////////////////// history //////////////////')
-        console.log('users: ', users, 'msgs: ', msgs)
+        this.users = users
+        this.messages = msgs
       } catch(error){
-        console.log(error)
+        console.error(error)
       }
     }
   },
   created() {
     this.afterChatWindowCreated();
-    this.messages = dummyData.msgs
-    console.log(this.messages)
+    console.log('window', this.window)
   },
   methods: {
+    // this.window.guestUser.chatId
     afterChatWindowCreated() {
-      // chatId: this.window.guestUser.chatId
       this.$socket.emit("fetchChatHistory", { chatId: 1 });
     },
     // user 發送訊息
     async afterSendMessage() {
       try {
-        //  this.sentMessage = this.message
-        console.log('ppp', this.message)
-        dummyData.msgs.push({
+        this.messages.push({
           message: this.message , userId: this.currentUser.id 
         })
-        console.log('dd',dummyData)
 
         if (this.message) {
           let chatBox = document.querySelector('#chatbox')
-
+          
+          // this.window.guestUser.chatId
           this.$socket.emit("sendMessage", { 
-            message: this.sentMessage, 
-            guestUserId: this.guestUserId, 
-            currentUserId: this.currentUser.id, 
-            chatId: this.window.guestUser.chatId 
+            message: this.message, 
+            userId: this.currentUser.id, 
+            chatId: 1
           });
 
           // 讓chatbox保持在最底部
