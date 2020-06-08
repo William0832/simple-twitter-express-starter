@@ -17,11 +17,11 @@ git commit -m 'deploy'
 git push heroku heroku/master:master -f
 
 # db migrate & seed
-# heroku run npx sequelize db:migrate:undo:all
-# heroku run npx sequelize db:migrate
+heroku run npx sequelize db:migrate:undo:all
+heroku run npx sequelize db:migrate
 
-# heroku run npx sequelize db:seed:undo:all
-# heroku run npx sequelize db:seed:all
+heroku run npx sequelize db:seed:undo:all
+heroku run npx sequelize db:seed:all
 
 # open web
 heroku open 
