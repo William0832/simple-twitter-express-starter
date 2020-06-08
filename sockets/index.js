@@ -93,11 +93,11 @@ module.exports = (io) => {
         // guestUser = 22
         // ===========
         let chat = await chatService.getChat(invitedUserId, guestUser)
-        console.log('!!!!!', chat)
+        // console.log('!!!!!', chat)
         // check chatId in chats ?
         if (!chat || !chat.chatId) {
           chat = await chatService.postChat(invitedUserId, guestUser)
-          console.log('create', chat)
+          console.log('create new chatId', chat)
         }
         let chatId = chat.chatId
         // set socket room
@@ -112,29 +112,38 @@ module.exports = (io) => {
             temp.push(e)
           })
         })
-        console.log(chatId)
         rooms[chatId] = {
           users: [invitedUserId, guestUser],
           socketIds: temp
         }
-        console.log(onlineUsers, '\n', rooms)
-        socket.emit(inviteUser, { chatId })
+        console.log('onlineUsers:', onlineUsers)
+        console.log('rooms', rooms)
+
+        // TODO: new user to chat need send chatId to Vue
+        socket.emit('getChatId', { chatId })
       } catch (err) {
-        console.log(err)
+        console.log(err.toString())
       }
     })
     socket.on('fetchChatHistory', async (payload) => {
-      console.log('====================chatId', payload)
-      // payload = 25
-      if (!Object.keys(rooms).includes(payload)) {
-        console.log('chatId is not exist')
-        // TODO:
-        return chatId
+      try {
+        console.log('====================chatId', payload)
+        let { chatId } = payload
+        // payload = 25
+        console.log('chatId', chatId)
+        console.log('rooms', rooms)
+        // TODO: 正常不會發生，在fetchOnlineUser & inviteUser 都給了
+        // if (!Object.keys(rooms).includes(String(chatId))) {
+        //   console.log(`chatId:${chatId} is not exist!!!!!!!!!!!!`)
+        //   return
+        // }
+        let msgs = await chatService.getMsgs(chatId)
+        let users = await chatService.getChatByChatId(chatId)
+        console.log({ users, msgs })
+        socket.emit('getChatHistory', { users, msgs })
+      } catch (err) {
+        console.log(err.toString())
       }
-      let msgs = await chatService.getMsgs(payload)
-      let users = await chatService.getChatByChatId(payload)
-      console.log({ users, msgs })
-      socket.emit('fetchChatHistory', { users, msgs })
     })
     socket.on('sendMessage', async (payload) => {
       try {
@@ -156,20 +165,20 @@ module.exports = (io) => {
     //小鈴鐺
     socket.on('reply', async (payload) => {
       const { userId, tweetId, type } = payload
-      console.log('reply notification')
+      // console.log('reply notification')
       await notificationService.postNotification(userId, tweetId, type)
 
       io.emit('newReply')
     })
     socket.on('getNotifiations', async (userId) => {
-      console.log('fetch notification')
+      // console.log('fetch notification')
       const notifications = await notificationService.getNotifications(userId)
       socket.emit('returnNotifications', notifications)
     })
     socket.on('getNotifiationCounts', async (userId) => {
-      console.log('fetch notification counts,userId', userId)
+      // console.log('fetch notification counts,userId', userId)
       const counts = await notificationService.getNotificationCounts(userId)
-      console.log('counts', counts)
+      // console.log('counts', counts)
       socket.emit('returnNotificationCounts', counts)
     })
   })
