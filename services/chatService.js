@@ -5,18 +5,16 @@ const { User, Chat, Message } = db
 const chatService = {
   userOnline: async (userId) => {
     try {
-      let user = await User.findByPk(userId, {
-        attributes: ['id', 'name', 'avatar', 'isOnline']
-      })
-      user.update({ isOnline: true })
-      return user.toJSON()
+      let user = await User.findByPk(userId)
+      await user.update({ isOnline: true })
     } catch (err) {
       console.log(err.toString())
     }
   },
   userOffline: async (userId) => {
     try {
-      await User.findByPk(userId).update({ isOnline: false })
+      let user = await User.findByPk(userId)
+      await user.update({ isOnline: false })
     } catch (err) {
       console.log(err.toString())
     }
@@ -85,8 +83,6 @@ const chatService = {
   },
 
   //db 抓取開過的聊天室清單
-  // in: (myId)
-  // out: invitees:[{'id','name','avatar','isOnline','chatId'},...]
   getChats: async (myId) => {
     /*
     帶入使用者本身的 id，
@@ -157,9 +153,7 @@ const chatService = {
       console.log(err.toString())
     }
   },
-  // db 抓取單一聊天室，要拿到聊天對象的userId
-  // in: (myId, chatId)
-  // out: chats:{'chatId', guest:{'id','name','avatar','isOnline'}}
+  // 抓取單一聊天室，要拿到聊天對象的userId
   getChat: async (myId, guestId) => {
     try {
       let chat = await Chat.findOne({
