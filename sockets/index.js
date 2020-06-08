@@ -71,7 +71,11 @@ module.exports = (io) => {
             chat.chatId = null
             chats.push(chat)
             if (index + 1 === notInChatsId.length) {
+<<<<<<< HEAD
               socket.emit('fetchOnlineUser', chat)
+=======
+              socket.emit('getOnlineUser', chats)
+>>>>>>> origin/chat/error
               console.log(chats)
               return
             }
@@ -80,7 +84,7 @@ module.exports = (io) => {
           return
         }
         console.log('only U is online!')
-        socket.emit('fetchOnlineUser', chats)
+        socket.emit('getOnlineUser', chats)
       } catch (err) {
         console.log(err.toString())
       }
@@ -152,7 +156,7 @@ module.exports = (io) => {
       }
     })
 
-    //alert
+    //小鈴鐺
     socket.on('reply', async (payload) => {
       const { userId, tweetId, type } = payload
       console.log('reply notification')
