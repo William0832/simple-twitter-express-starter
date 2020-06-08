@@ -71,11 +71,7 @@ module.exports = (io) => {
             chat.chatId = null
             chats.push(chat)
             if (index + 1 === notInChatsId.length) {
-<<<<<<< HEAD
-              socket.emit('fetchOnlineUser', chat)
-=======
               socket.emit('getOnlineUser', chats)
->>>>>>> origin/chat/error
               console.log(chats)
               return
             }
@@ -132,7 +128,8 @@ module.exports = (io) => {
       // payload = 25
       if (!Object.keys(rooms).includes(payload)) {
         console.log('chatId is not exist')
-        returnchatId
+        // TODO:
+        return chatId
       }
       let msgs = await chatService.getMsgs(payload)
       let users = await chatService.getChatByChatId(payload)
