@@ -9,11 +9,11 @@ module.exports = (io) => {
     console.log('==================== connected socket id :', socket.id)
     socket.on('disconnect', () => {
       console.log('====================disconnected socket id :', socket.id)
-      //DONE! scan through user-socket link table , delete disconnected socket id
+      //scan through user-socket link table , delete disconnected socket id
       Object.keys(onlineUsers).forEach((k) => {
         onlineUsers[k] = onlineUsers[k].filter((e) => e !== socket.id)
       })
-      //DONE! if no more socket id under user , user set to offline
+      //if no more socket id under user , user set to offline
       Object.keys(onlineUsers).forEach((k) => {
         if (!onlineUsers[k].length) {
           console.log(`user:${k} is log out!`)
@@ -27,7 +27,6 @@ module.exports = (io) => {
       })
       console.log('disconnected', onlineUsers)
     })
-    // login
     socket.on('login', async (myId) => {
       // DONE! push socket id in onlineUser socketIds
       if (!onlineUsers[myId]) {
@@ -43,9 +42,10 @@ module.exports = (io) => {
       })
     })
 
+    // chat
     socket.on('fetchOnlineUser', async (myId) => {
       try {
-        console.log('====================fetchOnlineUser', myId)
+        console.log('====================payload', myId)
         let showUserIds = []
         // get chats info from db
         let chats = await chatService.getChats(myId)
@@ -71,7 +71,7 @@ module.exports = (io) => {
             chat.chatId = null
             chats.push(chat)
             if (index + 1 === notInChatsId.length) {
-              socket.emit('showChats', chat)
+              socket.emit('getOnlineUser', chats)
               console.log(chats)
               return
             }
@@ -80,13 +80,11 @@ module.exports = (io) => {
           return
         }
         console.log('only U is online!')
-        socket.emit('fetchOnlineUser', chats)
+        socket.emit('getOnlineUser', chats)
       } catch (err) {
         console.log(err.toString())
       }
     })
-
-    // invite user
     socket.on('inviteUser', async (payload) => {
       try {
         console.log('====================inviteUser', payload)
@@ -95,11 +93,11 @@ module.exports = (io) => {
         // guestUser = 22
         // ===========
         let chat = await chatService.getChat(invitedUserId, guestUser)
-        console.log('!!!!!', chat)
+        // console.log('!!!!!', chat)
         // check chatId in chats ?
         if (!chat || !chat.chatId) {
           chat = await chatService.postChat(invitedUserId, guestUser)
-          console.log('create', chat)
+          console.log('create new chatId', chat)
         }
         let chatId = chat.chatId
         // set socket room
@@ -114,59 +112,73 @@ module.exports = (io) => {
             temp.push(e)
           })
         })
-        console.log(chatId)
         rooms[chatId] = {
           users: [invitedUserId, guestUser],
           socketIds: temp
         }
-        console.log(onlineUsers, '\n', rooms)
+        console.log('onlineUsers:', onlineUsers)
+        console.log('rooms', rooms)
+
+        // TODO: new user to chat need send chatId to Vue
+        socket.emit('getChatId', { chatId })
       } catch (err) {
-        console.log(err)
+        console.log(err.toString())
       }
     })
-
-    //ChatWindow.vue
     socket.on('fetchChatHistory', async (payload) => {
-      console.log('====================chatId', payload)
-      // payload = 25
-      if (!Object.keys(rooms).includes(payload)) {
-        console.log('chatId is not exist')
-        return
+      try {
+        console.log('====================chatId', payload)
+        let { chatId } = payload
+        // payload = 25
+        console.log('chatId', chatId)
+        console.log('rooms', rooms)
+        // TODO: 正常不會發生，在fetchOnlineUser & inviteUser 都給了
+        // if (!Object.keys(rooms).includes(String(chatId))) {
+        //   console.log(`chatId:${chatId} is not exist!!!!!!!!!!!!`)
+        //   return
+        // }
+        let msgs = await chatService.getMsgs(chatId)
+        let users = await chatService.getChatByChatId(chatId)
+        console.log({ users, msgs })
+        socket.emit('getChatHistory', { users, msgs })
+      } catch (err) {
+        console.log(err.toString())
       }
-      let msgs = await chatService.getMsgs(payload)
-      let users = await chatService.getChatByChatId(payload)
-      console.log({ users, msgs })
-      io.to(rooms[payload]).emit('fetchChatHistory', { users, msgs })
     })
-    socket.on('sendMessage', (payload) => {
-      const { message } = payload
-      // const { chatId } = payload
-      let chatId = 1
-      io.to(rooms[chatId]).emit('sendMessage', payload)
-      console.log('====================message', payload)
+    socket.on('sendMessage', async (payload) => {
+      try {
+        console.log('====================message', payload)
+        let { message, chatId, userId } = payload
+        // console.log(userId, chatId, message)
+        if (!userId || !chatId || !message) {
+          console.log('sendMessage ERROR: No data to work')
+          return
+        }
+        await chatService.postMsg(userId, chatId, message)
+        io.to(rooms[chatId]).emit('sendMessage', payload)
+        console.log('====================message', payload)
+      } catch (err) {
+        console.log(err.toString())
+      }
     })
 
-    //alert
+    //小鈴鐺
     socket.on('reply', async (payload) => {
       const { userId, tweetId, type } = payload
-      console.log('reply notification')
+      // console.log('reply notification')
       await notificationService.postNotification(userId, tweetId, type)
 
       io.emit('newReply')
     })
-
     socket.on('getNotifiations', async (userId) => {
-      console.log('fetch notification')
+      // console.log('fetch notification')
       const notifications = await notificationService.getNotifications(userId)
-
       socket.emit('returnNotifications', notifications)
     })
-
     socket.on('getNotifiationCounts', async (userId) => {
-      console.log('fetch notification counts,userId', userId)
+      // console.log('fetch notification counts,userId', userId)
       const counts = await notificationService.getNotificationCounts(userId)
-      console.log('counts', counts)
-
+      // console.log('counts', counts)
       socket.emit('returnNotificationCounts', counts)
     })
   })

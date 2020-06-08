@@ -28,7 +28,6 @@
           
         Chat( 
           v-if="currentTab === 'Chat'" 
-          :top-users='topUsers'
           :current-user='currentUser'
           @after-invite-user="afterInviteUser"
         )    
@@ -40,7 +39,7 @@
       @after-close="closeWindow" 
       style="margin: 0 0.3%"
       )
-      
+
       //- 有閒情逸致再做icon縮小按鈕 
       //- div(style="height: 50%")
       //-   button.btn-btn-light(style="border-radius: 50%; background-img: ")
@@ -75,10 +74,10 @@ export default {
     return {
       tweets: [],
       topUsers: [],
+      onlineUsers: [],
       windows: [],
-
       currentTab: "Popular",
-      tabs: ["Popular", "Chat"]
+      tabs: ["Popular", "Chat"],
     };
   },
   computed: {
@@ -89,6 +88,24 @@ export default {
     this.socketLogin();
   },
   methods: {
+    afterInviteUser(userId, guestUser) {
+      let windows = this.windows.map(window => window.id);
+
+      if (this.windows.length === 3) {
+        return Toast.fire({
+          icon: "warning",
+          title: "只能開啟3個聊天視窗！"
+        });
+      } else if (windows.includes(guestUser.chatId)) {
+        return;
+      } else {
+        this.windows.push({
+          id: guestUser.chatId,
+          guestUser: guestUser
+        });
+        console.log("current windows: ", this.windows);
+      }
+    },
     async fetchTweets() {
       try {
         const response = await tweetsAPI.getTweets();
@@ -104,9 +121,6 @@ export default {
         });
       }
     },
-    // fetchTopUsers() {
-    //   this.topUsers = dummyTopUsers.topUsers;
-    // },
     async afterCreateTweet(tweet) {
       try {
         if (!tweet.description) {
@@ -215,23 +229,6 @@ export default {
     },
     closeWindow(window) {
       this.windows = this.windows.filter(chat => chat.id !== window);
-    },
-    afterInviteUser(userId) {
-      let windows = this.windows.map(window => window.id);
-
-      if (this.windows.length === 3) {
-        return Toast.fire({
-          icon: "warning",
-          title: "只能開啟3個聊天視窗！"
-        });
-      } else if (windows.includes(userId)) {
-        return;
-      } else {
-        this.windows.push({
-          id: userId
-        });
-        console.log("current windows: ", this.windows);
-      }
     },
     socketLogin() {
       this.$socket.emit("login", this.currentUser.id);
