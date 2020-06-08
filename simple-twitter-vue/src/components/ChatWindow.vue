@@ -23,32 +23,31 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 
-const dummyData = {
-  users: {
-     invitedUsername: 'root',
-     guestUserName: 'user1',
-     invitedUserAvatar:
-      'https://loremflickr.com/240/240/man,women/?random=63.701084733544214',
-     guestUserAvatar:
-      'https://loremflickr.com/240/240/man,women/?random=63.701084733544214',
-     chatroomId: 1 
-  },
-  msgs: [
-    { message: '6/6繼續發大財', userId: 3 },
-    { message: '88', userId: 1 },
-    { message: 'lol', userId: 3 },
-    { message: '晚安', userId: 1 }  
-  ]
-}
+// const dummyData = {
+//   users: {
+//      invitedUsername: 'root',
+//      guestUserName: 'user1',
+//      invitedUserAvatar:
+//       'https://loremflickr.com/240/240/man,women/?random=63.701084733544214',
+//      guestUserAvatar:
+//       'https://loremflickr.com/240/240/man,women/?random=63.701084733544214',
+//      chatroomId: 1
+//   },
+//   msgs: [
+//     { message: '6/6繼續發大財', userId: 3 },
+//     { message: '88', userId: 1 },
+//     { message: 'lol', userId: 3 },
+//     { message: '晚安', userId: 1 }
+//   ]
+// }
 
 export default {
   computed: {
-    ...mapState(["currentUser", "isAuthenticated"])
+    ...mapState(['currentUser', 'isAuthenticated'])
   },
   props: {
-
     // 訊息打包成Array
     // messages:{
     // type: Array,
@@ -57,45 +56,45 @@ export default {
     window: {
       type: Object,
       required: true
-    },
+    }
   },
   data() {
     return {
       chatId: this.window.id,
-      repliedMessage: "",
-      sentMessage: "",
+      repliedMessage: '',
+      sentMessage: '',
       guestUserId: this.window.guestUser.userId,
       message: ''
-    };
+    }
   },
   sockets: {
     // user收到回覆訊息
     async replyMessage(payload) {
       try {
-        this.repliedMessage = "";
-        const { message } = await payload;
-        console.log("message: ", message);
-        this.repliedMessage = message;
+        this.repliedMessage = ''
+        const { message } = await payload
+        console.log('message: ', message)
+        this.repliedMessage = message
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     },
-    async getChatHistory({ users, msgs }){
+    async getChatHistory({ users, msgs }) {
       try {
         console.log('////////////////////// history //////////////////')
         console.log('users: ', users, 'msgs: ', msgs)
-      } catch(error){
+      } catch (error) {
         console.log(error)
       }
     }
   },
   created() {
-    this.afterChatWindowCreated();
+    this.afterChatWindowCreated()
   },
   methods: {
     afterChatWindowCreated() {
       // chatId: this.window.guestUser.chatId
-      this.$socket.emit("fetchChatHistory", { chatId: 1 });
+      this.$socket.emit('fetchChatHistory', { chatId: 1 })
     },
     // user 發送訊息
     async afterSendMessage() {
@@ -103,27 +102,26 @@ export default {
         this.sentMessage = this.message
 
         if (this.sentMessage) {
-          this.$socket.emit("sendMessage", { 
-            message: this.sentMessage, 
-            guestUserId: this.guestUserId, 
-            currentUserId: this.currentUser.id, 
-            chatId: this.window.guestUser.chatId 
-          });
+          this.$socket.emit('sendMessage', {
+            message: this.sentMessage,
+            guestUserId: this.guestUserId,
+            currentUserId: this.currentUser.id,
+            chatId: this.window.guestUser.chatId
+          })
 
           this.message = ''
           this.sentMessage = ''
         }
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     },
     closeWindow(window) {
-      this.$emit("after-close", window);
+      this.$emit('after-close', window)
     }
   }
-};
+}
 </script>
-
 
 <style scoped>
 .img {
@@ -132,10 +130,10 @@ export default {
   padding: 10px;
 }
 
-.frame{
+.frame {
   width: 70px;
   height: 70px;
-  background-image: "";
+  background-image: '';
   background-size: contain;
   border-radius: 50%;
 }
