@@ -23,60 +23,61 @@
           | 登出
 </template>
 
-
 <script>
-import { mapState } from "vuex";
-import $ from "jquery";
+import { mapState } from 'vuex'
+import $ from 'jquery'
 
 $(function() {
-  $('[data-toggle="popover"]').popover();
-});
+  $('[data-toggle="popover"]').popover()
+})
 
 export default {
-  name: "Navbar",
+  name: 'Navbar',
   data() {
     return {
       roles: {
-        admin: "admin",
-        user: "user"
+        admin: 'admin',
+        user: 'user'
       },
       notifications: [],
       notificationCounts: -1
-    };
+    }
   },
   computed: {
-    ...mapState(["currentUser", "isAuthenticated"])
+    ...mapState(['currentUser', 'isAuthenticated'])
   },
   sockets: {
     returnNotifications(notifications) {
-      console.log("returnNotifications");
-      this.notifications = notifications;
+      console.log('returnNotifications')
+      this.notifications = notifications
     },
     returnNotificationCounts(counts) {
-      console.log("returnNotificationCounts");
-      this.notificationCounts = counts;
+      console.log('returnNotificationCounts')
+      this.notificationCounts = counts
     },
     newReply() {
-      console.log("newReply");
-      this.fetchNotificationCounts();
+      console.log('newReply')
+      this.fetchNotificationCounts()
     }
   },
   mounted() {
-    this.fetchNotificationCounts();
+    this.fetchNotificationCounts()
   },
   methods: {
-    logout() {
-      this.$store.commit("revokeAuthentication");
-      this.$router.push("/signin");
+    async logout() {
+      console.log('!!!!!!!!!!!!currentUser:', this.currentUser.id)
+      await this.$socket.emit('logout', this.currentUser.id)
+      this.$store.commit('revokeAuthentication')
+      this.$router.push('/signin')
     },
     async fetchNotifications() {
-      await this.$socket.emit("getNotifiations", this.currentUser.id);
-      this.fetchNotificationCounts();
+      await this.$socket.emit('getNotifiations', this.currentUser.id)
+      this.fetchNotificationCounts()
     },
     fetchNotificationCounts() {
-      console.log("fetchNotificationCounts");
-      this.$socket.emit("getNotifiationCounts", this.currentUser.id);
+      console.log('fetchNotificationCounts')
+      this.$socket.emit('getNotifiationCounts', this.currentUser.id)
     }
   }
-};
+}
 </script>
