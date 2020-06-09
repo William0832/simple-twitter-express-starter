@@ -23,17 +23,17 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapState(["currentUser", "isAuthenticated"])
+    ...mapState(['currentUser', 'isAuthenticated'])
   },
   props: {
     window: {
       type: Object,
       required: true
-    },
+    }
   },
   data() {
     return {
@@ -43,79 +43,78 @@ export default {
       messages: [],
       users: {},
       chatHistoryLength: -1
-    };
+    }
   },
   sockets: {
     // user收到回覆訊息
     async replyMessage(payload) {
       try {
         console.log('payload', payload)
-        const { message } = await payload;
+        const { message } = await payload
         // 看一下訊息長怎樣
         console.log('reply', message)
         // if(this.messages.length === this.chatHistoryLength)
         // 看一下歷史訊息長度
         // console.log('chatHistoryLength', this.chatHistoryLength)
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     },
-    async getChatHistory({ users, msgs }){
+    async getChatHistory({ users, msgs }) {
       try {
         this.users = users
         this.messages = msgs
         this.chatHistoryLength = msgs.length
         console.log('chatHistoryLength: ', this.chatHistoryLength)
-      } catch(error){
+      } catch (error) {
         console.error(error)
       }
     }
   },
   created() {
-    this.afterChatWindowCreated();
+    this.afterChatWindowCreated()
     console.log('window', this.window)
   },
   methods: {
     // this.window.guestUser.chatId
     afterChatWindowCreated() {
-      this.$socket.emit("fetchChatHistory", { chatId: 1 });
+      this.$socket.emit('fetchChatHistory', { chatId: 1 })
     },
     // user 發送訊息
     async afterSendMessage() {
       try {
         this.messages.push({
-          message: this.message , userId: this.currentUser.id 
+          message: this.message,
+          userId: this.currentUser.id
         })
 
         if (this.message) {
           let chatBox = document.querySelector('#chatbox')
-          
+
           // this.window.guestUser.chatId
-          this.$socket.emit("sendMessage", { 
-            message: this.message, 
-            userId: this.currentUser.id, 
+          this.$socket.emit('sendMessage', {
+            message: this.message,
+            userId: this.currentUser.id,
             chatId: 1
-          });
+          })
 
           // 讓chatbox保持在最底部
           setTimeout(() => {
-            chatBox.scrollTop = chatBox.scrollHeight 
-          }, 1);
+            chatBox.scrollTop = chatBox.scrollHeight
+          }, 1)
 
           this.message = ''
-
         }
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     },
     closeWindow(window) {
-      this.$emit("after-close", window);
+      this.$emit('after-close', window)
     }
   }
-};
+}
 </script>
-
 
 <style scoped>
 .img {
@@ -124,10 +123,10 @@ export default {
   padding: 10px;
 }
 
-.frame{
+.frame {
   width: 60px;
   height: 60px;
-  background-image: "";
+  background-image: '';
   background-size: contain;
   border-radius: 50%;
 }

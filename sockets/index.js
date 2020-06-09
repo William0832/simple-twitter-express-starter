@@ -72,7 +72,7 @@ module.exports = (io) => {
         // ========TEST=======
         // elseOnline8Users = ['2', '3', '6', '11']
         // =======================
-
+        // FIXME: 多人再線的狀態，會判斷部分已存在的chatId = null
         // get other online user chat info
         if (elseOnlineUsers[0]) {
           // compare user is in the chat
@@ -86,6 +86,8 @@ module.exports = (io) => {
             (e) => hasChatUsers.indexOf(e) === -1
           )
           chats = chats.filter((e) => hasChatUsers.includes(String(e.userId)))
+          console.log('Has chat Users', hasChatUsers)
+          console.log('No chat users', noChatUsers)
           // add noChatUsers info
           noChatUsers.forEach(async (e, index) => {
             let newChat = await chatService.getNewUser(e)
@@ -159,13 +161,12 @@ module.exports = (io) => {
         // }
         let msgs = await chatService.getMsgs(chatId)
         let users = await chatService.getChatByChatId(chatId)
-        console.log('history msg:', msgs)
+        // console.log('history msg:', msgs)
         socket.emit('getChatHistory', { users, msgs })
       } catch (err) {
         console.log(err.toString())
       }
     })
-
     socket.on('sendMessage', async (payload) => {
       try {
         console.log('====================sendMessage', payload)
@@ -174,9 +175,14 @@ module.exports = (io) => {
           console.log('sendMessage ERROR: No data to work')
           return
         }
-        // await chatService.postMsg(userId, chatId, message)
-        io.to(rooms[chatId]).emit('replyMessage', payload)
-        console.log('====================message', payload)
+        // post msg in db
+        await chatService.postMsg(userId, chatId, message)
+
+        //TODO: 改用 socket room 功能
+        console.log('message emit to room:', rooms[chatId].socketIds)
+        rooms[chatId].socketIds.forEach((e) => {
+          io.to(e).emit('replyMessage', payload)
+        })
       } catch (err) {
         console.log(err.toString())
       }

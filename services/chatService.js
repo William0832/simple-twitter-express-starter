@@ -206,10 +206,6 @@ const chatService = {
   // db 將發出的新訊息存入
   postMsg: async (myId, chatId, message) => {
     try {
-      console.log('creating msg ')
-
-      // let chatId = req.params.id
-      // let message = req.body.message
       let msg = await Message.create({
         ChatId: chatId,
         UserId: myId,
