@@ -89,10 +89,10 @@ export default {
     // user 發送訊息
     async afterSendMessage() {
       try {
-        this.messages.push({
-          message: this.message,
-          userId: this.currentUser.id
-        });
+        // this.messages.push({
+        //   message: this.message,
+        //   userId: this.currentUser.id
+        // });
 
         if (this.message) {
           let chatBox = document.querySelector("#chatbox");
@@ -104,26 +104,26 @@ export default {
             chatId: 1
           });
 
-          // 讓chatbox保持在最底部
+          // 讓chatbox保持在最底部/
           setTimeout(() => {
             chatBox.scrollTop = chatBox.scrollHeight;
           }, 1);
 
           this.message = "";
 
-          // 看一下歷史訊息長度
-          console.log('chatHistoryLength', this.chatHistoryLength)
-          console.log('messagesLength', this.messages.length)
+          // // 看一下歷史訊息長度
+          // console.log('chatHistoryLength', this.chatHistoryLength)
+          // console.log('messagesLength', this.messages.length)
 
-          if(this.messages.length - 1 === this.chatHistoryLength){
-            console.log('發話者', this.currentUser.id)
-            console.log('接收人', this.window.guestUser.userId)
-            this.$socket.emit('PM_guest', {                         
-              userId: this.window.guestUser.userId,
-              guestUserId: this.currentUser.id,
-              chatId: 1
-            })
-          }
+          // if(this.messages.length - 1 === this.chatHistoryLength){
+          //   console.log('發話者', this.currentUser.id)
+          //   console.log('接收人', this.window.guestUser.userId)
+
+          this.$socket.emit('PM_guest', {                         
+            userId: this.window.guestUser.userId,
+            guestUserId: this.currentUser.id,
+            chatId: 1
+          })
           
         }
       } catch (error) {
