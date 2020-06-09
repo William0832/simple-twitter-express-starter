@@ -155,20 +155,18 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
   socket.on('PM_guest', async (payload) => {
     try {
       console.log('===================PM_guest_users: ', payload)
-      let { userId, guestUserId, chatId } = payload
-      if (!userId || !guestUserId) {
+      let { sendUserId, PMuserId, chatId } = payload
+      if (!sendUserId || !PMuserId || !chatId) {
         console.log('PM_guest ERROR: No data to work')
         return
       }
-      // const chat = await chatService.getChat(, guestUserId)
-      // const { chatId } = chat
-      let guestUser = await chatService.getNewUser(guestUserId)
+      let sendUser = await chatService.getNewUser(sendUserId)
       let targetSocketIds = rooms[chatId].socketIds.filter((e) =>
-        onlineUsers[guestUserId].includes(String(e))
+        onlineUsers[PMuserId].includes(String(e))
       )
       console.log('========openGuestWindow:', targetSocketIds)
       targetSocketIds.forEach((e) => {
-        io.to(e).emit('openGuestWindow', { userId, guestUser })
+        io.to(e).emit('openGuestWindow', { sendUserId, sendUser })
       })
     } catch (err) {
       console.log(err.toString())
