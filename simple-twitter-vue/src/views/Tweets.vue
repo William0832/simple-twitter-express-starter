@@ -44,7 +44,7 @@ export default {
     };
   },
   async created() {
-    await this.fetchTweets();
+    await this.fetchTweets(this.tweets.length, 10);
     await this.fetchTopUsers();
     this.busy = false;
   },
@@ -53,9 +53,9 @@ export default {
   },
   directives: { infiniteScroll },
   methods: {
-    async fetchTweets() {
+    async fetchTweets(offset, limit) {
       try {
-        const response = await tweetsAPI.getTweets(this.tweets.length);
+        const response = await tweetsAPI.getTweets(offset, limit);
 
         const { data } = response;
 
@@ -100,7 +100,7 @@ export default {
           throw new Error(data.message);
         }
 
-        this.fetchTweets();
+        this.tweets.unshift(data.newTweet);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -113,8 +113,6 @@ export default {
         const response = await followshipAPI.followship.create(userId);
 
         const { data } = response;
-
-        console.log(userId);
 
         //add statusText
         if (data.status !== "success") {
@@ -191,8 +189,9 @@ export default {
       this.busy = true;
       let tweetCountsBeforeLoadMore = this.tweets.length;
       console.log("scroll loading");
-      await this.fetchTweets();
+      await this.fetchTweets(this.tweets.length, 5);
 
+      // stops loading more data while no more new data in DB
       if (this.tweets.length !== tweetCountsBeforeLoadMore) {
         this.busy = false;
       }
