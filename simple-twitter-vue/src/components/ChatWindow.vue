@@ -41,16 +41,21 @@ export default {
       guestUserId: this.window.guestUser.userId,
       message: '',
       messages: [],
-      users: {}
+      users: {},
+      chatHistoryLength: -1
     };
   },
   sockets: {
     // user收到回覆訊息
     async replyMessage(payload) {
       try {
-        this.repliedMessage = "";
+        console.log('payload', payload)
         const { message } = await payload;
-        this.repliedMessage = message;
+        // 看一下訊息長怎樣
+        console.log('reply', message)
+        // if(this.messages.length === this.chatHistoryLength)
+        // 看一下歷史訊息長度
+        // console.log('chatHistoryLength', this.chatHistoryLength)
       } catch (error) {
         console.log(error);
       }
@@ -59,6 +64,8 @@ export default {
       try {
         this.users = users
         this.messages = msgs
+        this.chatHistoryLength = msgs.length
+        console.log('chatHistoryLength: ', this.chatHistoryLength)
       } catch(error){
         console.error(error)
       }
@@ -96,6 +103,7 @@ export default {
           }, 1);
 
           this.message = ''
+
         }
       } catch (error) {
         console.log(error);
