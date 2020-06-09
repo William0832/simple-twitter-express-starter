@@ -1,5 +1,5 @@
 <template lang="pug">
-  .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-5
+  .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-4
       .row.flex-grow-1.overflow-hidden
         .col-md-8.mh-100.overflow-auto(v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10")
           TweetNew(
