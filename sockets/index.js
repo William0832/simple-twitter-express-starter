@@ -188,6 +188,18 @@ module.exports = (io) => {
       }
     })
 
+    socket.on('PM_guest', async users => {
+      // console.log('發話者: ', users.guestUser)
+      // console.log('接收人: ', users.userId)
+      
+      let guestUser = await chatService.getNewUser(users.guestUser)
+      guestUser.chatId = users.chatId
+      let userId = users.userId
+      console.log('發話者資料: ', guestUser)
+
+      socket.emit('openGuestWindow', { userId , guestUser })
+    })
+
     //小鈴鐺
     socket.on('reply', async (payload) => {
       const { userId, tweetId, type } = payload
