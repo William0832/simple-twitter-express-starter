@@ -146,8 +146,31 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
       console.log('rooms', rooms)
       let msgs = await chatService.getMsgs(chatId)
       let users = await chatService.getChatByChatId(chatId)
-      // console.log('history msg:', msgs)
+      console.log('users', users)
       socket.emit('getChatHistory', { users, msgs })
+    } catch (err) {
+      console.log(err.toString())
+    }
+  })
+  socket.on('PM_guest', async (payload) => {
+    // FIXME: payload = {invitedUserId, guestUserId}
+    try {
+      console.log('===================PM_guest_users:', payload)
+      let { invitedUserId, guestUserId } = payload
+      if (!invitedUserId || !guestUserId) {
+        console.log('PM_guest ERROR: No data to work')
+        return
+      }
+      const chat = await chatService.getChat(invitedUserId, guestUserId)
+      const { chatId } = chat
+      let guestUser = await chatService.getNewUser(guestUserId)
+      let targetSocketIds = rooms[chatId].socketIds.filter((e) =>
+        onlineUsers[guestUserId].includes(String(e))
+      )
+      console.log('========openGuestWindow:', targetSocketIds)
+      targetSocketIds.forEach((e) => {
+        io.to(e).emit('openGuestWindow', { invitedUserId, guestUser })
+      })
     } catch (err) {
       console.log(err.toString())
     }

@@ -8,6 +8,7 @@ module.exports = (io) => {
     console.log('==================== connected socket id :', socket.id)
     // chat
     chatSocket(io, socket, onlineUsers, rooms)
+
     //小鈴鐺
     socket.on('reply', async (payload) => {
       const { userId, tweetId, type } = payload
