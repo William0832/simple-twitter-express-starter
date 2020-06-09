@@ -153,23 +153,22 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
     }
   })
   socket.on('PM_guest', async (payload) => {
-    // FIXME: payload = {invitedUserId, guestUserId}
     try {
-      console.log('===================PM_guest_users:', payload)
-      let { invitedUserId, guestUserId } = payload
-      if (!invitedUserId || !guestUserId) {
+      console.log('===================PM_guest_users: ', payload)
+      let { userId, guestUserId, chatId } = payload
+      if (!userId || !guestUserId) {
         console.log('PM_guest ERROR: No data to work')
         return
       }
-      const chat = await chatService.getChat(invitedUserId, guestUserId)
-      const { chatId } = chat
+      // const chat = await chatService.getChat(, guestUserId)
+      // const { chatId } = chat
       let guestUser = await chatService.getNewUser(guestUserId)
       let targetSocketIds = rooms[chatId].socketIds.filter((e) =>
         onlineUsers[guestUserId].includes(String(e))
       )
       console.log('========openGuestWindow:', targetSocketIds)
       targetSocketIds.forEach((e) => {
-        io.to(e).emit('openGuestWindow', { invitedUserId, guestUser })
+        io.to(e).emit('openGuestWindow', { userId, guestUser })
       })
     } catch (err) {
       console.log(err.toString())

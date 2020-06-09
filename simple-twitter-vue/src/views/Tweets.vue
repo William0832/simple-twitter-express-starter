@@ -87,6 +87,11 @@ export default {
     this.fetchTweets();
     this.socketLogin();
   },
+  sockets: {
+    openGuestWindow(data){
+      console.log('knock knock:', data)
+    }
+  },
   methods: {
     afterInviteUser(userId, guestUser) {
       let windows = this.windows.map(window => window.id);
