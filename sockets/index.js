@@ -85,9 +85,7 @@ module.exports = (io) => {
           let noChatUsers = elseOnlineUsers.filter(
             (e) => hasChatUsers.indexOf(e) === -1
           )
-          chats = chats.filter((e) => hasChatUsers.includes(String(e.chatId)))
-          // console.log('Has chat Users', hasChatUsers)
-          // console.log('No chat users', noChatUsers)
+          chats = chats.filter((e) => hasChatUsers.includes(String(e.userId)))
           // add noChatUsers info
           noChatUsers.forEach(async (e, index) => {
             let newChat = await chatService.getNewUser(e)
@@ -176,7 +174,7 @@ module.exports = (io) => {
           console.log('sendMessage ERROR: No data to work')
           return
         }
-        await chatService.postMsg(userId, chatId, message)
+        // await chatService.postMsg(userId, chatId, message)
         io.to(rooms[chatId]).emit('replyMessage', payload)
         console.log('====================message', payload)
       } catch (err) {
