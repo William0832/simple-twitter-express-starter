@@ -29,9 +29,7 @@ module.exports = (io) => {
     })
     socket.on('login', async (userId) => {
       // push socket id in onlineUser socketIds
-      if (!onlineUsers[userId]) {
-        onlineUsers[userId] = []
-      }
+      onlineUsers[userId] = onlineUsers[userId] || []
       onlineUsers[userId].push(socket.id)
       console.log('push socket in onlineUser!', onlineUsers)
       // update user state in db
@@ -64,12 +62,9 @@ module.exports = (io) => {
         // get history chats info from db
         let chats = await chatService.getChats(myId)
         // get other online user id list
-        let elseOnlineUsers = []
-        for (let [k, v] of Object.entries(onlineUsers)) {
-          if (v[0] && k !== String(myId)) {
-            elseOnlineUsers.push(k)
-          }
-        }
+        let elseOnlineUsers = Object.keys(onlineUsers).filter(
+          (e) => onlineUsers[e][0] && e !== String(myId)
+        )
         console.log('elseOnlineUsers:', elseOnlineUsers)
         // ========TEST=======
         // elseOnline8Users = ['2', '3', '6', '11']
@@ -119,7 +114,6 @@ module.exports = (io) => {
         // guestUser = 22
         // ===========
         let chat = await chatService.getChat(invitedUserId, guestUser)
-        // console.log('!!!!!', chat)
         // check chatId in chats ?
         if (!chat || !chat.chatId) {
           chat = await chatService.postChat(invitedUserId, guestUser)
@@ -128,12 +122,11 @@ module.exports = (io) => {
         let chatId = chat.chatId
         // set socket room
         // get onlineUser socketIds(no socketIds still Ok!)
+
         let temp = []
         let ids = [invitedUserId, guestUser]
         ids.forEach((i) => {
-          if (!onlineUsers[i]) {
-            onlineUsers[i] = []
-          }
+          onlineUsers[i] = onlineUsers[i] || []
           onlineUsers[i].forEach((e) => {
             temp.push(e)
           })
@@ -157,7 +150,6 @@ module.exports = (io) => {
       try {
         console.log('====================chatId', payload)
         let { chatId } = payload
-        chatId = 10
         console.log('rooms', rooms)
         // TODO: 正常不會發生，在fetchOnlineUser & inviteUser 都給了
         // if (!Object.keys(rooms).includes(String(chatId))) {
