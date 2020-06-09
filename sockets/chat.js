@@ -160,11 +160,11 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
         console.log('PM_guest ERROR: No data to work')
         return
       }
-      // const chat = await chatService.getChat(, guestUserId)
-      // const { chatId } = chat
+
       let guestUser = await chatService.getNewUser(guestUserId)
+      guestUser.chatId = chatId
       let targetSocketIds = rooms[chatId].socketIds.filter((e) =>
-        onlineUsers[guestUserId].includes(String(e))
+        onlineUsers[userId].includes(String(e))
       )
       console.log('========openGuestWindow:', targetSocketIds)
       targetSocketIds.forEach((e) => {
@@ -195,4 +195,5 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
     }
   })
 }
+
 module.exports = chatSocket

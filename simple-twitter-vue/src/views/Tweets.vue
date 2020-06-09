@@ -88,8 +88,10 @@ export default {
     this.socketLogin();
   },
   sockets: {
+    // 
     openGuestWindow(data){
-      console.log('knock knock:', data)
+      let { guestUser, userId } = data
+      this.afterInviteUser(userId, guestUser)
     }
   },
   methods: {
@@ -108,7 +110,6 @@ export default {
           id: guestUser.chatId,
           guestUser: guestUser
         });
-        console.log("current windows: ", this.windows);
       }
     },
     async fetchTweets() {
@@ -156,16 +157,11 @@ export default {
     async afterAddFollow(userId) {
       try {
         const response = await followshipAPI.followship.create(userId);
-
         const { data } = response;
-
-        console.log(userId);
-
         //add statusText
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-
         this.fetchTweets();
       } catch (error) {
         Toast.fire({
@@ -177,10 +173,7 @@ export default {
     async afterDeleteFollow(userId) {
       try {
         const response = await followshipAPI.followship.delete(userId);
-
         const { data } = response;
-
-        console.log(userId);
 
         //add statusText
         if (data.status !== "success") {
@@ -197,9 +190,7 @@ export default {
     },
     async afterAddLike(tweetId) {
       try {
-        console.log("afterAddLike", tweetId);
         const response = await tweetsAPI.tweets.like(tweetId);
-        console.log("afterAddLike2");
         const { data } = response;
 
         if (data.status !== "success") {
@@ -217,9 +208,7 @@ export default {
     async afterDeleteLike(tweetId) {
       try {
         const response = await tweetsAPI.tweets.unlike(tweetId);
-
         const { data } = response;
-        console.log(data);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
