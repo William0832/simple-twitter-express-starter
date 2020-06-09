@@ -1,6 +1,6 @@
 <template lang="pug">
   .container
-    .row.border.border-secondary.rounded.my-1.p-2(v-for='tweet in tweets' :key='tweet.id')
+    .row.border.border-secondary.rounded.my-1.p-2(v-for='(tweet,index) in tweets' :key='tweet.id')
       .col-3.d-flex.align-items-center.justify-content-center
         img(:src="tweet.User.avatar" v-if="tweet.User.avatar !== null")
         img(:src="nullAvatar" v-else)
@@ -15,8 +15,8 @@
             router-link(:to="{ name: 'replies', params: { tweet_id: tweet.id }}")
               button.btn.btn-light Reply ({{tweet.repliesCount}})
           .col.mw-50
-            button.btn.btn-danger(:disabled="isProcessing" v-if ='tweet.isLiked' @click.stop.prevent="deleteLike(tweet.id)") Dislike ({{tweet.likesCount}} )
-            button.btn.btn-light(:disabled="isProcessing" v-else @click.stop.prevent="addLike(tweet.id)") Like ({{tweet.likesCount}} )
+            button.btn.btn-danger(:disabled="isProcessing" v-if ='tweet.isLiked' @click.stop.prevent="deleteLike(tweet.id,index)") Dislike ({{tweet.likesCount}} )
+            button.btn.btn-light(:disabled="isProcessing" v-else @click.stop.prevent="addLike(tweet.id,index)") Like ({{tweet.likesCount}} )
 </template>
 
 <script>
@@ -37,16 +37,16 @@ export default {
     };
   },
   methods: {
-    addLike(tweetId) {
+    addLike(tweetId, index) {
       this.isProcessing = true;
-      this.$emit("after-add-like", tweetId);
+      this.$emit("after-add-like", { tweetId, index });
       setTimeout(() => {
         this.isProcessing = false;
       }, 500);
     },
-    deleteLike(tweetId) {
+    deleteLike(tweetId, index) {
       this.isProcessing = true;
-      this.$emit("after-delete-like", tweetId);
+      this.$emit("after-delete-like", { tweetId, index });
       setTimeout(() => {
         this.isProcessing = false;
       }, 500);

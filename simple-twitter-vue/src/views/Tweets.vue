@@ -148,7 +148,9 @@ export default {
         });
       }
     },
-    async afterAddLike(tweetId) {
+    async afterAddLike(payload) {
+      const { tweetId, index } = payload;
+
       try {
         const response = await tweetsAPI.tweets.like(tweetId);
         const { data } = response;
@@ -158,7 +160,8 @@ export default {
           throw new Error(data.message);
         }
 
-        this.fetchTweets();
+        this.tweets[index].isLiked = true;
+        this.tweets[index].likesCount += 1;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -166,18 +169,22 @@ export default {
         });
       }
     },
-    async afterDeleteLike(tweetId) {
+    async afterDeleteLike(payload) {
+      const { tweetId, index } = payload;
+
       try {
+        console.log("tweetId", tweetId, "index", index);
         const response = await tweetsAPI.tweets.unlike(tweetId);
 
         const { data } = response;
-        console.log(data);
+
         //add statusText
         if (data.status !== "success") {
           throw new Error(data.message);
         }
 
-        this.fetchTweets();
+        this.tweets[index].isLiked = false;
+        this.tweets[index].likesCount -= 1;
       } catch (error) {
         Toast.fire({
           icon: "error",
