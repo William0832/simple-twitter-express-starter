@@ -50,7 +50,9 @@ let strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
     include: [
       { model: Like, attributes: ['tweetId'] },
       { model: User, as: 'Followers', attributes: ['id'] },
-      { model: User, as: 'Followings', attributes: ['id'] }
+      { model: User, as: 'Followings', attributes: ['id'] },
+      { model: User, as: 'BlockedCreators', attributes: ['id'] },
+      { model: User, as: 'Blockers', attributes: ['id'] }
     ]
   }).then((user) => {
     if (!user) return next(null, false)
