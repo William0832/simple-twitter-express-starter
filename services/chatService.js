@@ -229,7 +229,7 @@ const chatService = {
         where: { ChatId: chatId },
         attributes: ['message', 'userId'],
         // 按時間遞減
-        order: [['createdAt', 'DESC']]
+        order: [['createdAt', 'ASC']]
       })
       msgs = msgs.map((e) => ({ ...e.dataValues }))
       return msgs
