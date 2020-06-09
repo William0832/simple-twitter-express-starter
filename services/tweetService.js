@@ -31,16 +31,22 @@ const tweetService = {
 
       likedTweets = likedTweets.map((like) => like.TweetId)
 
+      console.log("req.query.offset", req.query.offset, typeof (req.query.offset))
+      let offset = Number(req.query.offset)
+      let loadLimit = 5
 
-      let tweets = await Tweet.findAll({
+      let tweets = await Tweet.findAndCountAll({
         include: [
           { model: User, attributes: ['id', 'email', 'name', 'avatar'] },
           { model: Reply, attributes: ['id', 'UserId'] },
           { model: Like, attributes: ['id', 'UserId'] }
         ],
-        order: [['createdAt', 'DESC']]
+        order: [['createdAt', 'DESC']],
+        offset: offset,
+        limit: loadLimit
       })
-      tweets = tweets.map((tweet) => ({
+
+      tweets = tweets.rows.map((tweet) => ({
         ...tweet.dataValues,
         repliesCount: tweet.Replies.length || 0,
         likesCount: tweet.Likes.length || 0,

@@ -1,7 +1,7 @@
 <template lang="pug">
   .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-5
       .row.flex-grow-1.overflow-hidden
-        .col-md-8.mh-100.overflow-auto
+        .col-md-8.mh-100.overflow-auto(v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10")
           TweetNew(
             :user-id='currentUser.id' 
             @after-create-tweet='afterCreateTweet')
@@ -24,6 +24,7 @@ import TweetIndex from "../components/TweetIndex";
 import UserTop from "../components/UserTop";
 import { Toast } from "../utils/helpers";
 import { mapState } from "vuex";
+import infiniteScroll from "vue-infinite-scroll";
 
 //api
 import tweetsAPI from "../apis/tweet";
@@ -38,24 +39,27 @@ export default {
   data() {
     return {
       tweets: [],
-      topUsers: []
+      topUsers: [],
+      busy: true
     };
   },
   async created() {
     await this.fetchTweets();
     await this.fetchTopUsers();
+    this.busy = false;
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"])
   },
+  directives: { infiniteScroll },
   methods: {
     async fetchTweets() {
       try {
-        const response = await tweetsAPI.getTweets();
+        const response = await tweetsAPI.getTweets(this.tweets.length);
 
         const { data } = response;
 
-        this.tweets = data.tweets;
+        this.tweets = this.tweets.concat(data.tweets);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -181,6 +185,16 @@ export default {
           icon: "error",
           title: error
         });
+      }
+    },
+    async loadMore() {
+      this.busy = true;
+      let tweetCountsBeforeLoadMore = this.tweets.length;
+      console.log("scroll loading");
+      await this.fetchTweets();
+
+      if (this.tweets.length !== tweetCountsBeforeLoadMore) {
+        this.busy = false;
       }
     }
   }
