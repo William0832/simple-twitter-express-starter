@@ -65,7 +65,6 @@ export default {
   },
   methods: {
     async logout() {
-      console.log('!!!!!!!!!!!!currentUser:', this.currentUser.id)
       await this.$socket.emit('logout', this.currentUser.id)
       this.$store.commit('revokeAuthentication')
       this.$router.push('/signin')

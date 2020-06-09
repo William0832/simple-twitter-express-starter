@@ -41,10 +41,13 @@ module.exports = (io) => {
         isOnline: true
       })
     })
-    // FIXME:  disconnect issue: add logout socket.emit event from Vue
+    // disconnect issue: add logout socket.emit event from Vue
     socket.on('logout', async (userId) => {
+      console.log('========================logout userId:', userId)
       // clean socketsId
       onlineUsers[userId] = []
+      console.log('========================onlineUsers', onlineUsers)
+
       // update db
       await chatService.userOffline(userId)
       // TODO: add socket.on event in Vue: updateOnlineState
