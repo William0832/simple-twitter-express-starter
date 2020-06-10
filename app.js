@@ -1,9 +1,12 @@
 const express = require('express')
-const helpers = require('./_helpers');
+const helpers = require('./_helpers')
+const path = require('path')
+const serveStatic = require('serve-static')
+
 const cors = require('cors')
 
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 
 app.use(cors()) // cors 的預設為全開放
 const bodyParser = require('body-parser')
@@ -11,8 +14,9 @@ const session = require('express-session')
 
 const flash = require('connect-flash')
 const methodOverride = require('method-override')
-if (process.env.NODE_ENV !== 'production') {      // 如果不是 production 模式
-  require('dotenv').config()                      // 使用 dotenv 讀取 .env 檔案
+if (process.env.NODE_ENV !== 'production') {
+  // 如果不是 production 模式
+  require('dotenv').config() // 使用 dotenv 讀取 .env 檔案
 }
 const passport = require('./config/passport')
 app.locals.moment = require('moment') //let moment function available in pug templates
@@ -47,13 +51,7 @@ app.use((req, res, next) => {
   res.locals.user = helpers.getUser(req)
   next()
 })
-
-
-
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
-});
-// app.listen(port, () => console.log(`App listening on port ${port}!`))
+app.use(serveStatic(path.join(__dirname, '/simple-twitter-vue/dist')))
 server.listen(port, () => console.log(`Server listening on port ${port}!`))
 
 require('./routes')(app)
