@@ -3,8 +3,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn('Users', 'isOnline', {
-      type: Sequelize.BOOLEAN,
-      allowNull: false
+      type: Sequelize.BOOLEAN
     })
   },
 
