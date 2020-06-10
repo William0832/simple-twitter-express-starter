@@ -4,6 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     'Tweet',
     {
       description: DataTypes.TEXT,
+      googleMapName: DataTypes.TEXT,
+      googleMapUrl: DataTypes.TEXT,
       UserId: DataTypes.INTEGER
     },
     {}

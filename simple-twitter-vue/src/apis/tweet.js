@@ -14,8 +14,8 @@ export default {
     })
   },
   tweets: {
-    create(description) {
-      return apiHelper.post('/tweets', { description }, {
+    create(tweet) {
+      return apiHelper.post('/tweets', tweet, {
         headers: { Authorization: `Bearer ${getToken()}` },
         validateStatus: function (status) {
           return status < 500; // Resolve only if the status code is less than 500

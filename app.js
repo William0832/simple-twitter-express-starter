@@ -25,9 +25,6 @@ app.use(cors()) // cors 的預設為全開放
 // use helpers.getUser(req) to replace req.user
 // use helpers.ensureAuthenticated(req) to replace req.isAuthenticated()
 
-// cors 的預設為全開放
-app.use(cors())
-
 //middleware
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
