@@ -21,9 +21,16 @@ library.add(faMapMarkerAlt)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
+let socketConnection = 'https://safe-sea-65364.herokuapp.com/'
+
+if (process.env.NODE_ENV !== 'production') {
+  // 如果不是 production 模式
+  socketConnection = 'http://localhost:3000/'
+}
+
 Vue.use(new VueSocketIO({
   debug: true,
-  connection: '//localhost:3000',
+  connection: socketConnection,
   options: {} //Optional options
 }))
 
