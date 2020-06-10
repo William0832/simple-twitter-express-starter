@@ -9,7 +9,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "cross-env NODE_ENV=development nodemon app.js",
-    "test": "cross-env NODE_ENV=test mocha test/*/*.js --exit --recursive --timeout 5000"
+    "test": "cross-env NODE_ENV=test mocha test/*/*.js --exit --recursive --timeout 5000",
+    "postinstall": "if test \"$NODE_ENV\" = \"production\" ; then npm run build --prefix simple-twitter-vue ; fi ",
   },
   "author": "",
   "license": "ISC",
