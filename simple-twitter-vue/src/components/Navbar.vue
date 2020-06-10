@@ -1,11 +1,7 @@
 <template lang="pug">
   nav.navbar.navbar-expand-lg.fixed-top.navbar-dark.bg-dark
     router-link.navbar-brand(to='/')
-      img.d-inline-block.align-top(src='https://www.shareicon.net/data/48x48/2015/06/21/57599_angry-birds_512x512.png', width='30', height='30', alt='')
-      |  Simple Twitter
-     
-  
-
+      | Simple Twitter
     button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
       span.navbar-toggler-icon
     #navbarSupportedContent.navbar-collapse.collapse

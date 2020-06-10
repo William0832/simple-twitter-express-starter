@@ -1,7 +1,7 @@
 <template lang="pug">
-  .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-4
+  .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-5
       .row.flex-grow-1.overflow-hidden
-        .col-md-8.mh-100.overflow-auto(v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10")
+        .col-md-8.mh-100.overflow-auto
           TweetNew(
             :user-id='currentUser.id' 
             @after-create-tweet='afterCreateTweet')
@@ -24,7 +24,6 @@ import TweetIndex from "../components/TweetIndex";
 import UserTop from "../components/UserTop";
 import { Toast } from "../utils/helpers";
 import { mapState } from "vuex";
-import infiniteScroll from "vue-infinite-scroll";
 
 //api
 import tweetsAPI from "../apis/tweet";
@@ -39,27 +38,24 @@ export default {
   data() {
     return {
       tweets: [],
-      topUsers: [],
-      busy: true
+      topUsers: []
     };
   },
   async created() {
-    await this.fetchTweets(this.tweets.length, 10);
+    await this.fetchTweets();
     await this.fetchTopUsers();
-    this.busy = false;
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"])
   },
-  directives: { infiniteScroll },
   methods: {
-    async fetchTweets(offset, limit) {
+    async fetchTweets() {
       try {
-        const response = await tweetsAPI.getTweets(offset, limit);
+        const response = await tweetsAPI.getTweets();
 
         const { data } = response;
 
-        this.tweets = this.tweets.concat(data.tweets);
+        this.tweets = data.tweets;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -100,7 +96,7 @@ export default {
           throw new Error(data.message);
         }
 
-        this.tweets.unshift(data.newTweet);
+        this.fetchTweets();
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -113,6 +109,8 @@ export default {
         const response = await followshipAPI.followship.create(userId);
 
         const { data } = response;
+
+        console.log(userId);
 
         //add statusText
         if (data.status !== "success") {
@@ -148,9 +146,7 @@ export default {
         });
       }
     },
-    async afterAddLike(payload) {
-      const { tweetId, index } = payload;
-
+    async afterAddLike(tweetId) {
       try {
         const response = await tweetsAPI.tweets.like(tweetId);
         const { data } = response;
@@ -160,8 +156,7 @@ export default {
           throw new Error(data.message);
         }
 
-        this.tweets[index].isLiked = true;
-        this.tweets[index].likesCount += 1;
+        this.fetchTweets();
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -169,38 +164,23 @@ export default {
         });
       }
     },
-    async afterDeleteLike(payload) {
-      const { tweetId, index } = payload;
-
+    async afterDeleteLike(tweetId) {
       try {
-        console.log("tweetId", tweetId, "index", index);
         const response = await tweetsAPI.tweets.unlike(tweetId);
 
         const { data } = response;
-
+        console.log(data);
         //add statusText
         if (data.status !== "success") {
           throw new Error(data.message);
         }
 
-        this.tweets[index].isLiked = false;
-        this.tweets[index].likesCount -= 1;
+        this.fetchTweets();
       } catch (error) {
         Toast.fire({
           icon: "error",
           title: error
         });
-      }
-    },
-    async loadMore() {
-      this.busy = true;
-      let tweetCountsBeforeLoadMore = this.tweets.length;
-      console.log("scroll loading");
-      await this.fetchTweets(this.tweets.length, 5);
-
-      // stops loading more data while no more new data in DB
-      if (this.tweets.length !== tweetCountsBeforeLoadMore) {
-        this.busy = false;
       }
     }
   }
