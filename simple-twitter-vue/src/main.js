@@ -6,7 +6,8 @@ import VueSocketIO from 'vue-socket.io'
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserSecret, faSpinner, faBell } from '@fortawesome/free-solid-svg-icons'
+import { faUserSecret, faSpinner, faBell, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons'
+
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 Vue.config.productionTip = false
@@ -16,15 +17,14 @@ window.$ = window.jQuery = require('jquery');
 library.add(faUserSecret)
 library.add(faSpinner)
 library.add(faBell)
-
-Vue.component('font-awesome-icon', FontAwesomeIcon)
-
+library.add(faMapMarkerAlt)
 
 Vue.use(new VueSocketIO({
   debug: true,
   connection: '//localhost:3000',
   options: {} //Optional options
 }))
+
 
 new Vue({
   router,

@@ -11,6 +11,10 @@
           span , {{tweet.createdAt | formatTime}}
         p
           | {{tweet.description}}
+        a(:href='tweet.googleMapUrl' v-if='tweet.googleMapName') 
+          |
+          font-awesome-icon(icon="map-marker-alt")
+          | {{tweet.googleMapName}}
         .row.justify-content-start
           .col.mw-50
             router-link(:to="{ name: 'replies', params: { tweet_id: tweet.id }}")
