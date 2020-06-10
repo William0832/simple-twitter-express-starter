@@ -24,6 +24,46 @@ const removeKeys = (data, keys) => {
 const tweetService = {
   getTweets: async (req, res, callback) => {
     try {
+      let likedTweets = await Like.findAll({
+        where: { UserId: helpers.getUser(req).id },
+        attributes: ['TweetId']
+      })
+
+      likedTweets = likedTweets.map((like) => like.TweetId)
+
+      console.log("req.query.offset", req.query.offset)
+      console.log("req.query.limit", req.query.limit)
+      let offset = Number(req.query.offset)
+      let loadLimit = Number(req.query.limit)
+
+      let tweets = await Tweet.findAndCountAll({
+        include: [
+          { model: User, attributes: ['id', 'email', 'name', 'avatar'] },
+          { model: Reply, attributes: ['id', 'UserId'] },
+          { model: Like, attributes: ['id', 'UserId'] }
+        ],
+        order: [['createdAt', 'DESC'], ['id', 'ASC']],
+        offset: offset,
+        limit: loadLimit
+      })
+
+      tweets = tweets.rows.map((tweet) => ({
+        ...tweet.dataValues,
+        repliesCount: tweet.Replies.length || 0,
+        likesCount: tweet.Likes.length || 0,
+        isLiked: likedTweets.includes(tweet.id) ? true : false
+      }))
+      removeKeys(tweets, ['Replies', 'Likes'])
+
+      return callback({
+        tweets
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  getTopUsers: async (req, res, callback) => {
+    try {
       let followedUser = await User.findByPk(helpers.getUser(req).id, {
         attributes: [],
         include: [
@@ -69,32 +109,8 @@ const tweetService = {
         isFollowed: followedUserId.includes(user.id) ? true : false
       }))
 
-      let likedTweets = await Like.findAll({
-        where: { UserId: helpers.getUser(req).id },
-        attributes: ['TweetId']
-      })
-
-      likedTweets = likedTweets.map((like) => like.TweetId)
-
-
-      let tweets = await Tweet.findAll({
-        include: [
-          { model: User, attributes: ['id', 'email', 'name', 'avatar'] },
-          { model: Reply, attributes: ['id', 'UserId'] },
-          { model: Like, attributes: ['id', 'UserId'] }
-        ],
-        order: [['createdAt', 'DESC']]
-      })
-      tweets = tweets.map((tweet) => ({
-        ...tweet.dataValues,
-        repliesCount: tweet.Replies.length || 0,
-        likesCount: tweet.Likes.length || 0,
-        isLiked: likedTweets.includes(tweet.id) ? true : false
-      }))
-      removeKeys(tweets, ['Replies', 'Likes'])
 
       return callback({
-        tweets,
         topUsers
       })
     } catch (error) {
@@ -123,10 +139,22 @@ const tweetService = {
         UserId: helpers.getUser(req).id
       })
 
+      const user = await User.findByPk(tweet.UserId, {
+        attributes: ['id', 'email', 'name', 'avatar']
+      })
+
+      let newTweet = {
+        ...tweet.dataValues,
+        User: user.dataValues,
+        repliesCount: 0,
+        likesCount: 0,
+        isLiked: false
+      }
+
       return callback({
         status: 'success',
         message: 'tweet successfully posted.',
-        tweet
+        newTweet
       })
     } catch (error) {
       console.log(error)
