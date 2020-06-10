@@ -14,49 +14,66 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapState(["currentUser", "isAuthenticated"])
+    ...mapState(['currentUser', 'isAuthenticated'])
   },
   sockets: {
     getOnlineUser(chats) {
       this.onlineUsers = chats
       console.log('onlineUsers: ', this.onlineUsers)
+    },
+    updateOnlineState(payload) {
+      console.log(payload)
+      const { userId, isOnline } = payload
+      // console.log(this.onlineUsers)
+      // 離線消失
+      if (!isOnline) {
+        this.onlineUsers = this.onlineUsers.filter((e) => e.userId !== userId)
+        return
+      }
+      // TODO: 確認真的不再線 才加入 缺渲染資料
+      let onelineUserIds = this.onlineUsers.map((e) => e.userid)
+      if (!onelineUserIds.includes(userId)) {
+        // let user = { userId, name: 'test' }
+        console.log(`========= user:${userId} is online`)
+      }
     }
   },
   created() {
-    this.fetchOnlineUser();
+    this.fetchOnlineUser()
   },
   data() {
     return {
       onlineUsers: []
-    };
+    }
   },
   methods: {
     async fetchOnlineUser() {
       try {
-        await this.$socket.emit("fetchOnlineUser", this.currentUser.id);
+        await this.$socket.emit('fetchOnlineUser', this.currentUser.id)
       } catch (error) {
-        console.error(error);
+        console.error(error)
       }
     },
     async inviteUser(userId) {
-      await this.$socket.emit("inviteUser", {
+      await this.$socket.emit('inviteUser', {
         invitedUserId: this.currentUser.id,
-        guestUser: userId,
-      });
-      
-      let guestUser = this.onlineUsers.filter( user => user.userId === userId)[0]
+        guestUser: userId
+      })
+
+      let guestUser = this.onlineUsers.filter(
+        (user) => user.userId === userId
+      )[0]
       console.log('groupUsers', guestUser)
 
-      this.$emit("after-invite-user", userId, guestUser);
+      this.$emit('after-invite-user', userId, guestUser)
     }
   }
-};
+}
 </script>
-
 
 <style scoped>
 img {

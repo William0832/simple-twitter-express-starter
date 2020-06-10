@@ -139,9 +139,6 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
       }
       console.log('onlineUsers:', onlineUsers)
       console.log('room', rooms[chatId])
-
-      // FIXME: add socket.on event in Vue: getChatId 是假的~
-      // (new user to chat)
       socket.emit('getChatId', { chatId })
     } catch (err) {
       console.log(err.toString())
