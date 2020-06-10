@@ -2,7 +2,10 @@
   .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-5
       .row.flex-grow-1.overflow-hidden
         .col-md-4.mh-100.overflow-auto
-          UserProfileCard(:user ='user')
+          UserProfileCard(
+            :user ='user'
+            @after-follow-user="afterFollowUser"
+            @after-unfollow-user="afterUnfollowUser")
         .col-md-8.mh-100.overflow-auto
           ReplyTweet(
             :tweet ='tweet' 
@@ -164,6 +167,24 @@ export default {
           icon: "error",
           title: error
         });
+      }
+    },
+    afterFollowUser(userId) {
+      if (userId === this.user.id) {
+        this.user = {
+          ...this.user,
+          followerCount: this.user.followerCount + 1,
+          isFollowed: true
+        };
+      }
+    },
+    afterUnfollowUser(userId) {
+      if (userId === this.user.id) {
+        this.user = {
+          ...this.user,
+          followerCount: this.user.followerCount - 1,
+          isFollowed: false
+        };
       }
     }
   }
