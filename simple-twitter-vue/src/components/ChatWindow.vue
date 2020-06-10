@@ -49,11 +49,15 @@ export default {
     // user收到回覆訊息
     async replyMessage(payload) {
       try {
-        console.log('收到訊息')
-        // 先判定是不是第一次收到訊息
-        console.log('chatHistoryLength', this.chatHistoryLength)
+        if (this.messages.length === this.chatHistoryLength) {
+          this.$socket.emit('PM_guest', {
+            userId: this.window.guestUser.userId,
+            guestUserId: this.currentUser.id,
+            chatId: this.window.guestUser.chatId
+          })
+        }
+
         let chatBox = document.querySelector('#chatbox')
-        // remove property chatId
         delete payload.chatId
         this.messages.push(payload)
 
@@ -67,10 +71,16 @@ export default {
     },
     async getChatHistory({ users, msgs }) {
       try {
+        let chatBox = document.querySelector('#chatbox')
+
         this.users = users
         this.messages = msgs
         this.chatHistoryLength = msgs.length
-        console.log('chatHistoryLength: ', this.chatHistoryLength)
+
+        // 讓chatbox保持在最底部
+        setTimeout(() => {
+          chatBox.scrollTop = chatBox.scrollHeight
+        }, 1)
       } catch (error) {
         console.error(error)
       }
@@ -78,29 +88,27 @@ export default {
   },
   created() {
     this.afterChatWindowCreated()
-    console.log('window', this.window)
   },
   methods: {
-    // this.window.guestUser.chatId
-    afterChatWindowCreated() {
-      this.$socket.emit('fetchChatHistory', { chatId: 1 })
+    async afterChatWindowCreated() {
+      try {
+        this.$socket.emit('fetchChatHistory', {
+          chatId: this.window.guestUser.chatId
+        })
+      } catch (error) {
+        console.log(error)
+      }
     },
     // user 發送訊息
     async afterSendMessage() {
       try {
-        // this.messages.push({
-        //   message: this.message,
-        //   userId: this.currentUser.id
-        // });
-
         if (this.message) {
           let chatBox = document.querySelector('#chatbox')
 
-          // this.window.guestUser.chatId
           this.$socket.emit('sendMessage', {
             message: this.message,
             userId: this.currentUser.id,
-            chatId: 1
+            chatId: this.window.guestUser.chatId
           })
 
           // 讓chatbox保持在最底部/
@@ -109,20 +117,6 @@ export default {
           }, 1)
 
           this.message = ''
-
-          // // 看一下歷史訊息長度
-          // console.log('chatHistoryLength', this.chatHistoryLength)
-          // console.log('messagesLength', this.messages.length)
-
-          // if(this.messages.length - 1 === this.chatHistoryLength){
-          //   console.log('發話者', this.currentUser.id)
-          //   console.log('接收人', this.window.guestUser.userId)
-
-          this.$socket.emit('PM_guest', {
-            sendUserId: this.currentUser.id,
-            PMuserId: this.window.guestUser.userId,
-            chatId: 1
-          })
         }
       } catch (error) {
         console.log(error)

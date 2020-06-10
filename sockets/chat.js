@@ -141,12 +141,12 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
   })
   socket.on('fetchChatHistory', async (payload) => {
     try {
-      console.log('====================chatId', payload)
+      console.log('=================== fetchChatHistory', payload)
       let { chatId } = payload
-      console.log('rooms', rooms)
+      // console.log('rooms', rooms)
       let msgs = await chatService.getMsgs(chatId)
       let users = await chatService.getChatByChatId(chatId)
-      console.log('users', users)
+      // console.log('users', users)
       socket.emit('getChatHistory', { users, msgs })
     } catch (err) {
       console.log(err.toString())
@@ -154,19 +154,22 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
   })
   socket.on('PM_guest', async (payload) => {
     try {
-      console.log('===================PM_guest_users: ', payload)
-      let { sendUserId, PMuserId, chatId } = payload
-      if (!sendUserId || !PMuserId || !chatId) {
-        console.log('PM_guest ERROR: No data to work')
-        return
-      }
+      console.log('=================== PM_guest: ', payload)
+      let { userId, guestUserId, chatId } = payload
+      // 依照user的動作更改命名
+      let [sendUserId, popupUserId] = [guestUserId, userId]
       let sendUser = await chatService.getNewUser(sendUserId)
+      sendUser.chatId = chatId
       let targetSocketIds = rooms[chatId].socketIds.filter((e) =>
-        onlineUsers[PMuserId].includes(String(e))
+        onlineUsers[popupUserId].includes(String(e))
       )
-      console.log('========openGuestWindow:', targetSocketIds)
+      console.log('=================== openGuestWindow:', targetSocketIds)
       targetSocketIds.forEach((e) => {
-        io.to(e).emit('openGuestWindow', { sendUserId, sendUser })
+        // 改回命名方式
+        io.to(e).emit('openGuestWindow', {
+          userId: sendUserId,
+          guestUser: sendUser
+        })
       })
     } catch (err) {
       console.log(err.toString())
@@ -174,7 +177,7 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
   })
   socket.on('sendMessage', async (payload) => {
     try {
-      console.log('====================sendMessage', payload)
+      console.log('=================== sendMessage', payload)
       let { message, chatId, userId } = payload
       if (!userId || !chatId || !message) {
         console.log('sendMessage ERROR: No data to work')
@@ -193,4 +196,5 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
     }
   })
 }
+
 module.exports = chatSocket

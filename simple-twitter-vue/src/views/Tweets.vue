@@ -47,17 +47,17 @@
 </template>
 
 <script>
-import TweetNew from "../components/TweetNew";
-import TweetIndex from "../components/TweetIndex";
-import Popular from "../components/UserTop";
-import Chat from "../components/OnlineUser";
-import ChatWindow from "../components/ChatWindow";
-import { Toast } from "../utils/helpers";
-import { mapState } from "vuex";
+import TweetNew from '../components/TweetNew'
+import TweetIndex from '../components/TweetIndex'
+import Popular from '../components/UserTop'
+import Chat from '../components/OnlineUser'
+import ChatWindow from '../components/ChatWindow'
+import { Toast } from '../utils/helpers'
+import { mapState } from 'vuex'
 
 //api
-import tweetsAPI from "../apis/tweet";
-import followshipAPI from "../apis/followship";
+import tweetsAPI from '../apis/tweet'
+import followshipAPI from '../apis/followship'
 
 //test
 // import ChatRoom from "../components/ChatRoom";
@@ -76,168 +76,157 @@ export default {
       topUsers: [],
       onlineUsers: [],
       windows: [],
-      currentTab: "Popular",
-      tabs: ["Popular", "Chat"],
-    };
+      currentTab: 'Popular',
+      tabs: ['Popular', 'Chat']
+    }
   },
   computed: {
-    ...mapState(["currentUser", "isAuthenticated"])
+    ...mapState(['currentUser', 'isAuthenticated'])
   },
   created() {
-    this.fetchTweets();
-    this.socketLogin();
+    this.fetchTweets()
+    this.socketLogin()
   },
   sockets: {
-    openGuestWindow(data){
-      console.log('knock knock:', data)
+    //
+    openGuestWindow(data) {
+      let { userId, guestUser } = data
+      this.afterInviteUser(userId, guestUser)
     }
   },
   methods: {
     afterInviteUser(userId, guestUser) {
-      let windows = this.windows.map(window => window.id);
+      let windows = this.windows.map((window) => window.id)
 
       if (this.windows.length === 3) {
         return Toast.fire({
-          icon: "warning",
-          title: "只能開啟3個聊天視窗！"
-        });
+          icon: 'warning',
+          title: '只能開啟3個聊天視窗！'
+        })
       } else if (windows.includes(guestUser.chatId)) {
-        return;
+        return
       } else {
         this.windows.push({
           id: guestUser.chatId,
           guestUser: guestUser
-        });
-        console.log("current windows: ", this.windows);
+        })
       }
     },
     async fetchTweets() {
       try {
-        const response = await tweetsAPI.getTweets();
+        const response = await tweetsAPI.getTweets()
 
-        const { data } = response;
+        const { data } = response
 
-        this.tweets = data.tweets;
-        this.topUsers = data.topUsers;
+        this.tweets = data.tweets
+        this.topUsers = data.topUsers
       } catch (error) {
         Toast.fire({
-          icon: "error",
-          title: "無法取得推特資料，請稍後再試"
-        });
+          icon: 'error',
+          title: '無法取得推特資料，請稍後再試'
+        })
       }
     },
     async afterCreateTweet(tweet) {
       try {
         if (!tweet.description) {
-          throw new Error("Tweet can not be empty!");
+          throw new Error('Tweet can not be empty!')
         }
 
         if (tweet.description.length > 140) {
-          throw new Error("Tweet should be shorter than 140 characters!");
+          throw new Error('Tweet should be shorter than 140 characters!')
         }
 
-        const response = await tweetsAPI.tweets.create(tweet);
+        const response = await tweetsAPI.tweets.create(tweet)
 
-        const { data } = response;
+        const { data } = response
 
         //add statusText
-        if (data.status !== "success") {
-          throw new Error(data.message);
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
 
-        this.fetchTweets();
+        this.fetchTweets()
       } catch (error) {
         Toast.fire({
-          icon: "error",
+          icon: 'error',
           title: error
-        });
+        })
       }
     },
     async afterAddFollow(userId) {
       try {
-        const response = await followshipAPI.followship.create(userId);
-
-        const { data } = response;
-
-        console.log(userId);
-
+        const response = await followshipAPI.followship.create(userId)
+        const { data } = response
         //add statusText
-        if (data.status !== "success") {
-          throw new Error(data.message);
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
-
-        this.fetchTweets();
+        this.fetchTweets()
       } catch (error) {
         Toast.fire({
-          icon: "error",
+          icon: 'error',
           title: error
-        });
+        })
       }
     },
     async afterDeleteFollow(userId) {
       try {
-        const response = await followshipAPI.followship.delete(userId);
-
-        const { data } = response;
-
-        console.log(userId);
+        const response = await followshipAPI.followship.delete(userId)
+        const { data } = response
 
         //add statusText
-        if (data.status !== "success") {
-          throw new Error(data.message);
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
 
-        this.fetchTweets();
+        this.fetchTweets()
       } catch (error) {
         Toast.fire({
-          icon: "error",
+          icon: 'error',
           title: error
-        });
+        })
       }
     },
     async afterAddLike(tweetId) {
       try {
-        console.log("afterAddLike", tweetId);
-        const response = await tweetsAPI.tweets.like(tweetId);
-        console.log("afterAddLike2");
-        const { data } = response;
+        const response = await tweetsAPI.tweets.like(tweetId)
+        const { data } = response
 
-        if (data.status !== "success") {
-          throw new Error(data.message);
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
 
-        this.fetchTweets();
+        this.fetchTweets()
       } catch (error) {
         Toast.fire({
-          icon: "error",
+          icon: 'error',
           title: error
-        });
+        })
       }
     },
     async afterDeleteLike(tweetId) {
       try {
-        const response = await tweetsAPI.tweets.unlike(tweetId);
-
-        const { data } = response;
-        console.log(data);
-        if (data.status !== "success") {
-          throw new Error(data.message);
+        const response = await tweetsAPI.tweets.unlike(tweetId)
+        const { data } = response
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
 
-        this.fetchTweets();
+        this.fetchTweets()
       } catch (error) {
         Toast.fire({
-          icon: "error",
+          icon: 'error',
           title: error
-        });
+        })
       }
     },
     closeWindow(window) {
-      this.windows = this.windows.filter(chat => chat.id !== window);
+      this.windows = this.windows.filter((chat) => chat.id !== window)
     },
     socketLogin() {
-      this.$socket.emit("login", this.currentUser.id);
+      this.$socket.emit('login', this.currentUser.id)
     }
   }
-};
+}
 </script>
