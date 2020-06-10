@@ -11,6 +11,7 @@ const tweetController = require('../controllers/api/tweetController.js')
 const replyController = require('../controllers/api/replyController.js')
 const followshipController = require('../controllers/api/followshipController.js')
 const likeController = require('../controllers/api/likeController')
+const blockController = require('../controllers/api/blockController')
 
 const authenticated = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
@@ -37,7 +38,9 @@ const authenticatedAdmin = (req, res, next) => {
 }
 const isOwner = (req, res, next) => {
   let user = helpers.getUser(req)
-  if (String(user.id) === req.params.id) { return next() }
+  if (String(user.id) === req.params.id) {
+    return next()
+  }
   console.log('userIdoo:', user.id, 'req.params: ', req.params.id)
   return res.status(302).json({ status: 'error', message: '沒有修改權限' })
 }
@@ -60,7 +63,6 @@ router.post('/tweets', authenticated, tweetController.postTweets)
 router.get('/tweets/top_users', authenticated, tweetController.getTopUsers)
 router.get('/tweets/:tweet_id', authenticated, tweetController.getTweet)
 
-
 //User routes
 router.get('/users/:id', authenticated, userController.getUser)
 router.get('/users/:id/tweets', authenticated, userController.getTweets)
@@ -79,7 +81,11 @@ router.post(
 
 //Followship routes
 router.post('/followships/', authenticated, followshipController.postFollowship)
-router.delete('/followships/:followingId', authenticated, followshipController.deleteFollowship)
+router.delete(
+  '/followships/:followingId',
+  authenticated,
+  followshipController.deleteFollowship
+)
 
 //Admin routes
 router.get(
@@ -128,13 +134,24 @@ router.post('/tweets/:id/unlike', authenticated, likeController.unlike)
 router.get('/', authenticated, (req, res) => res.redirect('/tweets'))
 
 //Reply routes
-router.get('/tweets/:tweet_id/replies', authenticated, replyController.getReplies)
-router.post('/tweets/:tweet_id/replies', authenticated, replyController.postReply)
-//Vuex get current user
 router.get(
-  '/current-user',
+  '/tweets/:tweet_id/replies',
   authenticated,
-  userController.getCurrentUser
+  replyController.getReplies
 )
+router.post(
+  '/tweets/:tweet_id/replies',
+  authenticated,
+  replyController.postReply
+)
+
+// BLock
+router.post('/blocks/:blockerId', authenticated, blockController.postBlock)
+router.get('/blocks/:blockerId/', authenticated, blockController.getBlocks)
+router.get('blocks/:blockerId/edit', authenticated, blockController.getBlocks)
+router.delete('/blocks/:blockerId/', authenticated, blockController.deleteBlock)
+
+//Vuex get current user
+router.get('/current-user', authenticated, userController.getCurrentUser)
 
 module.exports = router
