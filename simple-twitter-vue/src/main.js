@@ -19,6 +19,8 @@ library.add(faSpinner)
 library.add(faBell)
 library.add(faMapMarkerAlt)
 
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+
 Vue.use(new VueSocketIO({
   debug: true,
   connection: '//localhost:3000',
