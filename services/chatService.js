@@ -38,7 +38,7 @@ const chatService = {
         attributes: ['id']
       })
       if (chat) {
-        console.log(`error: chats is already exists`)
+        // console.log(`error: chats is already exists`)
         chat = chat.dataValues
         chat.chatId = chat.id
         delete chat.id
@@ -49,7 +49,7 @@ const chatService = {
         InvitedUserId: guestId
       })
       chat = { chatId: newChat.dataValues.id }
-      console.log(`chat was successfully created`)
+      // console.log(`chat was successfully created`)
       // add user info for frontend
       let user = await User.findByPk(guestId, {
         attributes: ['id', 'name', 'avatar', 'isOnline']
@@ -64,7 +64,7 @@ const chatService = {
       }
       return chat
     } catch (err) {
-      console.log(err)
+      console.log(err.toString())
     }
   },
   getNewUser: async (id) => {
@@ -166,7 +166,7 @@ const chatService = {
         attributes: ['id']
       })
       if (!chat) {
-        console.log('chat did not exist')
+        // console.log('chat did not exist')
         return null
       }
       chat = chat.dataValues
@@ -213,7 +213,7 @@ const chatService = {
         createdAt: new Date(),
         updatedAt: new Date()
       })
-      console.log('successfully create msg ')
+      // console.log('successfully create msg ')
     } catch (err) {
       console.log(err.toString())
     }

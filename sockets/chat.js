@@ -11,7 +11,6 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
         console.log(`user:${k} is log out!`)
         // update db state
         await chatService.userOffline(k)
-        // TODO: add socket.on event in Vue: updateOnlineState
         // 1. after user click chat tab
         // 2. 暫定直接消失
         io.emit('updateOnlineState', {
@@ -20,25 +19,29 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
         })
       }
     })
-    console.log('disconnected', onlineUsers)
+    // console.log('disconnected', onlineUsers)
   })
+  // 2
   socket.on('login', async (userId) => {
     // push socket id in onlineUser socketIds
     onlineUsers[userId] = onlineUsers[userId] || []
     onlineUsers[userId].push(socket.id)
-    console.log('push socket in onlineUser!', onlineUsers)
+    console.log(`push socket in onlineUser[${userId}]`, onlineUsers)
     // update user state in db
-    await chatService.userOnline(userId)
+    // 3
+    let user = await chatService.userOnline(userId)
+    // console.log(`data of user:${user}`)
     io.emit('updateOnlineState', {
       userId: userId,
       isOnline: true
+      // chat: user
     })
   })
   socket.on('logout', async (userId) => {
-    console.log('========================logout userId:', userId)
+    console.log('======================== logout userId:', userId)
     // clean socketsId
     onlineUsers[userId] = []
-    console.log('========================onlineUsers', onlineUsers)
+    console.log('======================== onlineUsers', onlineUsers)
 
     // update db
     await chatService.userOffline(userId)
@@ -47,8 +50,13 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
       isOnline: false
     })
   })
+  /*
+    開啟/關閉 無人在線上，顯示歷史聊天清單功能
+    showHistoryChats = true/false
+   */
   socket.on('fetchOnlineUser', async (myId) => {
     try {
+      let showHistoryChats = false
       console.log('==================== fetchOnlineUser', myId)
       // get history chats info from db
       let historyChats = await chatService.getChats(myId)
@@ -77,8 +85,8 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
           hasChatUsers.includes(String(e.userId))
         )
 
-        console.log('Has chat Users', hasChatUsers)
-        console.log('No chat users', noChatUsers)
+        // console.log('Has chat Users', hasChatUsers)
+        // console.log('No chat users', noChatUsers)
 
         // add noChatUsers info
         if (noChatUsers[0]) {
@@ -88,7 +96,7 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
               newChat.chatId = null
               displayChats.push(newChat)
               if (index + 1 === noChatUsers.length) {
-                console.log('some chatId is null')
+                // console.log('some chatId is null')
                 socket.emit('getOnlineUser', displayChats)
                 return
               }
@@ -98,12 +106,14 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
           })
           return
         }
-        console.log('all chat have chatId!')
+        // console.log('all chat have chatId!')
         socket.emit('getOnlineUser', displayChats)
         return
       }
-      console.log('only U is online! display history chats')
-      socket.emit('getOnlineUser', historyChats)
+      if (showHistoryChats) {
+        // console.log('only U is online! display history chats')
+        socket.emit('getOnlineUser', historyChats)
+      }
     } catch (err) {
       console.log(err.toString())
     }
@@ -119,7 +129,7 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
       // check chatId in chats ?
       if (!chat || !chat.chatId) {
         chat = await chatService.postChat(invitedUserId, guestUser)
-        console.log('create new chatId', chat)
+        // console.log('create new chatId', chat)
       }
       let chatId = chat.chatId
       // set socket room
@@ -151,7 +161,6 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
       // console.log('rooms', rooms)
       let msgs = await chatService.getMsgs(chatId)
       let users = await chatService.getChatByChatId(chatId)
-      // console.log('users', users)
       socket.emit('getChatHistory', { users, msgs })
     } catch (err) {
       console.log(err.toString())

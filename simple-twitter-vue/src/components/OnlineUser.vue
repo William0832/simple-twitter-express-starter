@@ -26,19 +26,14 @@ export default {
       console.log('onlineUsers: ', this.onlineUsers)
     },
     updateOnlineState(payload) {
-      console.log(payload)
       const { userId, isOnline } = payload
-      // console.log(this.onlineUsers)
-      // 離線消失
+      // 上線: 人數不多的情況，暫時利用現有的方法，刷新全部onlineUsers，
+      // 但如果刷全部已經太耗費資源，可以改成渲染剛上線的人就好
+      this.$socket.emit('fetchOnlineUser', this.currentUser.id)
+
+      // // 離線: 從渲染物件中移除
       if (!isOnline) {
         this.onlineUsers = this.onlineUsers.filter((e) => e.userId !== userId)
-        return
-      }
-      // TODO: 確認真的不再線 才加入 缺渲染資料
-      let onelineUserIds = this.onlineUsers.map((e) => e.userid)
-      if (!onelineUserIds.includes(userId)) {
-        // let user = { userId, name: 'test' }
-        console.log(`========= user:${userId} is online`)
       }
     }
   },
