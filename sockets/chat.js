@@ -49,53 +49,61 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
   })
   socket.on('fetchOnlineUser', async (myId) => {
     try {
-      console.log('====================fetchOnlineUser', myId)
+      console.log('==================== fetchOnlineUser', myId)
       // get history chats info from db
-      let chats = await chatService.getChats(myId)
+      let historyChats = await chatService.getChats(myId)
+      let userOfHistoryChats = historyChats.map((e) => String(e.userId))
       // get other online user id list
-      let elseOnlineUsers = Object.keys(onlineUsers).filter(
-        (e) => onlineUsers[e][0] && e !== String(myId)
-      )
-      console.log('elseOnlineUsers:', elseOnlineUsers)
-      console.log(
-        'chats userIds',
-        chats.map((e) => e.userId)
-      )
-      // ========TEST=======
-      // elseOnline8Users = ['2', '3', '6', '11']
+      let elseOnlineUsers = Object.keys(onlineUsers).filter((e) => {
+        return onlineUsers[e][0] && e !== String(myId)
+      })
+      // ======== TEST =======
+      // elseOnlineUsers = ['2', '3']
       // =======================
-      // FIXME: 多人再線的狀態，會判斷部分已存在的chatId = null
+
+      // console.log('elseOnlineUsers:', elseOnlineUsers)
+      // console.log('userOfHistoryChats', userOfHistoryChats)
+
       // get other online user chat info
       if (elseOnlineUsers[0]) {
         // compare user is in the chat
-        let hasChatUsers = []
-        chats.forEach((e) => {
-          if (elseOnlineUsers.includes(String(e.chatId))) {
-            hasChatUsers.push(String(e.chatId))
-          }
-        })
+        let hasChatUsers = elseOnlineUsers.filter((e) =>
+          userOfHistoryChats.includes(e)
+        )
         let noChatUsers = elseOnlineUsers.filter(
           (e) => hasChatUsers.indexOf(e) === -1
         )
-        chats = chats.filter((e) => hasChatUsers.includes(String(e.userId)))
+        displayChats = historyChats.filter((e) =>
+          hasChatUsers.includes(String(e.userId))
+        )
+
         console.log('Has chat Users', hasChatUsers)
         console.log('No chat users', noChatUsers)
+
         // add noChatUsers info
-        noChatUsers.forEach(async (e, index) => {
-          let newChat = await chatService.getNewUser(e)
-          newChat.chatId = null
-          chats.push(newChat)
-          if (index + 1 === noChatUsers.length) {
-            socket.emit('getOnlineUser', chats)
-            console.log('getOnlineUser', chats)
-            return
-          }
-        })
-        socket.emit('getOnlineUser', chats)
+        if (noChatUsers[0]) {
+          noChatUsers.forEach(async (e, index) => {
+            try {
+              let newChat = await chatService.getNewUser(e)
+              newChat.chatId = null
+              displayChats.push(newChat)
+              if (index + 1 === noChatUsers.length) {
+                console.log('some chatId is null')
+                socket.emit('getOnlineUser', displayChats)
+                return
+              }
+            } catch (err) {
+              console.log(err.toString())
+            }
+          })
+          return
+        }
+        console.log('all chat have chatId!')
+        socket.emit('getOnlineUser', displayChats)
         return
       }
       console.log('only U is online! display history chats')
-      socket.emit('getOnlineUser', chats)
+      socket.emit('getOnlineUser', historyChats)
     } catch (err) {
       console.log(err.toString())
     }
