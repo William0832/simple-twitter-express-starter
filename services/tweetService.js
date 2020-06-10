@@ -31,23 +31,16 @@ const tweetService = {
 
       likedTweets = likedTweets.map((like) => like.TweetId)
 
-      console.log("req.query.offset", req.query.offset)
-      console.log("req.query.limit", req.query.limit)
-      let offset = Number(req.query.offset)
-      let loadLimit = Number(req.query.limit)
 
-      let tweets = await Tweet.findAndCountAll({
+      let tweets = await Tweet.findAll({
         include: [
           { model: User, attributes: ['id', 'email', 'name', 'avatar'] },
           { model: Reply, attributes: ['id', 'UserId'] },
           { model: Like, attributes: ['id', 'UserId'] }
         ],
-        order: [['createdAt', 'DESC'], ['id', 'ASC']],
-        offset: offset,
-        limit: loadLimit
+        order: [['createdAt', 'DESC']]
       })
-
-      tweets = tweets.rows.map((tweet) => ({
+      tweets = tweets.map((tweet) => ({
         ...tweet.dataValues,
         repliesCount: tweet.Replies.length || 0,
         likesCount: tweet.Likes.length || 0,
@@ -139,22 +132,10 @@ const tweetService = {
         UserId: helpers.getUser(req).id
       })
 
-      const user = await User.findByPk(tweet.UserId, {
-        attributes: ['id', 'email', 'name', 'avatar']
-      })
-
-      let newTweet = {
-        ...tweet.dataValues,
-        User: user.dataValues,
-        repliesCount: 0,
-        likesCount: 0,
-        isLiked: false
-      }
-
       return callback({
         status: 'success',
         message: 'tweet successfully posted.',
-        newTweet
+        tweet
       })
     } catch (error) {
       console.log(error)
