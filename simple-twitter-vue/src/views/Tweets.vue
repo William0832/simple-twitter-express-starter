@@ -171,7 +171,6 @@ export default {
         const { data } = response
 
         this.tweets = data.tweets
-        this.topUsers = data.topUsers
       } catch (error) {
         Toast.fire({
           icon: 'error',
@@ -228,8 +227,6 @@ export default {
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
-        this.fetchTweets()
-
         this.fetchTopUsers()
       } catch (error) {
         Toast.fire({
@@ -248,7 +245,6 @@ export default {
           throw new Error(data.message)
         }
 
-        this.fetchTweets()
         this.fetchTopUsers()
       } catch (error) {
         Toast.fire({
