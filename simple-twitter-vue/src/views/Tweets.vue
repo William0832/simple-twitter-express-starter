@@ -47,17 +47,17 @@
 </template>
 
 <script>
-import TweetNew from "../components/TweetNew";
-import TweetIndex from "../components/TweetIndex";
-import Popular from "../components/UserTop";
-import Chat from "../components/OnlineUser";
-import ChatWindow from "../components/ChatWindow";
-import { Toast } from "../utils/helpers";
-import { mapState } from "vuex";
+import TweetNew from '../components/TweetNew'
+import TweetIndex from '../components/TweetIndex'
+import Popular from '../components/UserTop'
+import Chat from '../components/OnlineUser'
+import ChatWindow from '../components/ChatWindow'
+import { Toast } from '../utils/helpers'
+import { mapState } from 'vuex'
 
 //api
-import tweetsAPI from "../apis/tweet";
-import followshipAPI from "../apis/followship";
+import tweetsAPI from '../apis/tweet'
+import followshipAPI from '../apis/followship'
 
 export default {
   components: {
@@ -73,39 +73,38 @@ export default {
       topUsers: [],
       onlineUsers: [],
       windows: [],
-      currentTab: "Popular",
-      tabs: ["Popular", "Chat"],
+      currentTab: 'Popular',
+      tabs: ['Popular', 'Chat'],
       history: []
-    };
+    }
   },
   computed: {
-    ...mapState(["currentUser", "isAuthenticated"])
+    ...mapState(['currentUser', 'isAuthenticated'])
   },
-  created() {
-    this.fetchTweets();
-    this.socketLogin();
+  async created() {
+    await this.socketLogin()
+    await this.fetchTweets()
+    await this.fetchTopUsers()
   },
   sockets: {
     openGuestWindow(data) {
-      let { guestUser, userId } = data;
-      this.afterInviteUser(userId, guestUser);
+      let { guestUser, userId } = data
+      this.afterInviteUser(userId, guestUser)
     },
     async getChatHistory({ users, msgs }) {
       try {
-
         // let chatBox = document.querySelector("#chatbox");
-        this.history.forEach(h => {
+        this.history.forEach((h) => {
           if (h.chatId === users.chatroomId) {
-            h.messages = msgs;
+            h.messages = msgs
           }
 
-          this.windows.forEach(w => {
+          this.windows.forEach((w) => {
             if (w.id === h.chatId) {
-              w.messages = h.messages;
+              w.messages = h.messages
             }
-          });
-
-        });
+          })
+        })
 
         // console.log('使用者們',users)
         // this.users = users;
@@ -117,30 +116,29 @@ export default {
         // setTimeout(() => {
         //   chatBox.scrollTop = chatBox.scrollHeight;
         // }, 1);
-        
       } catch (error) {
-        console.error(error);
+        console.error(error)
       }
     }
   },
   methods: {
     afterInviteUser(userId, guestUser) {
-      let windows = this.windows.map(window => window.id);
+      let windows = this.windows.map((window) => window.id)
 
       if (this.windows.length === 3) {
         return Toast.fire({
-          icon: "warning",
-          title: "只能開啟3個聊天視窗！"
-        });
+          icon: 'warning',
+          title: '只能開啟3個聊天視窗！'
+        })
       } else if (windows.includes(guestUser.chatId)) {
-        return;
+        return
       } else {
         this.windows.push({
           id: guestUser.chatId,
           guestUser: guestUser
-        });
+        })
 
-        windows = this.windows.map(window => window.id);
+        windows = this.windows.map((window) => window.id)
 
         if (this.history.length === 0) {
           this.history = [
@@ -148,139 +146,152 @@ export default {
               chatId: guestUser.chatId,
               messages: []
             }
-          ];
+          ]
         } else {
-          this.history.forEach(h => {
-            windows.forEach(w => {
-              if( h.chatId !== w ) {
+          this.history.forEach((h) => {
+            windows.forEach((w) => {
+              if (h.chatId !== w) {
                 this.history = [
                   ...this.history,
                   {
                     chatId: w,
                     messages: []
                   }
-                ];
+                ]
               }
-            })            
-          });
+            })
+          })
         }
       }
     },
     async fetchTweets() {
       try {
-        const response = await tweetsAPI.getTweets();
+        const response = await tweetsAPI.getTweets()
 
-        const { data } = response;
+        const { data } = response
 
-        this.tweets = data.tweets;
-        this.topUsers = data.topUsers;
+        this.tweets = data.tweets
       } catch (error) {
         Toast.fire({
-          icon: "error",
-          title: "無法取得推特資料，請稍後再試"
-        });
+          icon: 'error',
+          title: '無法取得推特資料，請稍後再試'
+        })
+      }
+    },
+    async fetchTopUsers() {
+      try {
+        const response = await tweetsAPI.getTopUsers()
+
+        const { data } = response
+
+        this.topUsers = data.topUsers
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取得風雲人物資料，請稍後再試'
+        })
       }
     },
     async afterCreateTweet(tweet) {
       try {
         if (!tweet.description) {
-          throw new Error("Tweet can not be empty!");
+          throw new Error('Tweet can not be empty!')
         }
 
         if (tweet.description.length > 140) {
-          throw new Error("Tweet should be shorter than 140 characters!");
+          throw new Error('Tweet should be shorter than 140 characters!')
         }
 
-        const response = await tweetsAPI.tweets.create(tweet);
+        const response = await tweetsAPI.tweets.create(tweet)
 
-        const { data } = response;
+        const { data } = response
 
         //add statusText
-        if (data.status !== "success") {
-          throw new Error(data.message);
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
 
-        this.fetchTweets();
+        this.fetchTweets()
       } catch (error) {
         Toast.fire({
-          icon: "error",
+          icon: 'error',
           title: error
-        });
+        })
       }
     },
     async afterAddFollow(userId) {
       try {
-        const response = await followshipAPI.followship.create(userId);
-        const { data } = response;
+        const response = await followshipAPI.followship.create(userId)
+        const { data } = response
         //add statusText
-        if (data.status !== "success") {
-          throw new Error(data.message);
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
-        this.fetchTweets();
+        this.fetchTopUsers()
       } catch (error) {
         Toast.fire({
-          icon: "error",
+          icon: 'error',
           title: error
-        });
+        })
       }
     },
     async afterDeleteFollow(userId) {
       try {
-        const response = await followshipAPI.followship.delete(userId);
-        const { data } = response;
+        const response = await followshipAPI.followship.delete(userId)
+        const { data } = response
 
         //add statusText
-        if (data.status !== "success") {
-          throw new Error(data.message);
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
 
-        this.fetchTweets();
+        this.fetchTopUsers()
       } catch (error) {
         Toast.fire({
-          icon: "error",
+          icon: 'error',
           title: error
-        });
+        })
       }
     },
     async afterAddLike(tweetId) {
       try {
-        const response = await tweetsAPI.tweets.like(tweetId);
-        const { data } = response;
+        const response = await tweetsAPI.tweets.like(tweetId)
+        const { data } = response
 
-        if (data.status !== "success") {
-          throw new Error(data.message);
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
 
-        this.fetchTweets();
+        this.fetchTweets()
       } catch (error) {
         Toast.fire({
-          icon: "error",
+          icon: 'error',
           title: error
-        });
+        })
       }
     },
     async afterDeleteLike(tweetId) {
       try {
-        const response = await tweetsAPI.tweets.unlike(tweetId);
-        const { data } = response;
-        if (data.status !== "success") {
-          throw new Error(data.message);
+        const response = await tweetsAPI.tweets.unlike(tweetId)
+        const { data } = response
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
-        this.fetchTweets();
+        this.fetchTweets()
       } catch (error) {
         Toast.fire({
-          icon: "error",
+          icon: 'error',
           title: error
-        });
+        })
       }
     },
     closeWindow(window) {
-      this.windows = this.windows.filter(chat => chat.id !== window);
-      this.history = this.history.filter(h => h.chatId !== window)
+      this.windows = this.windows.filter((chat) => chat.id !== window)
+      this.history = this.history.filter((h) => h.chatId !== window)
     },
     socketLogin() {
-      this.$socket.emit("login", this.currentUser.id);
+      this.$socket.emit('login', this.currentUser.id)
     }
   }
-};
+}
 </script>

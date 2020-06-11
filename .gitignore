@@ -91,6 +91,3 @@ temp/*
 
 #shell scrip 
 sh
-
-# self helper
-__helper.js
