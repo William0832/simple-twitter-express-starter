@@ -147,7 +147,7 @@ router.post(
 
 // BLock
 router.post('/blocks/:blockerId', authenticated, blockController.postBlock)
-router.get('/blocks/:blockerId/', authenticated, blockController.getBlocks)
+router.get('/blocks', authenticated, blockController.getBlocks)
 router.get('blocks/:blockerId/edit', authenticated, blockController.getBlocks)
 router.delete('/blocks/:blockerId/', authenticated, blockController.deleteBlock)
 

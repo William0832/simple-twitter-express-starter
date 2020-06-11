@@ -1,7 +1,7 @@
 const blockService = require('../../services/blockService.js')
 const blockController = {
   postBlock: (req, res) => {
-    blockService.postBlocks(req, res, (data) => {
+    blockService.postBlock(req, res, (data) => {
       if (data.status === 'error') return res.status(302).json(data)
       return res.json(data)
     })
