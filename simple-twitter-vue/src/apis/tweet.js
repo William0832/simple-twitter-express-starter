@@ -7,6 +7,11 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },
+  getTopUsers() {
+    return apiHelper.get('/tweets/top_users', {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
   tweets: {
     create(tweet) {
       return apiHelper.post('/tweets', tweet, {

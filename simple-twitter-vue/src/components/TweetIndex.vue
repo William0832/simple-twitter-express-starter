@@ -2,7 +2,8 @@
   .container
     .row.border.border-secondary.rounded.my-1.p-2(v-for='tweet in tweets' :key='tweet.id')
       .col-3.d-flex.align-items-center.justify-content-center
-        img(:src="tweet.User.avatar")
+        img(:src="tweet.User.avatar" v-if="tweet.User.avatar !== null")
+        img(:src="nullAvatar" v-else)
       .col-8.text-left
         h3
           router-link(:to="{ name: 'user', params: { id:tweet.User.id }}")  @{{tweet.User.name}}
@@ -35,6 +36,7 @@ export default {
   },
   data() {
     return {
+      nullAvatar: "https://i.imgur.com/TA7O4Tm.png",
       isProcessing: false
     };
   },

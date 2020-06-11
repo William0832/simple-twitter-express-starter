@@ -81,9 +81,10 @@ export default {
   computed: {
     ...mapState(['currentUser', 'isAuthenticated'])
   },
-  created() {
-    this.fetchTweets()
-    this.socketLogin()
+  async created() {
+    await this.socketLogin()
+    await this.fetchTweets()
+    await this.fetchTopUsers()
   },
   sockets: {
     openGuestWindow(data) {
@@ -178,6 +179,20 @@ export default {
         })
       }
     },
+    async fetchTopUsers() {
+      try {
+        const response = await tweetsAPI.getTopUsers()
+
+        const { data } = response
+
+        this.topUsers = data.topUsers
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取得風雲人物資料，請稍後再試'
+        })
+      }
+    },
     async afterCreateTweet(tweet) {
       try {
         if (!tweet.description) {
@@ -214,6 +229,8 @@ export default {
           throw new Error(data.message)
         }
         this.fetchTweets()
+
+        this.fetchTopUsers()
       } catch (error) {
         Toast.fire({
           icon: 'error',
@@ -232,6 +249,7 @@ export default {
         }
 
         this.fetchTweets()
+        this.fetchTopUsers()
       } catch (error) {
         Toast.fire({
           icon: 'error',
