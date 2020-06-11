@@ -58,7 +58,13 @@
         />
       </div>
 
-      <button :disabled="isProcessing" class="btn btn-lg btn-primary btn-block mb-3" type="submit">Submit</button>
+      <button
+        :disabled="isProcessing"
+        class="btn btn-lg btn-primary btn-block mb-3"
+        type="submit"
+      >
+        Submit
+      </button>
 
       <div class="text-center mb-3">
         <p>
@@ -72,59 +78,58 @@
 </template>
 
 <script>
-import authorizationAPI from "../apis/authorization";
-import { Toast } from "../utils/helpers";
+import authorizationAPI from '../apis/authorization'
+import { Toast } from '../utils/helpers'
 
 export default {
   data() {
     return {
-      name: "",
-      email: "",
-      password: "",
-      passwordCheck: "",
+      name: '',
+      email: '',
+      password: '',
+      passwordCheck: '',
       isProcessing: false
-    };
-    
+    }
   },
   methods: {
     async handleSubmit() {
       try {
         if (!this.email || !this.password || !this.passwordCheck) {
           Toast.fire({
-            icon: "warning",
-            title: "請填入完整的 email、password 資訊"
-          });
-          return;
+            icon: 'warning',
+            title: '請填入完整的 email、password 資訊'
+          })
+          return
         }
 
-        this.isProcessing = true;
+        this.isProcessing = true
 
         const response = await authorizationAPI.signUp({
           email: this.email,
           password: this.password,
-          name: this.name? this.name : 'user name',
+          name: this.name ? this.name : 'user name',
           passwordCheck: this.passwordCheck
-        });
+        })
 
-        const { data } = response;
-
-        console.log("data", data);
+        const { data } = response
 
         //add statusText
-        if (data.status !== "success") {
-          throw new Error(data.message);
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
-
-        this.$router.push("/signin");
+        Toast.fire({
+          icon: 'success',
+          title: data.message
+        })
+        this.$router.push('/signin')
       } catch (error) {
         this.isProcessing = false
         Toast.fire({
-          icon: "warning",
-          title: "請確認您輸入了正確的帳號密碼"
-        });
-        console.log(error);
+          icon: 'warning',
+          title: error.toString()
+        })
       }
     }
   }
-};
+}
 </script>
