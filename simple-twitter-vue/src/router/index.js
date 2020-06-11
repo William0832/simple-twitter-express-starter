@@ -101,7 +101,6 @@ const router = new VueRouter({
 })
 
 
-
 router.beforeEach((async (to, from, next) => {
 
   // console.log('store', store.state)

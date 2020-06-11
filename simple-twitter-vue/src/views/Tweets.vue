@@ -59,9 +59,6 @@ import { mapState } from "vuex";
 import tweetsAPI from "../apis/tweet";
 import followshipAPI from "../apis/followship";
 
-//test
-// import ChatRoom from "../components/ChatRoom";
-
 export default {
   components: {
     TweetNew,
@@ -78,6 +75,7 @@ export default {
       windows: [],
       currentTab: "Popular",
       tabs: ["Popular", "Chat"],
+      history: []
     };
   },
   computed: {
@@ -88,10 +86,41 @@ export default {
     this.socketLogin();
   },
   sockets: {
-    // 
-    openGuestWindow(data){
-      let { guestUser, userId } = data
-      this.afterInviteUser(userId, guestUser)
+    openGuestWindow(data) {
+      let { guestUser, userId } = data;
+      this.afterInviteUser(userId, guestUser);
+    },
+    async getChatHistory({ users, msgs }) {
+      try {
+
+        // let chatBox = document.querySelector("#chatbox");
+        this.history.forEach(h => {
+          if (h.chatId === users.chatroomId) {
+            h.messages = msgs;
+          }
+
+          this.windows.forEach(w => {
+            if (w.id === h.chatId) {
+              w.messages = h.messages;
+            }
+          });
+
+        });
+
+        // console.log('使用者們',users)
+        // this.users = users;
+        // this.messages = msgs;
+        // this.window.messages = msgs;
+        // this.chatHistoryLength = msgs.length;
+
+        // 讓chatbox保持在最底部
+        // setTimeout(() => {
+        //   chatBox.scrollTop = chatBox.scrollHeight;
+        // }, 1);
+        
+      } catch (error) {
+        console.error(error);
+      }
     }
   },
   methods: {
@@ -110,6 +139,31 @@ export default {
           id: guestUser.chatId,
           guestUser: guestUser
         });
+
+        windows = this.windows.map(window => window.id);
+
+        if (this.history.length === 0) {
+          this.history = [
+            {
+              chatId: guestUser.chatId,
+              messages: []
+            }
+          ];
+        } else {
+          this.history.forEach(h => {
+            windows.forEach(w => {
+              if( h.chatId !== w ) {
+                this.history = [
+                  ...this.history,
+                  {
+                    chatId: w,
+                    messages: []
+                  }
+                ];
+              }
+            })            
+          });
+        }
       }
     },
     async fetchTweets() {
@@ -212,7 +266,6 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-
         this.fetchTweets();
       } catch (error) {
         Toast.fire({
@@ -223,6 +276,7 @@ export default {
     },
     closeWindow(window) {
       this.windows = this.windows.filter(chat => chat.id !== window);
+      this.history = this.history.filter(h => h.chatId !== window)
     },
     socketLogin() {
       this.$socket.emit("login", this.currentUser.id);

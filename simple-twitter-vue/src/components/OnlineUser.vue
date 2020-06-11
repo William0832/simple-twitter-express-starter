@@ -23,7 +23,11 @@ export default {
   sockets: {
     getOnlineUser(chats) {
       this.onlineUsers = chats
-      console.log('onlineUsers: ', this.onlineUsers)
+      // console.log('onlineUsers: ', this.onlineUsers)
+    },
+    getChatId({ chatId }){
+      this.chatId = chatId
+      console.log('ococ', this.chatId)
     }
   },
   created() {
@@ -31,7 +35,8 @@ export default {
   },
   data() {
     return {
-      onlineUsers: []
+      onlineUsers: [],
+      chatId: -1
     };
   },
   methods: {
@@ -42,16 +47,27 @@ export default {
         console.error(error);
       }
     },
-    async inviteUser(userId) {
-      await this.$socket.emit("inviteUser", {
-        invitedUserId: this.currentUser.id,
-        guestUser: userId,
-      });
-      
-      let guestUser = this.onlineUsers.filter( user => user.userId === userId)[0]
-      console.log('groupUsers', guestUser)
+    async inviteUser(userId) { 
+      try {
+        await this.$socket.emit("inviteUser", {
+          invitedUserId: this.currentUser.id,
+          guestUser: userId,
+        });
+        
+        let guestUser = this.onlineUsers.filter( user => user.userId === userId)[0]
+        console.log('groupUsers', guestUser.chatId)
 
-      this.$emit("after-invite-user", userId, guestUser);
+        setTimeout(() => {
+          if(guestUser.chatId === null) guestUser.chatId = this.chatId
+
+          // 傳到父層 /views/Tweets.vue 的method afterInviteUser()
+          this.$emit("after-invite-user", userId, guestUser);
+        }, 300);
+
+       
+      } catch(error) {
+        console.log(error)
+      }
     }
   }
 };
