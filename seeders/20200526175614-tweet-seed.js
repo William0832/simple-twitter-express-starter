@@ -1,7 +1,7 @@
 'use strict';
 const faker = require('faker')
 
-
+module.exports = {
   up: async (queryInterface, Sequelize) => {
 
     const users = await queryInterface.sequelize.query(
