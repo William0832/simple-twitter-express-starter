@@ -9,7 +9,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "cross-env NODE_ENV=development nodemon app.js",
-    "test": "cross-env NODE_ENV=test mocha test/*/*.js --exit --recursive --timeout 5000"
+    "test": "cross-env NODE_ENV=test mocha test/*/*.js --exit --recursive --timeout 5000",
+    "postinstall": "if test \"$NODE_ENV\" = \"production\" ; then npm i --prefix simple-twitter-vue && npm run build --prefix simple-twitter-vue ; fi "
   },
   "author": "",
   "license": "ISC",
@@ -38,7 +39,8 @@
     "sequelize": "^4.42.0",
     "sequelize-cli": "^5.5.0",
     "sinon": "^7.2.3",
-    "sinon-chai": "^3.3.0"
+    "sinon-chai": "^3.3.0",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "sequelize-test-helpers": "^1.0.7",

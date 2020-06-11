@@ -2,6 +2,7 @@ const likeService = require('../../services/likeService')
 
 const likeController = {
     like: (req, res) => {
+        console.log('like controller')
         likeService.like(req, res, (data) => {
             if (data.status === 'error') {
                 return res.json(data)

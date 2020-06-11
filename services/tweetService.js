@@ -31,23 +31,20 @@ const tweetService = {
 
       likedTweets = likedTweets.map((like) => like.TweetId)
 
-      console.log("req.query.offset", req.query.offset)
-      console.log("req.query.limit", req.query.limit)
+//       console.log("req.query.offset", req.query.offset)
+//       console.log("req.query.limit", req.query.limit)
       let offset = Number(req.query.offset) || 0
       let loadLimit = Number(req.query.limit) || 5
 
-      let tweets = await Tweet.findAndCountAll({
+      let tweets = await Tweet.findAll({
         include: [
           { model: User, attributes: ['id', 'email', 'name', 'avatar'] },
           { model: Reply, attributes: ['id', 'UserId'] },
           { model: Like, attributes: ['id', 'UserId'] }
         ],
-        order: [['createdAt', 'DESC'], ['id', 'ASC']],
-        offset: offset,
-        limit: loadLimit
+        order: [['createdAt', 'DESC']]
       })
-
-      tweets = tweets.rows.map((tweet) => ({
+      tweets = tweets.map((tweet) => ({
         ...tweet.dataValues,
         repliesCount: tweet.Replies.length || 0,
         likesCount: tweet.Likes.length || 0,
@@ -126,31 +123,23 @@ const tweetService = {
         })
       }
 
+      console.log(req.body)
+
       if (req.body.description.length > 140) {
         return callback({ status: 'error', message: 'description is too long' })
       }
 
       const tweet = await Tweet.create({
         description: req.body.description,
+        googleMapName: req.body.googleMapName ? req.body.googleMapName : null,
+        googleMapUrl: req.body.googleMapUrl ? req.body.googleMapUrl : null,
         UserId: helpers.getUser(req).id
       })
-
-      const user = await User.findByPk(tweet.UserId, {
-        attributes: ['id', 'email', 'name', 'avatar']
-      })
-
-      let newTweet = {
-        ...tweet.dataValues,
-        User: user.dataValues,
-        repliesCount: 0,
-        likesCount: 0,
-        isLiked: false
-      }
 
       return callback({
         status: 'success',
         message: 'tweet successfully posted.',
-        newTweet
+        tweet
       })
     } catch (error) {
       console.log(error)

@@ -1,24 +1,31 @@
-'use strict';
+'use strict'
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Tweets', {
+    return queryInterface.createTable('Messages', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      message: {
+        type: Sequelize.TEXT
+      },
       UserId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        reference: {
+          model: 'Users',
+          key: 'id'
+        }
       },
-      description: {
-        type: Sequelize.TEXT
-      },
-      googleMapName: {
-        type: Sequelize.TEXT
-      },
-      googleMapUrl: {
-        type: Sequelize.TEXT
+      ChatId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        reference: {
+          model: 'Chat',
+          key: 'id'
+        }
       },
       createdAt: {
         allowNull: false,
@@ -28,9 +35,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Tweets');
+    return queryInterface.dropTable('Messages')
   }
-};
+}
