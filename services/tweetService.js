@@ -31,6 +31,10 @@ const tweetService = {
 
       likedTweets = likedTweets.map((like) => like.TweetId)
 
+//       console.log("req.query.offset", req.query.offset)
+//       console.log("req.query.limit", req.query.limit)
+      let offset = Number(req.query.offset) || 0
+      let loadLimit = Number(req.query.limit) || 5
 
       let tweets = await Tweet.findAll({
         include: [
