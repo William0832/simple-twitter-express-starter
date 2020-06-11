@@ -45,6 +45,29 @@ const adminServices = {
       callback({ status: 'error', message: err.toString() })
     }
   },
+  getTweetReplies: async (req, res, callback) => {
+    try {
+
+      console.log('req.params.id', req.params.id)
+      let replies = await Reply.findAll({
+        where: {
+          TweetId: req.params.id
+        },
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'name']
+          }
+        ]
+
+      })
+
+
+      callback({ replies })
+    } catch (err) {
+      callback({ status: 'error', message: err.toString() })
+    }
+  },
   deleteTweet: async (req, res, callback) => {
     try {
       let tweet = await Tweet.findByPk(req.params.id)

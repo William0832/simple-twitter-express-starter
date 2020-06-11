@@ -43,7 +43,7 @@ const isOwner = (req, res, next) => {
 }
 
 const checkRoute = (req, res, next) => {
-  console.log('here!')
+  console.log('route here!')
   return next()
 }
 
@@ -87,6 +87,12 @@ router.get(
   authenticated,
   authenticatedAdmin,
   adminController.getTweets
+)
+router.get(
+  '/admin/tweets/:id/replies',
+  authenticated,
+  authenticatedAdmin,
+  adminController.getTweetReplies
 )
 router.delete(
   '/admin/tweets/:id',

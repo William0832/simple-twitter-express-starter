@@ -6,13 +6,13 @@
         rows="3"
         name="tweet"
         placeholder='What\'s on your mind?')
-    #collapseExample.collapse.row
+    #googleCheckIn.collapse.row
       .col.input-group 
         .input-group-prepend
           .input-group-text @
         input.form-control(type='text', ref='search', v-model="googleMapName", placeholder='where are you?')
     .row.d-flex.justify-content-end.mt-2
-      button.btn.btn-primary.col-2.mr-1(type='button', data-toggle='collapse', data-target='#collapseExample', aria-expanded='false', aria-controls='collapseExample')
+      button.btn.btn-primary.col-2.mr-1(type='button', data-toggle='collapse', data-target='#googleCheckIn', aria-expanded='false', aria-controls='collapseExample')
         font-awesome-icon(icon="map-marker-alt")
       button.col-2(
         type="submit"
