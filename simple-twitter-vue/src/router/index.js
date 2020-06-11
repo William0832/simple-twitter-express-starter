@@ -111,8 +111,13 @@ router.beforeEach((async (to, from, next) => {
   }
 
   // 如果 token 無效則轉址到登入頁
-  if (!isAuthenticated && to.name !== 'sign-in') {
+  if (!isAuthenticated && to.name !== 'sign-in' && to.name !== 'sign-up') {
     next('/signin')
+    return
+  }
+  
+  if (!isAuthenticated && to.name === 'sign-up') {
+    next('/signup')
     return
   }
 
