@@ -36,7 +36,9 @@
         :disabled="isProcessing"
         class="btn btn-lg btn-primary btn-block mb-3"
         type="submit"
-      >Submit</button>
+      >
+        Submit
+      </button>
 
       <div class="text-center mb-3">
         <p>
@@ -50,16 +52,16 @@
 </template>
 
 <script>
-import authorizationAPI from "../apis/authorization";
+import authorizationAPI from '../apis/authorization'
 import { Toast } from '../utils/helpers'
 
 export default {
   data() {
     return {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
       isProcessing: false
-    };
+    }
   },
   methods: {
     async handleSubmit() {
@@ -67,41 +69,41 @@ export default {
         // TODO: 向後端驗證使用者登入資訊是否合法
         if (!this.email || !this.password) {
           Toast.fire({
-            icon: "warning",
-            title: "請填入 email 和 password"
-          });
-          return;
+            icon: 'warning',
+            title: '請填入 email 和 password'
+          })
+          return
         }
 
-        this.isProcessing = true;
+        this.isProcessing = true
 
         const response = await authorizationAPI.signIn({
           email: this.email,
           password: this.password
-        });
+        })
 
-        const { data } = response;
+        const { data } = response
         //add statusText
-        if (data.status !== "success") {
-          throw new Error(data.message);
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
 
-        localStorage.setItem("token", data.token);
+        localStorage.setItem('token', data.token)
 
         //store user in vuex
-        this.$store.commit("setCurrentUser", data.user);
+        this.$store.commit('setCurrentUser', data.user)
 
-        this.$router.push("/");
+        this.$router.push('/')
       } catch (error) {
-        this.password = "";
+        this.password = ''
         Toast.fire({
-          icon: "warning",
-          title: "請確認您輸入了正確的帳號密碼"
-        });
-        this.isProcessing = false;
-        console.log(error);
+          icon: 'warning',
+          title: '請確認您輸入了正確的帳號密碼'
+        })
+        this.isProcessing = false
+        console.log(error)
       }
     }
   }
-};
+}
 </script>

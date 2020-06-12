@@ -87,13 +87,10 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  routes,
+  routes
 })
 
-
-
-router.beforeEach((async (to, from, next) => {
-
+router.beforeEach(async (to, from, next) => {
   // console.log('store', store.state)
 
   const tokenInLocalStorage = localStorage.getItem('token')
@@ -106,18 +103,27 @@ router.beforeEach((async (to, from, next) => {
   }
 
   // 如果 token 無效則轉址到登入頁
-  if (!isAuthenticated && to.name !== 'sign-in') {
-    next('/signin')
+  if (!isAuthenticated) {
+    switch (to.name) {
+      case 'sign-in':
+        next()
+        return
+      case 'sign-up':
+        next()
+        return
+    }
+
+    next('signin')
     return
   }
 
-  // 如果 token 有效則轉址到餐聽首頁
+  // 如果 token 有效則轉址到首頁
   if (isAuthenticated && to.name === 'sign-in') {
     next('/tweets')
     return
   }
 
   next()
-}))
+})
 
 export default router
