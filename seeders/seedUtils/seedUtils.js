@@ -73,7 +73,7 @@ function generateChat(usersNum, megNum) {
         messages.push({
           message: megsList[Math.floor(Math.random() * megsList.length)],
           UserId: user,
-          ChatId: chatIndex,
+          ChatId: chatIndex + 1,
           createdAt: newTime,
           updatedAt: newTime
         })
