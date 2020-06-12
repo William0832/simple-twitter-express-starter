@@ -1,28 +1,35 @@
-'use strict'
+'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Chats', {
+    return queryInterface.createTable('Notifications', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      CreatedUserId: {
+      postUserId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        reference: {
-          model: 'Users',
-          key: 'id'
-        }
       },
-      InvitedUserId: {
+      notifyUserId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        reference: {
-          model: 'Users',
-          key: 'id'
-        }
+      },
+      tweetId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      message: {
+        type: Sequelize.STRING
+      },
+      checked: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+      },
+      type: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
@@ -32,9 +39,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    })
+    });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Chats')
+    return queryInterface.dropTable('Notifications');
   }
-}
+};

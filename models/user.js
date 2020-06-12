@@ -8,7 +8,8 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       avatar: DataTypes.STRING,
       introduction: DataTypes.TEXT,
-      role: DataTypes.STRING
+      role: DataTypes.STRING,
+      isOnline: DataTypes.BOOLEAN
     },
     {}
   )
@@ -20,31 +21,31 @@ module.exports = (sequelize, DataTypes) => {
       through: models.Followship,
       foreignKey: 'followerId',
       as: 'Followings'
+    }),
+      User.belongsToMany(User, {
+        through: models.Followship,
+        foreignKey: 'followingId',
+        as: 'Followers'
+      })
+    User.belongsToMany(User, {
+      through: models.Chat,
+      foreignKey: 'CreatedUserId',
+      as: 'Creators'
     })
     User.belongsToMany(User, {
-      through: models.Followship,
-      foreignKey: 'followingId',
-      as: 'Followers'
+      through: models.Chat,
+      foreignKey: 'InvitedUserId',
+      as: 'Invitees'
     })
-    //   through: models.Chat,
-    //   foreignKey: 'CreatedUserId',
-    //   as: 'Invitees'
-    // })
-    // User.belongsToMany(User, {
-    //   through: models.Chat,
-    //   foreignKey: 'InvitedUserId',
-    //   as: 'Creators'
-    // })
-    // User.hasMany(models.Message)
-    // User.hasMany(models.Notification, {
-    //   foreignKey: 'id',
-    //   as: 'posted'
-    // })
-    // User.hasMany(models.Notification, {
-    //   foreignKey: 'id',
-    //   as: 'notified'
-    // // User.belongsToMany(User, {
-    // })
+    User.hasMany(models.Message)
+    User.hasMany(models.Notification, {
+      foreignKey: 'id',
+      as: 'posted'
+    })
+    User.hasMany(models.Notification, {
+      foreignKey: 'id',
+      as: 'notified'
+    })
   }
   return User
 }

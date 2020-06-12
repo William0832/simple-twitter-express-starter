@@ -12,13 +12,18 @@ module.exports = {
         type: Sequelize.TEXT
       },
       UserId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        reference: {
+          model: 'Users',
+          key: 'id'
+        }
       },
       ChatId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         reference: {
-          model: 'chats',
+          model: 'Chat',
           key: 'id'
         }
       },

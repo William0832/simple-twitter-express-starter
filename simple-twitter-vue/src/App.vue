@@ -8,8 +8,22 @@
 </template>
 
 <script>
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "./components/Navbar";
+
+window.checkAndAttachMapScript = function(callback) {
+  if (window.google) {
+    // If you're using vue cli, then directly checking
+    // 'google' obj will throw an error at the time of transpiling.
+    callback();
+    return true;
+  }
+
+  window.mapApiInitialized = callback;
+  let script = document.createElement("script");
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.VUE_APP_Google_Map_Key}&libraries=places,geometry&callback=mapApiInitialized`;
+  document.body.appendChild(script);
+};
 
 export default {
   name: "App",

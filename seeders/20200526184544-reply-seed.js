@@ -32,5 +32,3 @@ module.exports = {
     return queryInterface.bulkDelete('Replies', null, { truncate: true });
   }
 };
-
-//light up in git
