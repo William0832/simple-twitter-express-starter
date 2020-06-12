@@ -31,7 +31,7 @@
             :current-user='currentUser'
             @after-invite-user="afterInviteUser"
           )    
-      .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0; min-height: 362.1px")
+      .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0; min-height: 362.1px  pointer-events: none")
         ChatWindow(
         v-for="window in windows"
         :key="window.id"
