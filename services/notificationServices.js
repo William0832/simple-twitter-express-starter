@@ -27,7 +27,10 @@ const notificationService = {
     try {
       let notifications = await Notification.findAll({
         where: { notifyUserId: userId },
-        order: [['createdAt', 'DESC']]
+        order: [['createdAt', 'DESC']],
+        include: [{
+          model: User, as: 'postUser', attributes: ['id', 'avatar']
+        }]
       })
 
       notifications = notifications.map(notification => {
