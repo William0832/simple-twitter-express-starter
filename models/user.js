@@ -35,16 +35,16 @@ module.exports = (sequelize, DataTypes) => {
     //   foreignKey: 'InvitedUserId',
     //   as: 'Creators'
     // })
-    User.hasMany(models.Message)
-    User.hasMany(models.Notification, {
-      foreignKey: 'id',
-      as: 'posted'
-    })
-    User.hasMany(models.Notification, {
-      foreignKey: 'id',
-      as: 'notified'
-    // User.belongsToMany(User, {
-    })
+    // User.hasMany(models.Message)
+    // User.hasMany(models.Notification, {
+    //   foreignKey: 'id',
+    //   as: 'posted'
+    // })
+    // User.hasMany(models.Notification, {
+    //   foreignKey: 'id',
+    //   as: 'notified'
+    // // User.belongsToMany(User, {
+    // })
   }
   return User
 }

@@ -8,37 +8,37 @@
           TweetIndex( :tweets='tweets'
             @after-add-like='afterAddLike'
             @after-delete-like='afterDeleteLike')
-      .col-md-4.mh-100.overflow-auto 
-        ul.nav.nav-tabs
-          li.nav-item(
-            v-for="tab in tabs" 
-            v-bind:key="tab"
-            v-bind:class="['tab-button', { active: currentTab === tab }]"
-            v-on:click="currentTab = tab"
-          )
-            a.nav-link(href='#') {{tab}}        
-        
-        Popular(
-          v-if="currentTab === 'Popular'" 
-          :top-users='topUsers'
-          :current-user='currentUser'
-          @after-add-follow='afterAddFollow'
-          @after-delete-follow='afterDeleteFollow'
-        )
+        .col-md-4.mh-100.overflow-auto 
+          ul.nav.nav-tabs
+            li.nav-item(
+              v-for="tab in tabs" 
+              v-bind:key="tab"
+              v-bind:class="['tab-button', { active: currentTab === tab }]"
+              v-on:click="currentTab = tab"
+            )
+              a.nav-link(href='#') {{tab}}        
           
-        Chat( 
-          v-if="currentTab === 'Chat'" 
-          :current-user='currentUser'
-          @after-invite-user="afterInviteUser"
-        )    
-    .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0; min-height: 362.1px")
-      ChatWindow(
-      v-for="window in windows"
-      :key="window.id"
-      :window="window"
-      @after-close="closeWindow" 
-      style="margin: 0 0.3%"
-      )
+          Popular(
+            v-if="currentTab === 'Popular'" 
+            :top-users='topUsers'
+            :current-user='currentUser'
+            @after-add-follow='afterAddFollow'
+            @after-delete-follow='afterDeleteFollow'
+          )
+            
+          Chat( 
+            v-if="currentTab === 'Chat'" 
+            :current-user='currentUser'
+            @after-invite-user="afterInviteUser"
+          )    
+      .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0; min-height: 362.1px")
+        ChatWindow(
+        v-for="window in windows"
+        :key="window.id"
+        :window="window"
+        @after-close="closeWindow" 
+        style="margin: 0 0.3%"
+        )
 
       //- 有閒情逸致再做icon縮小按鈕 
       //- div(style="height: 50%")
@@ -306,7 +306,7 @@ export default {
     },
     socketLogin() {
       this.$socket.emit("login", this.currentUser.id);
-      },
+    },
     async loadMore() {
       this.busy = true;
       let tweetCountsBeforeLoadMore = this.tweets.length;
@@ -316,7 +316,8 @@ export default {
       // stops loading more data while no more new data in DB
       if (this.tweets.length !== tweetCountsBeforeLoadMore) {
         this.busy = false;
-    }}
+      }
+    }
   }
 };
 </script>
