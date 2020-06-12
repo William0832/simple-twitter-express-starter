@@ -206,7 +206,7 @@ export default {
           throw new Error("Tweet should be shorter than 140 characters!");
         }
 
-        const response = await tweetsAPI.tweets.create(tweet.description);
+        const response = await tweetsAPI.tweets.create(tweet);
 
         const { data } = response;
 
