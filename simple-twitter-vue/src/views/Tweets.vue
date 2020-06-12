@@ -8,20 +8,50 @@
           TweetIndex( :tweets='tweets'
             @after-add-like='afterAddLike'
             @after-delete-like='afterDeleteLike')
-        .col-md-4.mh-100.overflow-auto 
-          h4 Popular users
-          UserTop( 
-            :top-users='topUsers'
-            :current-user='currentUser'
-            @after-add-follow='afterAddFollow'
-            @after-delete-follow='afterDeleteFollow'
-            )
+      .col-md-4.mh-100.overflow-auto 
+        ul.nav.nav-tabs
+          li.nav-item(
+            v-for="tab in tabs" 
+            v-bind:key="tab"
+            v-bind:class="['tab-button', { active: currentTab === tab }]"
+            v-on:click="currentTab = tab"
+          )
+            a.nav-link(href='#') {{tab}}        
+        
+        Popular(
+          v-if="currentTab === 'Popular'" 
+          :top-users='topUsers'
+          :current-user='currentUser'
+          @after-add-follow='afterAddFollow'
+          @after-delete-follow='afterDeleteFollow'
+        )
+          
+        Chat( 
+          v-if="currentTab === 'Chat'" 
+          :current-user='currentUser'
+          @after-invite-user="afterInviteUser"
+        )    
+    .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0; min-height: 362.1px")
+      ChatWindow(
+      v-for="window in windows"
+      :key="window.id"
+      :window="window"
+      @after-close="closeWindow" 
+      style="margin: 0 0.3%"
+      )
+
+      //- 有閒情逸致再做icon縮小按鈕 
+      //- div(style="height: 50%")
+      //-   button.btn-btn-light(style="border-radius: 50%; background-img: ")
+
 </template>
 
 <script>
 import TweetNew from "../components/TweetNew";
 import TweetIndex from "../components/TweetIndex";
-import UserTop from "../components/UserTop";
+import Popular from "../components/UserTop";
+import Chat from "../components/OnlineUser";
+import ChatWindow from "../components/ChatWindow";
 import { Toast } from "../utils/helpers";
 import { mapState } from "vuex";
 import infiniteScroll from "vue-infinite-scroll";
@@ -34,25 +64,110 @@ export default {
   components: {
     TweetNew,
     TweetIndex,
-    UserTop
+    Popular,
+    Chat,
+    ChatWindow
   },
   data() {
     return {
       tweets: [],
       topUsers: [],
+      onlineUsers: [],
+      windows: [],
+      currentTab: "Popular",
+      tabs: ["Popular", "Chat"],
+      history: [],
       busy: true
     };
-  },
-  async created() {
-    await this.fetchTweets(this.tweets.length, 10);
-    await this.fetchTopUsers();
-    this.busy = false;
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"])
   },
+  async created() {
+    await this.fetchTweets(this.tweets.length, 10);
+    await this.socketLogin();
+    await this.fetchTopUsers();
+    this.busy = false;
+  },
+  sockets: {
+    openGuestWindow(data) {
+      let { guestUser, userId } = data;
+      this.afterInviteUser(userId, guestUser);
+    },
+    async getChatHistory({ users, msgs }) {
+      try {
+        // let chatBox = document.querySelector("#chatbox");
+        this.history.forEach(h => {
+          if (h.chatId === users.chatroomId) {
+            h.messages = msgs;
+          }
+
+          this.windows.forEach(w => {
+            if (w.id === h.chatId) {
+              w.messages = h.messages;
+            }
+          });
+        });
+
+        // console.log('使用者們',users)
+        // this.users = users;
+        // this.messages = msgs;
+        // this.window.messages = msgs;
+        // this.chatHistoryLength = msgs.length;
+
+        // 讓chatbox保持在最底部
+        // setTimeout(() => {
+        //   chatBox.scrollTop = chatBox.scrollHeight;
+        // }, 1);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  },
   directives: { infiniteScroll },
   methods: {
+    afterInviteUser(userId, guestUser) {
+      let windows = this.windows.map(window => window.id);
+
+      if (this.windows.length === 3) {
+        return Toast.fire({
+          icon: "warning",
+          title: "只能開啟3個聊天視窗！"
+        });
+      } else if (windows.includes(guestUser.chatId)) {
+        return;
+      } else {
+        this.windows.push({
+          id: guestUser.chatId,
+          guestUser: guestUser
+        });
+
+        windows = this.windows.map(window => window.id);
+
+        if (this.history.length === 0) {
+          this.history = [
+            {
+              chatId: guestUser.chatId,
+              messages: []
+            }
+          ];
+        } else {
+          this.history.forEach(h => {
+            windows.forEach(w => {
+              if (h.chatId !== w) {
+                this.history = [
+                  ...this.history,
+                  {
+                    chatId: w,
+                    messages: []
+                  }
+                ];
+              }
+            });
+          });
+        }
+      }
+    },
     async fetchTweets(offset, limit) {
       try {
         const response = await tweetsAPI.getTweets(offset, limit);
@@ -111,14 +226,12 @@ export default {
     async afterAddFollow(userId) {
       try {
         const response = await followshipAPI.followship.create(userId);
-
         const { data } = response;
 
         //add statusText
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-
         this.fetchTopUsers();
       } catch (error) {
         Toast.fire({
@@ -130,10 +243,7 @@ export default {
     async afterDeleteFollow(userId) {
       try {
         const response = await followshipAPI.followship.delete(userId);
-
         const { data } = response;
-
-        console.log(userId);
 
         //add statusText
         if (data.status !== "success") {
@@ -155,7 +265,6 @@ export default {
         const response = await tweetsAPI.tweets.like(tweetId);
         const { data } = response;
 
-        //add statusText
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -175,7 +284,6 @@ export default {
       try {
         console.log("tweetId", tweetId, "index", index);
         const response = await tweetsAPI.tweets.unlike(tweetId);
-
         const { data } = response;
 
         //add statusText
@@ -192,6 +300,13 @@ export default {
         });
       }
     },
+    closeWindow(window) {
+      this.windows = this.windows.filter(chat => chat.id !== window);
+      this.history = this.history.filter(h => h.chatId !== window);
+    },
+    socketLogin() {
+      this.$socket.emit("login", this.currentUser.id);
+      },
     async loadMore() {
       this.busy = true;
       let tweetCountsBeforeLoadMore = this.tweets.length;
@@ -201,8 +316,7 @@ export default {
       // stops loading more data while no more new data in DB
       if (this.tweets.length !== tweetCountsBeforeLoadMore) {
         this.busy = false;
-      }
-    }
+    }}
   }
 };
 </script>

@@ -87,13 +87,10 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  routes,
+  routes
 })
 
-
-
-router.beforeEach((async (to, from, next) => {
-
+router.beforeEach(async (to, from, next) => {
   // console.log('store', store.state)
 
   const tokenInLocalStorage = localStorage.getItem('token')
@@ -118,6 +115,6 @@ router.beforeEach((async (to, from, next) => {
   }
 
   next()
-}))
+})
 
 export default router
