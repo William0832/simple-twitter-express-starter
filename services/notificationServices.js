@@ -88,6 +88,7 @@ const notificationService = {
       usersLikedTweet = usersLikedTweet
         .map(like => { return like.User.dataValues })
         .filter(user => user.id !== userId) //Prevent current user to notify themselves
+        .filter(user => user.id !== repliedTweetUserId) //Prevent notify tweet owner twice
 
 
       if (usersLikedTweet.length) {
