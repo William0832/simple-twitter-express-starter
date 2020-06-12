@@ -86,8 +86,8 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-# temp img
+# temp imgs
 temp/*
 
-#shell scrip 
+# shell script
 sh

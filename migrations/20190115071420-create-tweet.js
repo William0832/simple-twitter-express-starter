@@ -14,12 +14,6 @@ module.exports = {
       description: {
         type: Sequelize.TEXT
       },
-      googleMapName: {
-        type: Sequelize.TEXT
-      },
-      googleMapUrl: {
-        type: Sequelize.TEXT
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

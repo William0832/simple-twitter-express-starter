@@ -2,8 +2,9 @@ import { apiHelper } from '../utils/helpers'
 const getToken = () => localStorage.getItem('token')
 
 export default {
-  getTweets() {
-    return apiHelper.get('/tweets', {
+  getTweets(offset, limit) {
+    const searchParams = new URLSearchParams({ offset, limit })
+    return apiHelper.get(`/tweets?${searchParams.toString()}`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },
@@ -13,8 +14,8 @@ export default {
     })
   },
   tweets: {
-    create(tweet) {
-      return apiHelper.post('/tweets', tweet, {
+    create(description) {
+      return apiHelper.post('/tweets', { description }, {
         headers: { Authorization: `Bearer ${getToken()}` },
         validateStatus: function (status) {
           return status < 500; // Resolve only if the status code is less than 500

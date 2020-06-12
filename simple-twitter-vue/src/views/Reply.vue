@@ -2,7 +2,10 @@
   .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-5
       .row.flex-grow-1.overflow-hidden
         .col-md-4.mh-100.overflow-auto
-          UserProfileCard(:user ='user')
+          UserProfileCard(
+            :user ='user'
+            @after-follow-user="afterFollowUser"
+            @after-unfollow-user="afterUnfollowUser")
         .col-md-8.mh-100.overflow-auto
           ReplyTweet(
             :tweet ='tweet' 
@@ -19,7 +22,6 @@ import Replies from "../components/Replies";
 import ReplyNew from "../components/ReplyNew";
 import UserProfileCard from "../components/UserProfileCard";
 import { Toast } from "../utils/helpers";
-import { mapState } from "vuex";
 
 //api
 import replyAPI from "../apis/reply";
@@ -57,9 +59,6 @@ export default {
     const { tweet_id: tweetId } = this.$route.params;
     this.fetchTweet(tweetId);
     this.fetchReplies(tweetId);
-  },
-  computed: {
-    ...mapState(["currentUser", "isAuthenticated"])
   },
   methods: {
     async fetchTweet(tweetId) {
@@ -123,12 +122,6 @@ export default {
         }
 
         this.fetchReplies(tweetId);
-        console.log("reply notify");
-        this.$socket.emit("reply", {
-          userId: this.currentUser.id,
-          tweetId: tweetId,
-          type: "reply"
-        });
       } catch (error) {
         console.log(error);
         Toast.fire({
@@ -174,6 +167,24 @@ export default {
           icon: "error",
           title: error
         });
+      }
+    },
+    afterFollowUser(userId) {
+      if (userId === this.user.id) {
+        this.user = {
+          ...this.user,
+          followerCount: this.user.followerCount + 1,
+          isFollowed: true
+        };
+      }
+    },
+    afterUnfollowUser(userId) {
+      if (userId === this.user.id) {
+        this.user = {
+          ...this.user,
+          followerCount: this.user.followerCount - 1,
+          isFollowed: false
+        };
       }
     }
   }

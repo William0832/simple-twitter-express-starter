@@ -8,8 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       avatar: DataTypes.STRING,
       introduction: DataTypes.TEXT,
-      role: DataTypes.STRING,
-      isOnline: DataTypes.BOOLEAN
+      role: DataTypes.STRING
     },
     {}
   )
@@ -19,32 +18,13 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.Like)
     User.belongsToMany(User, {
       through: models.Followship,
+      foreignKey: 'followingId',
+      as: 'Followers'
+    })
+    User.belongsToMany(User, {
+      through: models.Followship,
       foreignKey: 'followerId',
       as: 'Followings'
-    }),
-      User.belongsToMany(User, {
-        through: models.Followship,
-        foreignKey: 'followingId',
-        as: 'Followers'
-      })
-    User.belongsToMany(User, {
-      through: models.Chat,
-      foreignKey: 'CreatedUserId',
-      as: 'Creators'
-    })
-    User.belongsToMany(User, {
-      through: models.Chat,
-      foreignKey: 'InvitedUserId',
-      as: 'Invitees'
-    })
-    User.hasMany(models.Message)
-    User.hasMany(models.Notification, {
-      foreignKey: 'id',
-      as: 'posted'
-    })
-    User.hasMany(models.Notification, {
-      foreignKey: 'id',
-      as: 'notified'
     })
   }
   return User
