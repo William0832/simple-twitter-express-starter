@@ -44,29 +44,40 @@ const notificationService = {
 
   postNotification: async (userId, tweetId, type) => {
     try {
+
       let usersLikedTweet = await Like.findAll({
         where: { TweetId: tweetId },
         attributes: ['UserId'],
         include: [{ model: User, attributes: ['id', 'name'] }]
       })
 
+
+
       const postUser = await User.findByPk(userId, {
         attributes: ['name']
       })
 
-      usersLikedTweet = usersLikedTweet.map(like => { return like.User.dataValues })
+      usersLikedTweet = usersLikedTweet
+        .map(like => { return like.User.dataValues })
+        .filter(user => user.id !== userId) //Prevent current user to notify themselves
 
-      usersLikedTweet.forEach(async function addNotification(user) {
-        await Notification.create({
-          postUserId: userId,
-          notifyUserId: user.id,
-          tweetId: tweetId,
-          message: `${postUser.dataValues.name} had replied to tweet you liked!`,
-          checked: false,
-          type: type
-        }
-        )
-      })
+
+      if (usersLikedTweet.length) {
+        usersLikedTweet.forEach(async function addNotification(user) {
+          await Notification.create({
+            postUserId: userId,
+            notifyUserId: user.id,
+            tweetId: tweetId,
+            message: `${postUser.dataValues.name} had replied to tweet you liked!`,
+            checked: false,
+            type: type
+          })
+        })
+
+        return { status: 'success' }
+      }
+
+      return { status: 'empty' } //no notification added
     } catch (error) {
       console.error(error)
     }

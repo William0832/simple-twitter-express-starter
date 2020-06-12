@@ -4,9 +4,14 @@ module.exports = (io, socket) => {
   socket.on('reply', async (payload) => {
     const { userId, tweetId, type } = payload
     // console.log('reply notification')
-    await notificationService.postNotification(userId, tweetId, type)
+    const notified = await notificationService.postNotification(userId, tweetId, type)
 
-    io.emit('newReply')
+    //only notify online users when new notification was added
+    if (notified.status === 'success') {
+      console.log("io.emit('newReply')")
+      io.emit('newReply')
+    }
+
   })
   socket.on('getNotifiations', async (userId) => {
     // console.log('fetch notification')
