@@ -127,12 +127,14 @@ export default {
 
         this.fetchReplies(tweetId);
 
-        console.log("reply notify");
-        this.$socket.emit("reply", {
-          userId: this.currentUser.id,
-          tweetId: tweetId,
-          type: "reply"
-        });
+        // reply notify
+        if (this.user.id !== this.currentUser.id) {
+          this.$socket.emit("reply", {
+            userId: this.currentUser.id,
+            tweetId: tweetId,
+            type: "reply"
+          });
+        }
       } catch (error) {
         console.log(error);
         Toast.fire({
