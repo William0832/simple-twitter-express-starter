@@ -13,37 +13,38 @@
 
 
       tbody
-        template(v-for="tweet in tweets"  style="height: 50px")
+        template(v-for="(tweet,index) in tweets"  style="height: 50px")
           tr
             th(scope='row') {{tweet.id}}
             td.text-left {{tweet.description }}
             td.text-left {{tweet.User.name }}
             td {{tweet.createdAt | formatTime}}
             td.align-middle
-              button.btn-light(type='button', aria-label='Replies' @click='fetchReplies(tweet.id)')
+              button.btn-light(v-if="!tweet.showReplies" type='button', aria-label='Replies' @click='showReplies(index)')
                 span(aria-hidden='true') ▼
+              button.btn-light(v-else type='button', aria-label='Replies' @click='showReplies(index)')
+                span(aria-hidden='true') ▲
             td.align-middle
               button.btn-danger(type='button', aria-label='Close' @click.stop.prevent='deteleTweet(tweet.id)')
                 span(aria-hidden='true') ×
-          tr.collapse.bg-secondary(style="width: 100%" :ref="tweet.id" :class="{show:collapsed}")
+          tr.collapse.bg-secondary(style="width: 100%" :ref="tweet.id" :class="{show:tweet.showReplies}")
             td(colspan="6" )
               table.table.table-hover
                 thead.thead-light
                   tr
                     th(scope='col' style="width: 5%") #id
-                    th(scope='col' style="width: 80%") Reply
+                    th(scope='col' style="width: 70%") Reply
                     th(scope='col') User
                 tbody
-                  tr
-                    th(scope='row') {{tweet.id}}
-                    td.text-left {{tweet.description }}
-                    td.text-left {{tweet.User.name }}
+                  tr.text-light(v-for="reply in tweet.Replies"  style="height: 50px")
+                    th(scope='row') {{reply.id}}
+                    td.text-left {{reply.comment |peek }}
+                    td.text-left {{reply.User.name }}
     
 </template>
 
 <script>
 import { timeFilter } from "../utils/mixins";
-import adminAPI from "../apis/admin";
 
 export default {
   mixins: [timeFilter],
@@ -52,18 +53,6 @@ export default {
       type: Array,
       required: true
     }
-  },
-  data() {
-    return {
-      replies: {},
-      collapsed: false
-    };
-  },
-  created() {
-    this.tweets.forEach(tweet => {
-      console.log(tweet.id);
-      this.replies[tweet.id] = [];
-    });
   },
   filters: {
     peek(description) {
@@ -77,20 +66,16 @@ export default {
     deteleTweet(tweetId) {
       this.$emit("after-delete-tweet", tweetId);
     },
-    async fetchReplies(tweetId) {
-      this.collapsed = false;
-      console.log(this.$refs.tweetId);
-      this.$refs.tweetId.classList.toggle("show");
-
-      try {
-        const res = await adminAPI.getReplies(tweetId);
-        const { replies } = res.data;
-        console.log(replies);
-
-        this.replies[tweetId] = replies;
-      } catch (err) {
-        console.log(err);
+    showReplies(index) {
+      if (this.tweets[index].showReplies) {
+        this.tweets[index].showReplies = false;
+        return;
       }
+
+      this.tweets.forEach(tweet => {
+        tweet.showReplies = false;
+      });
+      this.tweets[index].showReplies = true;
     }
   }
 };

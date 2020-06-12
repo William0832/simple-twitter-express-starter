@@ -7,12 +7,6 @@ const adminController = {
       return res.json(data)
     })
   },
-  getTweetReplies: (req, res) => {
-    adminServices.getTweetReplies(req, res, (data) => {
-      if (data.status === 'error') return res.json(data)
-      return res.json(data)
-    })
-  },
   deleteTweet: (req, res) =>
     adminServices.deleteTweet(req, res, (data) => res.status(302).json(data)),
   getUsers: (req, res) =>

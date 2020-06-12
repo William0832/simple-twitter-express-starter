@@ -12,11 +12,6 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },
-  getReplies(tweetId) {
-    return apiHelper.get(`/admin/tweets/${tweetId}/replies`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
-    })
-  },
   deleteTweets(id) {
     return apiHelper.delete(`/admin/tweets/${id}`, {
       headers: { Authorization: `Bearer ${getToken()}` },

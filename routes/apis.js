@@ -88,12 +88,6 @@ router.get(
   authenticatedAdmin,
   adminController.getTweets
 )
-router.get(
-  '/admin/tweets/:id/replies',
-  authenticated,
-  authenticatedAdmin,
-  adminController.getTweetReplies
-)
 router.delete(
   '/admin/tweets/:id',
   authenticated,
