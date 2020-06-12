@@ -1,8 +1,8 @@
-const db = require('../models')
-const sequelize = require('sequelize')
-const Tweet = db.Tweet
-const User = db.User
-const Reply = db.Reply
+const db = require('../models');
+const sequelize = require('sequelize');
+const Tweet = db.Tweet;
+const User = db.User;
+const Reply = db.Reply;
 const helpers = require('../_helpers');
 
 const replyService = {
@@ -12,16 +12,16 @@ const replyService = {
         attributes: ['id'],
         include: [
           {
-            model: Reply, attributes: ['id', 'comment', 'createdAt'],
+            model: Reply,
+            attributes: ['id', 'comment', 'createdAt'],
             include: [{ model: User, attributes: ['id', 'name', 'avatar'] }]
           }
         ]
-      })
+      });
 
       return callback({
         tweet
-      })
-
+      });
     } catch (error) {
       console.log(error);
     }
@@ -32,21 +32,23 @@ const replyService = {
       // if (!req.body.comment) {
       //   return callback({ status: 'error', message: "reply didn't exist" })
       // }
-      console.log(req.body.comment)
+      // console.log(req.body.comment)
 
       const reply = await Reply.create({
         UserId: helpers.getUser(req).id,
         TweetId: req.params.tweet_id,
-        comment: req.body.comment,
-      })
+        comment: req.body.comment
+      });
 
-      return callback({ status: "success", message: 'reply successfully posted.', reply })
-    }
-    catch (error) {
+      return callback({
+        status: 'success',
+        message: 'reply successfully posted.',
+        reply
+      });
+    } catch (error) {
       console.error(error);
     }
   }
-}
+};
 
-
-module.exports = replyService
+module.exports = replyService;
