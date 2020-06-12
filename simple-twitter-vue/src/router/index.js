@@ -80,6 +80,11 @@ const routes = [
     component: () => import('../views/Reply')
   },
   {
+    path: '/hashtag',
+    name: 'hashtag',
+    component: () => import('../views/Hashtag')
+  },
+  {
     path: '*',
     name: 'not-found',
     component: NotFound
