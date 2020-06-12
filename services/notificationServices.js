@@ -46,17 +46,44 @@ const notificationService = {
   postReplyNotification: async (userId, tweetId, type) => {
     try {
 
+      let newNotifications = false
+
+      //fetch user name who activated notification 
+      const postUser = await User.findByPk(userId, {
+        attributes: ['name']
+      })
+
+
+      //notify tweet's publisher
+      const RepliedTweet = await Tweet.findByPk(tweetId, {
+        attributes: ['UserId']
+      })
+
+      const repliedTweetUserId = RepliedTweet.dataValues.UserId
+
+
+      //prevent user to notify themselves with their own action
+      if (repliedTweetUserId && repliedTweetUserId !== userId) {
+        await Notification.create({
+          postUserId: userId,
+          notifyUserId: repliedTweetUserId,
+          tweetId: tweetId,
+          message: `${postUser.dataValues.name} had replied your tweet!`,
+          checked: false,
+          type: type
+        })
+
+
+        newNotifications = true
+      }
+
+      // notify users who liked this tweet
       let usersLikedTweet = await Like.findAll({
         where: { TweetId: tweetId },
         attributes: ['UserId'],
         include: [{ model: User, attributes: ['id', 'name'] }]
       })
 
-
-
-      const postUser = await User.findByPk(userId, {
-        attributes: ['name']
-      })
 
       usersLikedTweet = usersLikedTweet
         .map(like => { return like.User.dataValues })
@@ -69,12 +96,16 @@ const notificationService = {
             postUserId: userId,
             notifyUserId: user.id,
             tweetId: tweetId,
-            message: `${postUser.dataValues.name} had replied to tweet you liked!`,
+            message: `${postUser.dataValues.name} had replied a tweet you liked!`,
             checked: false,
             type: type
           })
         })
 
+        newNotifications = true
+      }
+
+      if (newNotifications) {
         return { status: 'success' }
       }
 
