@@ -152,6 +152,12 @@ export default {
         }
 
         this.fetchTweet(tweetId);
+
+        this.$socket.emit("like", {
+          userId: this.currentUser.id,
+          tweetId: tweetId,
+          type: "like"
+        });
       } catch (error) {
         Toast.fire({
           icon: "error",

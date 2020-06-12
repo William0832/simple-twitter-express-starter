@@ -26,7 +26,8 @@ const notificationService = {
   getNotifications: async (userId) => {
     try {
       let notifications = await Notification.findAll({
-        where: { notifyUserId: userId }
+        where: { notifyUserId: userId },
+        order: [['createdAt', 'DESC']]
       })
 
       notifications = notifications.map(notification => {
@@ -42,7 +43,7 @@ const notificationService = {
     }
   },
 
-  postNotification: async (userId, tweetId, type) => {
+  postReplyNotification: async (userId, tweetId, type) => {
     try {
 
       let usersLikedTweet = await Like.findAll({
@@ -73,6 +74,42 @@ const notificationService = {
             type: type
           })
         })
+
+        return { status: 'success' }
+      }
+
+      return { status: 'empty' } //no notification added
+    } catch (error) {
+      console.error(error)
+    }
+  },
+
+  postLikeNotification: async (userId, tweetId, type) => {
+    try {
+
+      const LikedTweet = await Tweet.findByPk(tweetId, {
+        attributes: ['UserId']
+      })
+
+      const postUser = await User.findByPk(userId, {
+        attributes: ['name']
+      })
+
+      const notifyUserId = LikedTweet.dataValues.UserId
+
+      console.log(notifyUserId)
+
+      //prevent user to notify themselves with their own action
+      if (notifyUserId && notifyUserId !== userId) {
+        await Notification.create({
+          postUserId: userId,
+          notifyUserId: notifyUserId,
+          tweetId: tweetId,
+          message: `${postUser.dataValues.name} had liked your tweet!`,
+          checked: false,
+          type: type
+        })
+
 
         return { status: 'success' }
       }

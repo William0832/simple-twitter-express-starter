@@ -31,7 +31,7 @@
             :current-user='currentUser'
             @after-invite-user="afterInviteUser"
           )    
-      .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0; min-height: 362.1px  pointer-events: none")
+      .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0; min-height: 362.1px pointer-events: none")
         ChatWindow(
         v-for="window in windows"
         :key="window.id"
@@ -271,6 +271,12 @@ export default {
 
         this.tweets[index].isLiked = true;
         this.tweets[index].likesCount += 1;
+
+        this.$socket.emit("like", {
+          userId: this.currentUser.id,
+          tweetId: tweetId,
+          type: "like"
+        });
       } catch (error) {
         Toast.fire({
           icon: "error",

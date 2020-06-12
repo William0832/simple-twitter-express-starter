@@ -60,7 +60,7 @@ export default {
       console.log("returnNotificationCounts");
       this.notificationCounts = counts;
     },
-    newReply() {
+    newNotifications() {
       console.log("newReply");
       this.fetchNotificationCounts();
     }
