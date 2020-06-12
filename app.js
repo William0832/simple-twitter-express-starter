@@ -22,20 +22,25 @@ const passport = require('./config/passport')
 app.locals.moment = require('moment') //let moment function available in pug templates
 
 //socket requirement
-const server = require('http').createServer(app)
-const io = require('socket.io')(server)
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 const socketPort = 4000
 
 app.use(cors()) // cors 的預設為全開放
 // use helpers.getUser(req) to replace req.user
 // use helpers.ensureAuthenticated(req) to replace req.isAuthenticated()
 
+
 //middleware
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(methodOverride('_method'))
-app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
+let sessionMiddleware = session({ secret: 'secret', resave: false, saveUninitialized: false })
+app.use(sessionMiddleware)
+io.use(function (socket, next) {
+  sessionMiddleware(socket.request, socket.request.res || {}, next);
+})
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())

@@ -1,44 +1,44 @@
 <template lang="pug">
-  .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-5
-    .row.flex-grow-1.overflow-hidden
-      .col-md-8.mh-100.overflow-auto
-        TweetNew(
-          :user-id='currentUser.id' 
-          @after-create-tweet='afterCreateTweet')
-        TweetIndex( :tweets='tweets'
-          @after-add-like='afterAddLike'
-          @after-delete-like='afterDeleteLike')
-      .col-md-4.mh-100.overflow-auto 
-        ul.nav.nav-tabs
-          li.nav-item(
-            v-for="tab in tabs" 
-            v-bind:key="tab"
-            v-bind:class="['tab-button', { active: currentTab === tab }]"
-            v-on:click="currentTab = tab"
-          )
-            a.nav-link(href='#') {{tab}}        
-        
-        Popular(
-          v-if="currentTab === 'Popular'" 
-          :top-users='topUsers'
-          :current-user='currentUser'
-          @after-add-follow='afterAddFollow'
-          @after-delete-follow='afterDeleteFollow'
-        )
+  .container.d-flex.flex-column.flex-grow-1.vh-100.overflow-hidden.py-4
+      .row.flex-grow-1.overflow-hidden
+        .col-md-8.mh-100.overflow-auto(v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10")
+          TweetNew(
+            :user-id='currentUser.id' 
+            @after-create-tweet='afterCreateTweet')
+          TweetIndex( :tweets='tweets'
+            @after-add-like='afterAddLike'
+            @after-delete-like='afterDeleteLike')
+        .col-md-4.mh-100.overflow-auto 
+          ul.nav.nav-tabs
+            li.nav-item(
+              v-for="tab in tabs" 
+              v-bind:key="tab"
+              v-bind:class="['tab-button', { active: currentTab === tab }]"
+              v-on:click="currentTab = tab"
+            )
+              a.nav-link(href='#') {{tab}}        
           
-        Chat( 
-          v-if="currentTab === 'Chat'" 
-          :current-user='currentUser'
-          @after-invite-user="afterInviteUser"
-        )    
-    .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0; min-height: 362.1px")
-      ChatWindow(
-      v-for="window in windows"
-      :key="window.id"
-      :window="window"
-      @after-close="closeWindow" 
-      style="margin: 0 0.3%"
-      )
+          Popular(
+            v-if="currentTab === 'Popular'" 
+            :top-users='topUsers'
+            :current-user='currentUser'
+            @after-add-follow='afterAddFollow'
+            @after-delete-follow='afterDeleteFollow'
+          )
+            
+          Chat( 
+            v-if="currentTab === 'Chat'" 
+            :current-user='currentUser'
+            @after-invite-user="afterInviteUser"
+          )    
+      .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0; min-height: 362.1px")
+        ChatWindow(
+        v-for="window in windows"
+        :key="window.id"
+        :window="window"
+        @after-close="closeWindow" 
+        style="margin: 0 0.3%"
+        )
 
       //- 有閒情逸致再做icon縮小按鈕 
       //- div(style="height: 50%")
@@ -54,6 +54,7 @@ import Chat from "../components/OnlineUser";
 import ChatWindow from "../components/ChatWindow";
 import { Toast } from "../utils/helpers";
 import { mapState } from "vuex";
+import infiniteScroll from "vue-infinite-scroll";
 
 //api
 import tweetsAPI from "../apis/tweet";
@@ -75,16 +76,18 @@ export default {
       windows: [],
       currentTab: "Popular",
       tabs: ["Popular", "Chat"],
-      history: []
+      history: [],
+      busy: true
     };
   },
   computed: {
     ...mapState(["currentUser", "isAuthenticated"])
   },
   async created() {
+    await this.fetchTweets(this.tweets.length, 10);
     await this.socketLogin();
-    await this.fetchTweets();
     await this.fetchTopUsers();
+    this.busy = false;
   },
   sockets: {
     openGuestWindow(data) {
@@ -121,6 +124,7 @@ export default {
       }
     }
   },
+  directives: { infiniteScroll },
   methods: {
     afterInviteUser(userId, guestUser) {
       let windows = this.windows.map(window => window.id);
@@ -164,13 +168,13 @@ export default {
         }
       }
     },
-    async fetchTweets() {
+    async fetchTweets(offset, limit) {
       try {
-        const response = await tweetsAPI.getTweets();
+        const response = await tweetsAPI.getTweets(offset, limit);
 
         const { data } = response;
 
-        this.tweets = data.tweets;
+        this.tweets = this.tweets.concat(data.tweets);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -202,7 +206,7 @@ export default {
           throw new Error("Tweet should be shorter than 140 characters!");
         }
 
-        const response = await tweetsAPI.tweets.create(tweet);
+        const response = await tweetsAPI.tweets.create(tweet.description);
 
         const { data } = response;
 
@@ -211,7 +215,7 @@ export default {
           throw new Error(data.message);
         }
 
-        this.fetchTweets();
+        this.tweets.unshift(data.newTweet);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -223,6 +227,7 @@ export default {
       try {
         const response = await followshipAPI.followship.create(userId);
         const { data } = response;
+
         //add statusText
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -253,7 +258,9 @@ export default {
         });
       }
     },
-    async afterAddLike(tweetId) {
+    async afterAddLike(payload) {
+      const { tweetId, index } = payload;
+
       try {
         const response = await tweetsAPI.tweets.like(tweetId);
         const { data } = response;
@@ -262,7 +269,8 @@ export default {
           throw new Error(data.message);
         }
 
-        this.fetchTweets();
+        this.tweets[index].isLiked = true;
+        this.tweets[index].likesCount += 1;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -270,14 +278,21 @@ export default {
         });
       }
     },
-    async afterDeleteLike(tweetId) {
+    async afterDeleteLike(payload) {
+      const { tweetId, index } = payload;
+
       try {
+        console.log("tweetId", tweetId, "index", index);
         const response = await tweetsAPI.tweets.unlike(tweetId);
         const { data } = response;
+
+        //add statusText
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-        this.fetchTweets();
+
+        this.tweets[index].isLiked = false;
+        this.tweets[index].likesCount -= 1;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -291,6 +306,17 @@ export default {
     },
     socketLogin() {
       this.$socket.emit("login", this.currentUser.id);
+    },
+    async loadMore() {
+      this.busy = true;
+      let tweetCountsBeforeLoadMore = this.tweets.length;
+      console.log("scroll loading");
+      await this.fetchTweets(this.tweets.length, 5);
+
+      // stops loading more data while no more new data in DB
+      if (this.tweets.length !== tweetCountsBeforeLoadMore) {
+        this.busy = false;
+      }
     }
   }
 };
