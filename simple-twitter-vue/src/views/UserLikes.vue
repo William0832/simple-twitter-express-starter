@@ -132,7 +132,8 @@ export default {
         };
       }
     },
-    async afterLike(tweetId) {
+    async afterLike(payload) {
+      const { tweetId } = payload;
       try {
         console.log("add like");
         const { data } = await tweetAPI.tweets.like(tweetId);
@@ -160,8 +161,10 @@ export default {
         });
       }
     },
-    async afterUnlike(tweetId) {
+    async afterUnlike(payload) {
       try {
+        const { tweetId } = payload;
+
         console.log("add like");
         const { data } = await tweetAPI.tweets.unlike(tweetId);
 

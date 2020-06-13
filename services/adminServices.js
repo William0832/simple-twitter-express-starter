@@ -24,7 +24,11 @@ const adminServices = {
           },
           {
             model: Reply,
-            attributes: ['id', 'UserId', 'comment', 'createdAt', 'updatedAt']
+            attributes: ['id', 'UserId', 'comment', 'createdAt', 'updatedAt'],
+            include: [{
+              model: User,
+              attributes: ['id', 'name']
+            }]
           },
           Like
         ]
@@ -36,7 +40,8 @@ const adminServices = {
           comment: r.comment.substring(0, 50)
         })),
         repliesCount: t.Replies.length || 0,
-        likesCount: t.Likes.length || 0
+        likesCount: t.Likes.length || 0,
+        showReplies: false
       }))
       tweets.sort((a, b) => b.repliesCount - a.repliesCount)
       removeKeys(tweets, ['Likes'])
