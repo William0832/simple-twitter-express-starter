@@ -1,22 +1,23 @@
-const { Op } = require('sequelize')
-const db = require('../models')
-const { User, Chat, Message } = db
+const { Op } = require('sequelize');
+const db = require('../models');
+const { use } = require('passport');
+const { User, Chat, Message } = db;
 
 const chatService = {
   userOnline: async (userId) => {
     try {
-      let user = await User.findByPk(userId)
-      await user.update({ isOnline: true })
+      let user = await User.findByPk(userId);
+      await user.update({ isOnline: true });
     } catch (err) {
-      console.log(err.toString())
+      console.log(err.toString());
     }
   },
   userOffline: async (userId) => {
     try {
-      let user = await User.findByPk(userId)
-      await user.update({ isOnline: false })
+      let user = await User.findByPk(userId);
+      await user.update({ isOnline: false });
     } catch (err) {
-      console.log(err.toString())
+      console.log(err.toString());
     }
   },
   postChat: async (myId, guestId) => {
@@ -36,49 +37,52 @@ const chatService = {
           ]
         },
         attributes: ['id']
-      })
+      });
       if (chat) {
         // console.log(`error: chats is already exists`)
-        chat = chat.dataValues
-        chat.chatId = chat.id
-        delete chat.id
-        return chat.dataValues
+        chat = chat.dataValues;
+        chat.chatId = chat.id;
+        delete chat.id;
+        return chat.dataValues;
       }
       newChat = await Chat.create({
         CreatedUserId: myId,
         InvitedUserId: guestId
-      })
-      chat = { chatId: newChat.dataValues.id }
+      });
+      chat = { chatId: newChat.dataValues.id };
       // console.log(`chat was successfully created`)
       // add user info for frontend
       let user = await User.findByPk(guestId, {
         attributes: ['id', 'name', 'avatar', 'isOnline']
-      })
-      user = user.dataValues
+      });
+      user = user.dataValues;
       // final merger
-      user.userId = user.id
-      delete user.id
+      user.userId = user.id;
+      delete user.id;
       chat = {
         ...user,
         ...chat
-      }
-      return chat
+      };
+      return chat;
     } catch (err) {
-      console.log(err.toString())
+      console.log(err.toString());
     }
   },
-  getNewUser: async (id) => {
+  getUserInfo: async (myId, id) => {
     try {
       let user = await User.findByPk(id, {
         attributes: ['id', 'name', 'avatar', 'isOnline']
-      })
-      user = user.dataValues
-      user.userId = user.id
-      user.lastMsg = null
-      delete user.id
-      return user
+      });
+      user = user.dataValues;
+      user.userId = user.id;
+      user.chatId = null;
+      user.lastMsg = null;
+      delete user.id;
+      // console.log('user======', user);
+
+      return user;
     } catch (err) {
-      console.log(err.toString())
+      console.log(err.toString());
     }
   },
 
@@ -95,36 +99,36 @@ const chatService = {
           [Op.or]: [{ CreatedUserId: myId }, { InvitedUserId: myId }]
         },
         attributes: ['id', 'CreatedUserId', 'InvitedUserId']
-      })
+      });
       chats = chats.map((e) => ({
         ...e.dataValues
-      }))
+      }));
 
-      let guestIds = []
+      let guestIds = [];
       // 依照角色判斷，聊天對象id 存入users
       chats.forEach((c) => {
         if (c.CreatedUserId === myId) {
-          guestIds.push(c.InvitedUserId)
+          guestIds.push(c.InvitedUserId);
         } else {
-          guestIds.push(c.CreatedUserId)
+          guestIds.push(c.CreatedUserId);
         }
-      })
+      });
       // find guest information
       let guests = await User.findAll({
         where: {
           id: guestIds
         },
         attributes: ['id', 'name', 'avatar', 'isOnline']
-      })
+      });
       guests = guests.map((e) => ({
         ...e.dataValues
-      }))
+      }));
 
       // each chats add chatId and guest
       chats = chats.map((e, index) => ({
         chatId: e.id,
         ...guests[index]
-      }))
+      }));
       chats = Promise.all(
         chats.map(async (chat) => {
           let lastMsg = await Message.findAll({
@@ -132,25 +136,25 @@ const chatService = {
             attributes: ['message', 'createdAt', 'UserId'],
             sort: ['created', 'DEC'],
             limit: 1
-          })
-          lastMsg = lastMsg[0]
+          });
+          lastMsg = lastMsg[0];
           if (!lastMsg) {
-            lastMsg = null
+            lastMsg = null;
           } else {
-            lastMsg = lastMsg.dataValues
+            lastMsg = lastMsg.dataValues;
           }
           let temp = {
             ...chat,
             userId: chat.id,
             lastMsg: lastMsg
-          }
-          delete temp.id
-          return temp
+          };
+          delete temp.id;
+          return temp;
         })
-      )
-      return chats
+      );
+      return chats;
     } catch (err) {
-      console.log(err.toString())
+      console.log(err.toString());
     }
   },
   // 抓取單一聊天室，要拿到聊天對象的userId
@@ -164,43 +168,43 @@ const chatService = {
           ]
         },
         attributes: ['id']
-      })
+      });
       if (!chat) {
         // console.log('chat did not exist')
-        return null
+        return null;
       }
-      chat = chat.dataValues
-      chat.chatId = chat.id
-      delete chat.id
-      return chat
+      chat = chat.dataValues;
+      chat.chatId = chat.id;
+      delete chat.id;
+      return chat;
     } catch (err) {
-      console.log(err.toString())
+      console.log(err.toString());
     }
   },
   getChatByChatId: async (id) => {
     try {
       let chat = await Chat.findByPk(id, {
         attributes: ['id', 'InvitedUserId', 'CreatedUserId']
-      })
-      chat = chat.dataValues
+      });
+      chat = chat.dataValues;
       let inviter = await User.findByPk(chat.CreatedUserId, {
         attributes: ['name', 'avatar']
-      })
+      });
       let guest = await User.findByPk(chat.InvitedUserId, {
         attributes: ['name', 'avatar']
-      })
-      inviter = inviter.dataValues
-      guest = guest.dataValues
+      });
+      inviter = inviter.dataValues;
+      guest = guest.dataValues;
       let data = {
         invitedUsername: inviter.name,
         guestUserName: guest.name,
         invitedUserAvatar: inviter.avatar,
         guestUserAvatar: inviter.avatar,
         chatroomId: chat.id
-      }
-      return data
+      };
+      return data;
     } catch (err) {
-      console.log(err.toString())
+      console.log(err.toString());
     }
   },
   // db 將發出的新訊息存入
@@ -212,10 +216,10 @@ const chatService = {
         message: message,
         createdAt: new Date(),
         updatedAt: new Date()
-      })
+      });
       // console.log('successfully create msg ')
     } catch (err) {
-      console.log(err.toString())
+      console.log(err.toString());
     }
   },
   //db 取得聊天室的全部訊息
@@ -226,12 +230,12 @@ const chatService = {
         attributes: ['message', 'userId'],
         // 按時間遞減
         order: [['createdAt', 'ASC']]
-      })
-      msgs = msgs.map((e) => ({ ...e.dataValues }))
-      return msgs
+      });
+      msgs = msgs.map((e) => ({ ...e.dataValues }));
+      return msgs;
     } catch (err) {
-      console.log(err.toString())
+      console.log(err.toString());
     }
   }
-}
-module.exports = chatService
+};
+module.exports = chatService;
