@@ -127,7 +127,6 @@ export default {
 
         this.fetchReplies(tweetId);
 
-        console.log("reply notify");
         this.$socket.emit("reply", {
           userId: this.currentUser.id,
           tweetId: tweetId,
@@ -153,6 +152,12 @@ export default {
         }
 
         this.fetchTweet(tweetId);
+
+        this.$socket.emit("like", {
+          userId: this.currentUser.id,
+          tweetId: tweetId,
+          type: "like"
+        });
       } catch (error) {
         Toast.fire({
           icon: "error",

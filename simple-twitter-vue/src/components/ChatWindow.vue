@@ -6,7 +6,7 @@
         button.btn.cancel(type='button', @click.prevent.stop="closeWindow(window.guestUser.chatId)" style="font-weight: bold; color: white;") X                
       
       //- 顯示對話框的container 
-      .chatbox.d-flex.flex-column.container.overflow-auto.pb-2(style="min-height:260.1px")
+      .chatbox.d-flex.flex-column.container.overflow-auto(style="min-height: 35vh;")
         li.list-unstyled(v-for="(chat, index) in window.messages" :key="index")
           //- 自己的對話條
           .row.mt-3(v-if="chat.userId === currentUser.id")
@@ -48,22 +48,19 @@ export default {
     // user收到回覆訊息
     async replyMessage(payload) {
       try {
-        // if (this.messages.length === this.chatHistoryLength) {
-        this.$socket.emit('PM_guest', {
+
+        this.$socket.emit("PM_guest", {
           userId: this.window.guestUser.userId,
           guestUserId: this.currentUser.id,
           chatId: this.window.guestUser.chatId
         });
-        // }
 
         if (this.window.id === payload.chatId) {
           delete payload.chatId;
           this.window.messages.push(payload);
         }
+        let chatBox = document.querySelector(".chatbox");
 
-        let chatBox = document.querySelector('.chatbox');
-
-        // 讓chatbox保持在最底部
         setTimeout(() => {
           chatBox.scrollTop = chatBox.scrollHeight;
         }, 50);
@@ -79,14 +76,9 @@ export default {
   watch: {
     window: function(newValue) {
       this.window.messages = newValue;
-
-      let chatBox = document.querySelector('.chatbox');
-
-      // 讓chatbox保持在最底部
+      let chatBox = document.querySelector(".chatbox");
       setTimeout(() => {
         chatBox.scrollTop = chatBox.scrollHeight;
-        console.log('top', chatBox.scrollTop);
-        console.log('height', chatBox.scrollHeight);
       }, 50);
     }
   },
@@ -112,7 +104,6 @@ export default {
             chatId: this.window.guestUser.chatId
           });
 
-          // 讓chatbox保持在最底部/
           setTimeout(() => {
             chatBox.scrollTop = chatBox.scrollHeight;
           }, 1);

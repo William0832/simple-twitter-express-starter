@@ -31,18 +31,15 @@
             :current-user='currentUser'
             @after-invite-user="afterInviteUser"
           )    
-      .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0; min-height: 362.1px  pointer-events: none")
+      .row.no-gutters.d-flex.justify-content-end.fixed-bottom(style="position:fixed; right:0; pointer-events:none")
         ChatWindow(
         v-for="window in windows"
         :key="window.id"
         :window="window"
         @after-close="closeWindow" 
-        style="margin: 0 0.3%"
+        style="margin: 0 0.3%;  pointer-events: auto;"
         )
 
-      //- 有閒情逸致再做icon縮小按鈕 
-      //- div(style="height: 50%")
-      //-   button.btn-btn-light(style="border-radius: 50%; background-img: ")
 
 </template>
 
@@ -96,7 +93,6 @@ export default {
     },
     async getChatHistory({ users, msgs }) {
       try {
-        // let chatBox = document.querySelector("#chatbox");
         this.history.forEach(h => {
           if (h.chatId === users.chatroomId) {
             h.messages = msgs;
@@ -108,17 +104,6 @@ export default {
             }
           });
         });
-
-        // console.log('使用者們',users)
-        // this.users = users;
-        // this.messages = msgs;
-        // this.window.messages = msgs;
-        // this.chatHistoryLength = msgs.length;
-
-        // 讓chatbox保持在最底部
-        // setTimeout(() => {
-        //   chatBox.scrollTop = chatBox.scrollHeight;
-        // }, 1);
       } catch (error) {
         console.error(error);
       }
@@ -271,6 +256,12 @@ export default {
 
         this.tweets[index].isLiked = true;
         this.tweets[index].likesCount += 1;
+
+        this.$socket.emit("like", {
+          userId: this.currentUser.id,
+          tweetId: tweetId,
+          type: "like"
+        });
       } catch (error) {
         Toast.fire({
           icon: "error",
