@@ -43,7 +43,7 @@ const isOwner = (req, res, next) => {
 }
 
 const checkRoute = (req, res, next) => {
-  console.log('here!')
+  console.log('route here!')
   return next()
 }
 
