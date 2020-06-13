@@ -57,14 +57,16 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
       let elseOnlineUsers = Object.keys(onlineUsers).filter((e) => {
         return onlineUsers[e][0] && e !== String(myId);
       });
+      console.log('elseOnlineUsers', elseOnlineUsers);
       let users = [];
       // add user info
       if (elseOnlineUsers[0]) {
         elseOnlineUsers.forEach(async (e, index) => {
           try {
             let user = await chatService.getUserInfo(myId, e);
+
             users.push(user);
-            if (index + 1 === elseOnlineUsers.length) {
+            if (users.length === elseOnlineUsers.length) {
               socket.emit('getOnlineUser', users);
               return;
             }

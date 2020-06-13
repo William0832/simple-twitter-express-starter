@@ -68,17 +68,38 @@ const chatService = {
       console.log(err.toString());
     }
   },
-  getUserInfo: async (myId, id) => {
+  getUserInfo: async (myId, guestId) => {
     try {
-      let user = await User.findByPk(id, {
+      let user = await User.findByPk(guestId, {
         attributes: ['id', 'name', 'avatar', 'isOnline']
       });
-      user = user.dataValues;
+      let chat = await Chat.findOne({
+        where: {
+          [Op.or]: [
+            { CreatedUserId: myId, InvitedUserId: guestId },
+            { CreatedUserId: guestId, InvitedUserId: myId }
+          ]
+        },
+        include: [
+          {
+            model: Message,
+            order: [['createdAt', 'DESC']],
+            attribute: ['message', 'createdAt'],
+            limit: 1
+          }
+        ]
+      });
+      user = user.toJSON();
       user.userId = user.id;
-      user.chatId = null;
-      user.lastMsg = null;
       delete user.id;
-      // console.log('user======', user);
+      if (chat) {
+        chat = chat.toJSON();
+        user.chatId = chat.id;
+        user.latestMsg = chat.Messages[0] ? chat.Messages[0].message : null;
+        return user;
+      }
+      user.chatId = null;
+      user.latestMsg = null;
 
       return user;
     } catch (err) {
@@ -217,7 +238,12 @@ const chatService = {
         createdAt: new Date(),
         updatedAt: new Date()
       });
-      // console.log('successfully create msg ')
+      msg = msg.toJSON();
+      let chat = await Chat.findByPk(chatId);
+      // console.log('chat', chat);
+      chat.update({
+        LatestMsgId: msg.id
+      });
     } catch (err) {
       console.log(err.toString());
     }

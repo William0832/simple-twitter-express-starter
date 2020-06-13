@@ -7,9 +7,12 @@
     type='button' style="width:370px;")
       .col-3
         img(:src="user.avatar")
-      .col-7.text-center
-        p.my-auto(style='font-size: 0.9rem') {{user.name}}
-      .col-1(style='font-size: 0.7rem; color: #7FFF00;')
+      .col-3.py-2
+        h5.my-auto {{user.name}}
+      .col-6.pl-1.pt-1
+        p.my-auto.text-secondary {{user.latestMsg}}
+
+      //- .col-1(style='font-size: 0.7rem; color: #7FFF00;')
           font-awesome-icon(icon='circle' size="xs")
 </template>
 
