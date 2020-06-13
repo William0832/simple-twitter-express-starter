@@ -1,10 +1,6 @@
 const db = require('../models');
 const sequelize = require('sequelize');
-const Tweet = db.Tweet;
-const User = db.User;
-const Reply = db.Reply;
-// const Followship = db.Followship;
-const Like = db.Like;
+const { User, Tweet, Reply, Like, blockedship } = db;
 const helpers = require('../_helpers');
 
 const removeKeys = (data, keys) => {
@@ -22,8 +18,13 @@ const removeKeys = (data, keys) => {
 };
 
 const tweetService = {
+  // need check blocks
   getTweets: async (req, res, callback) => {
     try {
+      // get current user's blockersIds
+      let currentUser = helpers.getUser(req);
+      let blockersIds = currentUser.Blockers.map((e) => e.id); // ex: [3, 5]
+
       let likedTweets = await Like.findAll({
         where: { UserId: helpers.getUser(req).id },
         attributes: ['TweetId']
@@ -51,7 +52,8 @@ const tweetService = {
         isLiked: likedTweets.includes(tweet.id) ? true : false
       }));
       removeKeys(tweets, ['Replies', 'Likes']);
-
+      // remove blockers tweets
+      tweets = tweets.filter((e) => !blockersIds.includes(e.UserId));
       return callback({
         tweets
       });
@@ -59,6 +61,7 @@ const tweetService = {
       console.log(error);
     }
   },
+  // need check blocks
   getTopUsers: async (req, res, callback) => {
     try {
       let followedUser = await User.findByPk(helpers.getUser(req).id, {
@@ -113,6 +116,7 @@ const tweetService = {
       console.log(error);
     }
   },
+  // need check blocks
   postTweets: async (req, res, callback) => {
     try {
       if (!req.body.description) {
@@ -147,6 +151,7 @@ const tweetService = {
       console.log(error);
     }
   },
+  // need check blocks
   getTweet: async (req, res, callback) => {
     try {
       let tweet = await Tweet.findByPk(req.params.tweet_id, {

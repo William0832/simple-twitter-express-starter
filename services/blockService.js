@@ -2,19 +2,6 @@ const db = require('../models');
 const { Blockedship, User } = db;
 const helpers = require('../_helpers');
 
-const removeKeys = (data, keys) => {
-  if (Object.keys(data).includes(...keys)) {
-    keys.forEach((k) => {
-      delete data[k];
-    });
-  } else {
-    data.forEach((d) => {
-      keys.forEach((k) => {
-        delete d[k];
-      });
-    });
-  }
-};
 const blockServices = {
   // postman check ok~
   postBlock: async (req, res, callback) => {
