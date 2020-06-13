@@ -106,16 +106,6 @@ export default {
           })
         })
 
-        // console.log('使用者們',users)
-        // this.users = users;
-        // this.messages = msgs;
-        // this.window.messages = msgs;
-        // this.chatHistoryLength = msgs.length;
-
-        // 讓chatbox保持在最底部
-        // setTimeout(() => {
-        //   chatBox.scrollTop = chatBox.scrollHeight;
-        // }, 1);
       } catch (error) {
         console.error(error)
       }
@@ -201,7 +191,6 @@ export default {
         if (tweet.description.length > 140) {
           throw new Error('Tweet should be shorter than 140 characters!')
         }
-
         const response = await tweetsAPI.tweets.create(tweet)
 
         const { data } = response

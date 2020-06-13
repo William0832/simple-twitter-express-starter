@@ -9,7 +9,15 @@
           router-link(:to="{ name: 'user', params: { id:tweet.User.id }}")  @{{tweet.User.name}}
           | , {{tweet.createdAt | formatTime}}
         p
-          | {{tweet.description}}
+          | {{tweet.description}} 
+
+          router-link(
+            v-if="tweet.hashtags.length !== 0" 
+            v-for="(hashtag, index) in tweet.hashtags" 
+            :key="index"
+            :to="{ name: 'individual-hashtag', params: { hashtag: hashtag } }"
+          )  {{hashtag}}
+
         a(:href='tweet.googleMapUrl' v-if='tweet.googleMapName') 
           |
           font-awesome-icon(icon="map-marker-alt")

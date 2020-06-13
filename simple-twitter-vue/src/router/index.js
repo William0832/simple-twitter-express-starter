@@ -85,6 +85,11 @@ const routes = [
     component: () => import('../views/Hashtag')
   },
   {
+    path: '/hashtag/:hashtag',
+    name: 'individual-hashtag',
+    component: () => import('../views/Hashtag')
+  },
+  {
     path: '*',
     name: 'not-found',
     component: NotFound
