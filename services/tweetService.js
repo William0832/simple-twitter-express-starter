@@ -51,9 +51,11 @@ const tweetService = {
         likesCount: tweet.Likes.length || 0,
         isLiked: likedTweets.includes(tweet.id) ? true : false
       }));
+      console.log('tweets number before block', tweets.length);
       removeKeys(tweets, ['Replies', 'Likes']);
       // remove blockers tweets
       tweets = tweets.filter((e) => !blockersIds.includes(e.UserId));
+      console.log('tweets number after block', tweets.length);
       return callback({
         tweets
       });
@@ -61,7 +63,6 @@ const tweetService = {
       console.log(error);
     }
   },
-  // need check blocks
   getTopUsers: async (req, res, callback) => {
     try {
       let followedUser = await User.findByPk(helpers.getUser(req).id, {
@@ -116,7 +117,6 @@ const tweetService = {
       console.log(error);
     }
   },
-  // need check blocks
   postTweets: async (req, res, callback) => {
     try {
       if (!req.body.description) {
@@ -151,7 +151,6 @@ const tweetService = {
       console.log(error);
     }
   },
-  // need check blocks
   getTweet: async (req, res, callback) => {
     try {
       let tweet = await Tweet.findByPk(req.params.tweet_id, {
