@@ -6,9 +6,10 @@ const blockServices = {
   // postman check ok~
   postBlock: async (req, res, callback) => {
     try {
+      let blockingId = req.body.blockingId;
       let currentUserId = helpers.getUser(req).id;
       // can not block user self
-      if (currentUserId === req.params.blockerId) {
+      if (currentUserId === blockingId) {
         return callback({
           status: 'error',
           message: '不能封鎖自己'
@@ -18,13 +19,13 @@ const blockServices = {
         where: {
           $and: {
             createdBlockedId: currentUserId,
-            blockingId: req.params.blockerId
+            blockingId: blockingId
           }
         }
       });
       if (block) {
         block = block.dataValues || block;
-        console.log('================= exist block: ', block);
+        // console.log('================= exist block: ', block);
         return callback({
           status: 'error',
           message: 'this block is exist'
@@ -33,16 +34,16 @@ const blockServices = {
       // create new
       block = await Blockedship.create({
         createdBlockedId: currentUserId,
-        blockingId: req.params.blockerId
+        blockingId: blockingId
       });
       block = block.dataValues || block;
-      console.log('================= new block: ', block);
+      // console.log('================= new block: ', block);
       callback({
         status: 'success',
         message: `blocker: ${block.blockingId} was created `
       });
     } catch (err) {
-      console.log(err.toString());
+      callback({ status: 'error', message: err.toString() });
     }
   },
   getBlocks: async (req, res, callback) => {
@@ -75,12 +76,13 @@ const blockServices = {
   deleteBlock: async (req, res, callback) => {
     try {
       let currentUserId = helpers.getUser(req).id;
-
+      let blockingId = req.params.blockingId;
+      // console.log('==================== deleteBlock', blockingId);
       let block = await Blockedship.findOne({
         where: {
           $and: {
             createdBlockedId: currentUserId,
-            blockingId: req.params.blockerId
+            blockingId: blockingId
           }
         },
         attributes: ['blockingId']

@@ -157,11 +157,10 @@ router.post(
 );
 
 // BLock
-router.post('/blocks/:blockerId', authenticated, blockController.postBlock);
+router.post('/blocks', authenticated, blockController.postBlock);
 router.get('/blocks', authenticated, blockController.getBlocks);
-router.get('blocks/:blockerId/edit', authenticated, blockController.getBlocks);
 router.delete(
-  '/blocks/:blockerId/',
+  '/blocks/:blockingId',
   authenticated,
   blockController.deleteBlock
 );
