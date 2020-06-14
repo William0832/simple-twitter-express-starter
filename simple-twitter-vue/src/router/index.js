@@ -1,20 +1,20 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import NotFound from '../views/NotFound.vue'
-import tweets from '../views/Tweets'
-import store from '../store'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import NotFound from '../views/NotFound.vue';
+import tweets from '../views/Tweets';
+import store from '../store';
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const authorizeIsAdmin = (to, from, next) => {
-  const currentUser = store.state.currentUser
+  const currentUser = store.state.currentUser;
   if (currentUser && !(currentUser.role === 'admin')) {
-    next('/404')
-    return
+    next('/404');
+    return;
   }
 
-  next()
-}
+  next();
+};
 
 const routes = [
   {
@@ -80,50 +80,55 @@ const routes = [
     component: () => import('../views/Reply')
   },
   {
+    path: '/blocks',
+    name: 'blocks',
+    component: () => import('../views/Blocks.vue')
+  },
+  {
     path: '*',
     name: 'not-found',
     component: NotFound
   }
-]
+];
 
 const router = new VueRouter({
   routes
-})
+});
 
 router.beforeEach(async (to, from, next) => {
   // console.log('store', store.state)
 
-  const tokenInLocalStorage = localStorage.getItem('token')
-  const tokenInStore = store.state.token
-  let isAuthenticated = store.state.isAuthenticated
+  const tokenInLocalStorage = localStorage.getItem('token');
+  const tokenInStore = store.state.token;
+  let isAuthenticated = store.state.isAuthenticated;
 
   // 比較 localStorage 和 store 中的 token 是否一樣
   if (tokenInLocalStorage && tokenInLocalStorage !== tokenInStore) {
-    isAuthenticated = await store.dispatch('fetchCurrentUser')
+    isAuthenticated = await store.dispatch('fetchCurrentUser');
   }
 
   // 如果 token 無效則轉址到登入頁
   if (!isAuthenticated) {
     switch (to.name) {
       case 'sign-in':
-        next()
-        return
+        next();
+        return;
       case 'sign-up':
-        next()
-        return
+        next();
+        return;
     }
 
-    next('signin')
-    return
+    next('signin');
+    return;
   }
 
   // 如果 token 有效則轉址到首頁
   if (isAuthenticated && to.name === 'sign-in') {
-    next('/tweets')
-    return
+    next('/tweets');
+    return;
   }
 
-  next()
-})
+  next();
+});
 
-export default router
+export default router;

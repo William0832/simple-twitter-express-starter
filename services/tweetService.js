@@ -1,10 +1,6 @@
 const db = require('../models');
 const sequelize = require('sequelize');
-const Tweet = db.Tweet;
-const User = db.User;
-const Reply = db.Reply;
-// const Followship = db.Followship;
-const Like = db.Like;
+const { User, Tweet, Reply, Like, blockedship } = db;
 const helpers = require('../_helpers');
 
 const removeKeys = (data, keys) => {
@@ -22,8 +18,15 @@ const removeKeys = (data, keys) => {
 };
 
 const tweetService = {
+  // need check blocks
   getTweets: async (req, res, callback) => {
     try {
+      // get current user's blockedCreatorIds
+      let currentUser = helpers.getUser(req);
+      let blockedCreatorIds = currentUser.BlockedCreators
+        ? currentUser.BlockedCreators.map((e) => e.id)
+        : null; // ex: [3, 5]
+
       let likedTweets = await Like.findAll({
         where: { UserId: helpers.getUser(req).id },
         attributes: ['TweetId']
@@ -31,8 +34,10 @@ const tweetService = {
 
       likedTweets = likedTweets.map((like) => like.TweetId);
 
-      let offset = Number(req.query.offset) || 0
-      let loadLimit = Number(req.query.limit) || 5
+      let offset = Number(req.query.offset) || 0;
+      let loadLimit = Number(req.query.limit) || 5;
+      console.log('offset', offset);
+      console.log('loadLimit', loadLimit);
 
       let tweets = await Tweet.findAndCountAll({
         include: [
@@ -40,10 +45,13 @@ const tweetService = {
           { model: Reply, attributes: ['id', 'UserId'] },
           { model: Like, attributes: ['id', 'UserId'] }
         ],
-        order: [['createdAt', 'DESC'], ['id', 'ASC']],
+        order: [
+          ['createdAt', 'DESC'],
+          ['id', 'ASC']
+        ],
         offset: offset,
         limit: loadLimit
-      })
+      });
 
       tweets = tweets.rows.map((tweet) => ({
         ...tweet.dataValues,
@@ -51,8 +59,13 @@ const tweetService = {
         likesCount: tweet.Likes.length || 0,
         isLiked: likedTweets.includes(tweet.id) ? true : false
       }));
+      // console.log('tweets number before block', tweets.length);
       removeKeys(tweets, ['Replies', 'Likes']);
-
+      // remove blockers tweets
+      tweets = blockedCreatorIds
+        ? tweets.filter((e) => !blockedCreatorIds.includes(e.UserId))
+        : tweets;
+      // console.log('tweets number after block', tweets.length);
       return callback({
         tweets
       });
@@ -123,7 +136,6 @@ const tweetService = {
         });
       }
 
-
       if (req.body.description.length > 140) {
         return callback({
           status: 'error',
@@ -140,7 +152,7 @@ const tweetService = {
 
       const user = await User.findByPk(tweet.UserId, {
         attributes: ['id', 'email', 'name', 'avatar']
-      })
+      });
 
       let newTweet = {
         ...tweet.dataValues,
@@ -148,13 +160,13 @@ const tweetService = {
         repliesCount: 0,
         likesCount: 0,
         isLiked: false
-      }
+      };
 
       return callback({
         status: 'success',
         message: 'tweet successfully posted.',
         newTweet
-      })
+      });
     } catch (error) {
       console.log(error);
     }

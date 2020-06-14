@@ -11,6 +11,7 @@ const tweetController = require('../controllers/api/tweetController.js');
 const replyController = require('../controllers/api/replyController.js');
 const followshipController = require('../controllers/api/followshipController.js');
 const likeController = require('../controllers/api/likeController');
+const blockController = require('../controllers/api/blockController');
 
 const authenticated = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
@@ -154,6 +155,16 @@ router.post(
   authenticated,
   replyController.postReply
 );
+
+// BLock
+router.post('/blocks', authenticated, blockController.postBlock);
+router.get('/blocks', authenticated, blockController.getBlocks);
+router.delete(
+  '/blocks/:blockingId',
+  authenticated,
+  blockController.deleteBlock
+);
+
 //Vuex get current user
 router.get('/current-user', authenticated, userController.getCurrentUser);
 

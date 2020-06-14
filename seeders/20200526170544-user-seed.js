@@ -1,6 +1,6 @@
-'use strict'
-const bcrypt = require('bcrypt-nodejs')
-const faker = require('faker')
+'use strict';
+const bcrypt = require('bcrypt-nodejs');
+const faker = require('faker');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -48,7 +48,7 @@ module.exports = {
         }
       ],
       {}
-    )
+    );
 
     return queryInterface.bulkInsert(
       'Users',
@@ -66,10 +66,10 @@ module.exports = {
         updatedAt: new Date()
       })),
       {}
-    )
+    );
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('Users', null, { truncate: true })
+    return queryInterface.bulkDelete('Users', null, { truncate: true });
   }
-}
+};
