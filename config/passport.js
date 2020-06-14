@@ -60,23 +60,4 @@ let strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
   });
 });
 passport.use(strategy);
-
-// serialize and deserialize user
-passport.serializeUser((user, cb) => {
-  cb(null, user.id);
-});
-passport.deserializeUser((id, cb) => {
-  User.findByPk(id, {
-    // include: [
-    //   { model: db.Restaurant, as: 'FavoritedRestaurants' },
-    //   { model: db.Restaurant, as: 'LikedRestaurants' },
-    //   { model: User, as: 'Followers' },
-    //   { model: User, as: 'Followings' }
-    // ]
-  }).then((user) => {
-    user = user.toJSON();
-    return cb(null, user);
-  });
-});
-
 module.exports = passport;
