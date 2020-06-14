@@ -21,10 +21,10 @@ const tweetService = {
   // need check blocks
   getTweets: async (req, res, callback) => {
     try {
-      // get current user's blockersIds
+      // get current user's blockedCreatorIds
       let currentUser = helpers.getUser(req);
-      let blockersIds = currentUser.Blockers
-        ? currentUser.Blockers.map((e) => e.id)
+      let blockedCreatorIds = currentUser.BlockedCreators
+        ? currentUser.BlockedCreators.map((e) => e.id)
         : null; // ex: [3, 5]
 
       let likedTweets = await Like.findAll({
@@ -36,6 +36,8 @@ const tweetService = {
 
       let offset = Number(req.query.offset) || 0;
       let loadLimit = Number(req.query.limit) || 5;
+      console.log('offset', offset);
+      console.log('loadLimit', loadLimit);
 
       let tweets = await Tweet.findAndCountAll({
         include: [
@@ -57,13 +59,13 @@ const tweetService = {
         likesCount: tweet.Likes.length || 0,
         isLiked: likedTweets.includes(tweet.id) ? true : false
       }));
-      console.log('tweets number before block', tweets.length);
+      // console.log('tweets number before block', tweets.length);
       removeKeys(tweets, ['Replies', 'Likes']);
       // remove blockers tweets
-      tweets = blockersIds
-        ? tweets.filter((e) => !blockersIds.includes(e.UserId))
+      tweets = blockedCreatorIds
+        ? tweets.filter((e) => !blockedCreatorIds.includes(e.UserId))
         : tweets;
-      console.log('tweets number after block', tweets.length);
+      // console.log('tweets number after block', tweets.length);
       return callback({
         tweets
       });
