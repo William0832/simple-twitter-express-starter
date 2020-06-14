@@ -9,7 +9,6 @@
   },
   "test": {
     "username": "travis",
-    "password": "password",
     "database": "ac_twitter_workspace_test",
     "host": "127.0.0.1",
     "dialect": "mysql",
