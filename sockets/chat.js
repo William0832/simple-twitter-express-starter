@@ -50,70 +50,34 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
       isOnline: false
     });
   });
-  /*
-    開啟/關閉 無人在線上，顯示歷史聊天清單功能
-    showHistoryChats = true/false
-   */
+
   socket.on('fetchOnlineUser', async (myId) => {
     try {
-      let showHistoryChats = false;
       console.log('==================== fetchOnlineUser', myId);
-      // get history chats info from db
-      let historyChats = await chatService.getChats(myId);
-      let userOfHistoryChats = historyChats.map((e) => String(e.userId));
-      // get other online user id list
       let elseOnlineUsers = Object.keys(onlineUsers).filter((e) => {
         return onlineUsers[e][0] && e !== String(myId);
       });
-      // ======== TEST =======
-      // elseOnlineUsers = ['2', '3']
-      // =======================
-
-      // console.log('elseOnlineUsers:', elseOnlineUsers)
-      // console.log('userOfHistoryChats', userOfHistoryChats)
-
-      // get other online user chat info
+      console.log('elseOnlineUsers', elseOnlineUsers);
+      let users = [];
+      // add user info
       if (elseOnlineUsers[0]) {
-        // compare user is in the chat
-        let hasChatUsers = elseOnlineUsers.filter((e) =>
-          userOfHistoryChats.includes(e)
-        );
-        let noChatUsers = elseOnlineUsers.filter(
-          (e) => hasChatUsers.indexOf(e) === -1
-        );
-        displayChats = historyChats.filter((e) =>
-          hasChatUsers.includes(String(e.userId))
-        );
+        elseOnlineUsers.forEach(async (e, index) => {
+          try {
+            let user = await chatService.getUserInfo(myId, e);
 
-        // console.log('Has chat Users', hasChatUsers)
-        // console.log('No chat users', noChatUsers)
-
-        // add noChatUsers info
-        if (noChatUsers[0]) {
-          noChatUsers.forEach(async (e, index) => {
-            try {
-              let newChat = await chatService.getNewUser(e);
-              newChat.chatId = null;
-              displayChats.push(newChat);
-              if (index + 1 === noChatUsers.length) {
-                // console.log('some chatId is null')
-                socket.emit('getOnlineUser', displayChats);
-                return;
-              }
-            } catch (err) {
-              console.log(err.toString());
+            users.push(user);
+            if (users.length === elseOnlineUsers.length) {
+              socket.emit('getOnlineUser', users);
+              return;
             }
-          });
-          return;
-        }
-        // console.log('all chat have chatId!')
-        socket.emit('getOnlineUser', displayChats);
+          } catch (err) {
+            console.log(err.toString());
+          }
+        });
         return;
       }
-      if (showHistoryChats) {
-        // console.log('only U is online! display history chats')
-        socket.emit('getOnlineUser', historyChats);
-      }
+      // no one is online
+      socket.emit('getOnlineUser', []);
     } catch (err) {
       console.log(err.toString());
     }
@@ -160,6 +124,7 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
     try {
       console.log('=================== fetchChatHistory', payload);
       let { chatId } = payload;
+      // console.log(chatId);
       // console.log('rooms', rooms)
       let msgs = await chatService.getMsgs(chatId);
       let users = await chatService.getChatByChatId(chatId);
@@ -175,7 +140,7 @@ const chatSocket = (io, socket, onlineUsers, rooms) => {
       let { userId, guestUserId, chatId } = payload;
       // 依照user的動作更改命名
       let [sendUserId, popupUserId] = [guestUserId, userId];
-      let sendUser = await chatService.getNewUser(sendUserId);
+      let sendUser = await chatService.getUserInfo(popupUserId, sendUserId);
       sendUser.chatId = chatId;
       let targetSocketIds = rooms[chatId].socketIds.filter((e) =>
         onlineUsers[popupUserId].includes(String(e))

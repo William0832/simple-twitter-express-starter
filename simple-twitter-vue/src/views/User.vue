@@ -27,10 +27,10 @@
 <script>
 import UserProfileCard from '../components/UserProfileCard';
 import UserTweets from '../components/TweetIndex';
-
 import UsersAPI from '../apis/users';
 import tweetAPI from '../apis/tweet';
 import { Toast } from '../utils/helpers';
+import { mapState } from 'vuex';
 
 export default {
   components: {
@@ -61,6 +61,9 @@ export default {
     const { id: userId } = this.$route.params;
     this.fetchProfileData(userId);
     this.fetchTweetsData(userId);
+  },
+  computed: {
+    ...mapState(['currentUser', 'isAuthenticated'])
   },
   methods: {
     async fetchProfileData(userId) {
@@ -160,6 +163,12 @@ export default {
               isLiked: true
             };
           }
+        });
+
+        this.$socket.emit('like', {
+          userId: this.currentUser.id,
+          tweetId: tweetId,
+          type: 'like'
         });
       } catch (error) {
         console.log(error);
